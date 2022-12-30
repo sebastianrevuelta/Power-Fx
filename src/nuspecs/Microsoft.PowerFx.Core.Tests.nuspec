@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Microsoft.PowerFx.Core.Tests</id>
+    <version>****</version>
+    <title>Microsoft Power Fx Compiler Tests Core</title>
+    <authors>Microsoft</authors>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <icon>icon.png</icon>
+    <projectUrl>https://github.com/microsoft/Power-Fx</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/microsoft/Power-Fx/master/icon.png</iconUrl>
+    <description>The core test suite for all Microsoft Power Fx Compiler targets</description>
+    <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+    <tags>powerfx</tags>
+    <repository type="git" url="https://github.com/microsoft/Power-Fx" commit="****" />
+    <dependencies>
+      <group targetFramework=".NETCoreApp3.1">
+        <dependency id="Microsoft.PowerFx.Core" version="****" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Bcl.AsyncInterfaces" version="6.0.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.NET.Test.Sdk" version="16.11.0" exclude="Build,Analyzers" />
+        <dependency id="Newtonsoft.Json" version="13.0.2" exclude="Build,Analyzers" />
+        <dependency id="xunit" version="2.4.1" exclude="Build,Analyzers" />
+        <dependency id="xunit.extensibility.core" version="2.4.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net6.0">
+        <dependency id="Microsoft.PowerFx.Core" version="****" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Bcl.AsyncInterfaces" version="7.0.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.NET.Test.Sdk" version="17.4.1" exclude="Build,Analyzers" />
+        <dependency id="Newtonsoft.Json" version="13.0.2" exclude="Build,Analyzers" />
+        <dependency id="xunit" version="2.4.2" exclude="Build,Analyzers" />
+        <dependency id="xunit.extensibility.core" version="2.4.2" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net7.0">
+        <dependency id="Microsoft.PowerFx.Core" version="****" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Bcl.AsyncInterfaces" version="7.0.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.NET.Test.Sdk" version="17.4.1" exclude="Build,Analyzers" />
+        <dependency id="Newtonsoft.Json" version="13.0.2" exclude="Build,Analyzers" />
+        <dependency id="xunit" version="2.4.2" exclude="Build,Analyzers" />
+        <dependency id="xunit.extensibility.core" version="2.4.2" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+    <contentFiles>
+      <!-- Add files from ExpressionTestCases, IntellisenseTests, TypeSystemTests folders -->          
+    </contentFiles>
+  </metadata>
+  <files>
+    <!-- Add files -->
+  </files>
+</package>

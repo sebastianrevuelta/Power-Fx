@@ -18,13 +18,26 @@
     <LangVersion>9.0</LangVersion>
   </PropertyGroup>
 
-  <!-- <PropertyGroup>
-    <RunSettingsFilePath>$(MSBuildThisFileDirectory)\CodeCoverage.runsettings</RunSettingsFilePath>
-  </PropertyGroup> -->
-
   <ItemGroup>
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- .Net Core 3.1 only -->
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netcoreapp3.1'">
     <PackageReference Include="Microsoft.CodeAnalysis" Version="4.2.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
+    <PackageReference Include="System.Memory" Version="4.5.4" />
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <!-- .Net 6.0 / 7.0 -->
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' Or '$(TargetFramework)' == 'net7.0' ">
+    <PackageReference Include="Microsoft.CodeAnalysis" Version="4.4.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="7.0.0" />
+    <PackageReference Include="System.Memory" Version="4.5.5" />
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -32,8 +45,8 @@
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(Configuration)-$(TURN_OFF_STYLECOP_DEBUG)' == 'Debug-True' " >
-    <EnableNETAnalyzers>false</EnableNETAnalyzers>    
-    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>  
+    <EnableNETAnalyzers>false</EnableNETAnalyzers>
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
     <RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
@@ -47,10 +60,10 @@
     <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
     <RunAnalyzersDuringBuild>True</RunAnalyzersDuringBuild>
   </PropertyGroup>
-  
+
   <PropertyGroup>
     <CodeAnalysisRuleSet Condition=" !($(MSBuildProjectName.EndsWith('.Tests'))) ">$(MSBuildThisFileDirectory)PowerFx.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSet Condition=" $(MSBuildProjectName.EndsWith('.Tests')) ">$(MSBuildThisFileDirectory)PowerFx.Tests.ruleset</CodeAnalysisRuleSet>    
+    <CodeAnalysisRuleSet Condition=" $(MSBuildProjectName.EndsWith('.Tests')) ">$(MSBuildThisFileDirectory)PowerFx.Tests.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <PropertyGroup>

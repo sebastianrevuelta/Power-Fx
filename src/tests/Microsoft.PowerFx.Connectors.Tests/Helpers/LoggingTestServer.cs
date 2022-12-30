@@ -82,7 +82,12 @@ namespace Microsoft.PowerFx.Tests
                     }
                 }
 
+#if NETCOREAPP3_1
                 var content = await httpContent.ReadAsStringAsync();
+#else
+                var content = await httpContent.ReadAsStringAsync(cancellationToken);
+#endif
+
                 if (!string.IsNullOrEmpty(content))
                 {
                     _log.AppendLine($" [body] {content}");

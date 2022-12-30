@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <Configurations>Debug;Release</Configurations>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <StartupObject>Microsoft.PowerFx.Performance.Tests.Program</StartupObject>
+    <LangVersion>9.0</LangVersion>
+    <AssemblyName>Microsoft.PowerFx.Performance.Benchmarks</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.3" />
+    <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.13.3" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="..\..\stylecop.json" Link="stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\libraries\Microsoft.PowerFx.Core\Microsoft.PowerFx.Core.Net7.csproj" />
+    <ProjectReference Include="..\..\libraries\Microsoft.PowerFx.Interpreter\Microsoft.PowerFx.Interpreter.Net7.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -13,6 +13,7 @@ using Microsoft.PowerFx.Core.Utils;
 using Microsoft.PowerFx.Intellisense;
 using Microsoft.PowerFx.LanguageServerProtocol.Protocol;
 using Microsoft.PowerFx.Syntax;
+using Range = Microsoft.PowerFx.LanguageServerProtocol.Protocol.Range;
 
 namespace Microsoft.PowerFx.LanguageServerProtocol
 {

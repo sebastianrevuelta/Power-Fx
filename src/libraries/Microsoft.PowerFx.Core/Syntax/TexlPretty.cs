@@ -923,7 +923,7 @@ namespace Microsoft.PowerFx.Syntax
 
             hasNewline = generatedNodes.Values
                 .SelectMany(x => x)
-                .Any(text => text.Contains("\n"));
+                .Any(text => text.Contains('\n'));
             return generatedNodes;
         }
 

@@ -360,7 +360,7 @@ namespace Microsoft.PowerFx.Functions
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                format = format.Substring(0, match.Index) + array[index++].Replace("\"", string.Empty) + format.Substring(match.Index + match.Length);
+                format = string.Concat(format.Substring(0, match.Index), array[index++].Replace("\"", string.Empty), format.Substring(match.Index + match.Length));
                 match = stringReplaceRegex.Match(format);
             }
 
@@ -439,7 +439,7 @@ namespace Microsoft.PowerFx.Functions
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                format = format.Substring(0, match.Index) + "\u000A" + format.Substring(match.Index + 1);
+                format = $"{format.Substring(0, match.Index)}\u000A{format.Substring(match.Index + 1)}";
                 match = _minutesBeforeSecondsRegex.Match(format);
             }
 
@@ -453,7 +453,7 @@ namespace Microsoft.PowerFx.Functions
                 var minuteAfterHourPosition = _minutesRegex.Match(afterHourFormat);
                 var pos = match.Index + minuteAfterHourPosition.Index;
 
-                format = format.Substring(0, pos) + "\u000A" + format.Substring(pos + 1);
+                format = $"{format.Substring(0, pos)}\u000A{format.Substring(pos + 1)}";
 
                 match = _minutesAfterHoursRegex.Match(format);
             }
@@ -698,7 +698,7 @@ namespace Microsoft.PowerFx.Functions
             {
                 while (idx >= 0)
                 {
-                    var temp = sourceValue.Substring(0, idx) + replacement.Value;
+                    var temp = $"{sourceValue.Substring(0, idx)}{replacement.Value}";
                     sourceValue = sourceValue.Substring(idx + match.Value.Length);
                     var idx2 = sourceValue.IndexOf(match.Value);
                     if (idx2 < 0)
@@ -731,7 +731,7 @@ namespace Microsoft.PowerFx.Functions
 
                 if (idx >= 0 && num == instanceNum)
                 {
-                    sourceValue = sourceValue.Substring(0, idx) + replacement.Value + sourceValue.Substring(idx + match.Value.Length);
+                    sourceValue = $"{sourceValue.Substring(0, idx)}{replacement.Value}{sourceValue.Substring(idx + match.Value.Length)}";
                 }
             }
 

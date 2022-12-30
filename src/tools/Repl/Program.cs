@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Resources;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.PowerFx;
@@ -55,7 +56,18 @@ namespace PowerFxHostSamples
             ResetEngine();
 
             var version = typeof(RecalcEngine).Assembly.GetName().Version.ToString();
-            Console.WriteLine($"Microsoft Power Fx Console Formula REPL, Version {version}");
+
+#if NETCOREAPP3_1
+            var netVersion = ".Net Core 3.1";
+#elif NET6_0
+            var netVersion = ".Net 6.0";
+#elif NET7_0
+            var netVersion = ".Net 7.0";
+#else
+#error Invalid .Net version    
+#endif
+
+            Console.WriteLine($"Microsoft Power Fx Console Formula REPL, Version {version} ({netVersion})");
 
             foreach (Features feature in (Features[])Enum.GetValues(typeof(Features)))
             {

@@ -136,7 +136,7 @@ DateTime(2000,1,1,0,0,0,0)
 >> DateAdd(DateTime(2000,1,1,0,0,0),1234,TimeUnit.Milliseconds)
 DateTime(2000,1,1,0,0,1,234)
 
->> DateAdd(DateTime(2000,1,1,0,0,0),1000.9,TimeUnit.Milliseconds)
+>> DateAdd(DateTime(2000,1,1,0,0,0),1001,TimeUnit.Milliseconds)
 DateTime(2000,1,1,0,0,1,1)
 
 
@@ -199,8 +199,8 @@ DateTime(2000,1,1,0,0,0,0)
 >> DateAdd(DateTime(2000,1,1,0,0,0),1,TimeUnit.Hours)
 DateTime(2000,1,1,1,0,0,0)
 
->> DateAdd(DateTime(2000,1,1,0,0,0),1.9,TimeUnit.Hours)
-DateTime(2000,1,1,1,54,0,0)
+>> DateAdd(DateTime(2000,1,1,0,0,0),1.947187,TimeUnit.Hours)
+DateTime(2000,1,1,1,56,49,873)
 
 
 // ******************************** DAYS UNIT PARAMETER ********************************
@@ -220,8 +220,8 @@ DateTime(2000,1,1,0,0,0,0)
 >> DateAdd(DateTime(2000,1,1,0,0,0),1,TimeUnit.Days)
 DateTime(2000,1,2,0,0,0,0)
 
->> DateAdd(DateTime(2000,1,1,0,0,0),1.9,TimeUnit.Days)
-DateTime(2000,1,2,21,36,0,0)
+>> DateAdd(DateTime(2000,1,1,0,0,0),1.9017,TimeUnit.Days)
+DateTime(2000,1,2,21,38,26,880)
 
 // ******************************** MONTHS UNIT PARAMETER ********************************
 
@@ -323,8 +323,8 @@ DateTime(2000,1,1,0,0,0,0)
 >> DateAdd(DateTime(2000,1,1,0,0,0),1)
 DateTime(2000,1,2,0,0,0,0)
 
->> DateAdd(DateTime(2000,1,1,0,0,0),1.9)
-DateTime(2000,1,2,21,36,0,0)
+>> DateAdd(DateTime(2000,1,1,0,0,0),1.9017)
+DateTime(2000,1,2,21,38,26,880)
 
 // ******************************** NULL AND ERROR PARAMETERS ********************************
 

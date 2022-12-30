@@ -2,9 +2,7 @@
 // Licensed under the MIT license.
 
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using Microsoft.PowerFx.Core;
 using Microsoft.PowerFx.Core.Functions;
 using Microsoft.PowerFx.Core.Texl;
 using Microsoft.PowerFx.Core.Types.Enums;
@@ -14,7 +12,7 @@ using Xunit;
 namespace Microsoft.PowerFx.Tests.IntellisenseTests
 {
     public class SuggestTests : IntellisenseTestBase
-    {      
+    {
         /// <summary>
         /// This method does the same as <see cref="Suggest"/>, but filters the suggestions by their text so
         /// that they can be more easily compared.
@@ -44,7 +42,7 @@ namespace Microsoft.PowerFx.Tests.IntellisenseTests
             var intellisense = Suggest(expression, config, context);
             return intellisense.Suggestions.Select(suggestion => suggestion.DisplayText.Text).ToArray();
         }
-        
+
         internal static PowerFxConfig Default => PowerFxConfig.BuildWithEnumStore(null, new EnumStoreBuilder().WithDefaultEnums());
 
         internal static PowerFxConfig Default_DisableRowScopeDisambiguationSyntax => PowerFxConfig.BuildWithEnumStore(null, new EnumStoreBuilder().WithDefaultEnums(), Features.DisableRowScopeDisambiguationSyntax);
@@ -53,7 +51,7 @@ namespace Microsoft.PowerFx.Tests.IntellisenseTests
         private PowerFxConfig EmptyEverything => PowerFxConfig.BuildWithEnumStore(null, new EnumStoreBuilder(), new TexlFunction[0]);
 
         // No extra enums, but standard functions (which will include some enums).
-        private PowerFxConfig MinimalEnums => PowerFxConfig.BuildWithEnumStore(null, new EnumStoreBuilder().WithRequiredEnums(BuiltinFunctionsCore.BuiltinFunctionsLibrary));        
+        private PowerFxConfig MinimalEnums => PowerFxConfig.BuildWithEnumStore(null, new EnumStoreBuilder().WithRequiredEnums(BuiltinFunctionsCore.BuiltinFunctionsLibrary));
 
         /// <summary>
         /// Compares expected suggestions with suggestions made by PFx Intellisense for a given
@@ -124,11 +122,9 @@ namespace Microsoft.PowerFx.Tests.IntellisenseTests
         // BoolLitNodeSuggestionHandler
         [InlineData("true|", "true")]
         [InlineData("tru|e", "true", "Trunc")]
-        [InlineData("false |", "-", "&", "&&", "*", "/", "^", "||", "+", "<", "<=", "<>", "=", ">", ">=", "And", "As", "exactin", "in", "Or")]
 
         // BinaryOpNodeSuggestionHandler
         [InlineData("1 +|", "+")]
-        [InlineData("1 |+", "-", "&", "&&", "*", "/", "^", "||", "+", "<", "<=", "<>", "=", ">", ">=", "And", "As", "exactin", "in", "Or")]
         [InlineData("\"1\" in|", "in", "exactin")]
         [InlineData("true &|", "&", "&&")]
 
@@ -143,7 +139,6 @@ namespace Microsoft.PowerFx.Tests.IntellisenseTests
         [InlineData("$\"This is a randomly generated number: {rand|", "Rand", "RandBetween")]
 
         // StrNumLitNodeSuggestionHandler
-        [InlineData("1 |", "-", "&", "&&", "*", "/", "^", "||", "+", "<", "<=", "<>", "=", ">", ">=", "And", "As", "exactin", "in", "Or")]
         [InlineData("1|0")]
         [InlineData("\"Clock|\"")]
 
@@ -191,6 +186,24 @@ namespace Microsoft.PowerFx.Tests.IntellisenseTests
             Assert.Equal(expectedSuggestions, actualSuggestions);
         }
 
+        [Theory]
+        [InlineData("1 |+", "-", "&", "&&", "*", "/", "^", "||", "+", "<", "<=", "<>", "=", ">", ">=", "And", "As", "exactin", "in", "Or")]
+        [InlineData("1 |", "-", "&", "&&", "*", "/", "^", "||", "+", "<", "<=", "<>", "=", ">", ">=", "And", "As", "exactin", "in", "Or")]
+        [InlineData("false |", "-", "&", "&&", "*", "/", "^", "||", "+", "<", "<=", "<>", "=", ">", ">=", "And", "As", "exactin", "in", "Or")]
+        public void TestSuggestUnorderedResult(string expression, params string[] expectedSuggestions)
+        {
+            // Note that the expression string needs to have balanced quotes or we hit a bug in NUnit running the tests:
+            //   https://github.com/nunit/nunit3-vs-adapter/issues/691
+            var config = Default;
+            var actualSuggestions = SuggestStrings(expression, config);
+            Assert.Equal(expectedSuggestions.OrderBy(x => x), actualSuggestions.OrderBy(x => x));
+
+            // With adjusted config 
+            AdjustConfig(config);
+            actualSuggestions = SuggestStrings(expression, config);
+            Assert.Equal(expectedSuggestions.OrderBy(x => x), actualSuggestions.OrderBy(x => x));
+        }
+
         /// <summary>
         /// In cases for Intellisense with an empty enum store and no function list.
         /// </summary>
@@ -235,7 +248,7 @@ namespace Microsoft.PowerFx.Tests.IntellisenseTests
         // Add an extra (empy) symbol table into the config and ensure we get the same results. 
         private void AdjustConfig(PowerFxConfig config)
         {
-            config.SymbolTable = new SymbolTable 
+            config.SymbolTable = new SymbolTable
             {
 #pragma warning disable CS0618 // Type or member is obsolete
                 Parent = config.SymbolTable,
@@ -283,7 +296,6 @@ namespace Microsoft.PowerFx.Tests.IntellisenseTests
         [InlineData("Test|", "![Test1: s, Test2: n, Test3: h]", "Test1", "Test2", "Test3")]
         [InlineData("RecordName[|", "![RecordName: ![StringName: s, NumberName: n]]", "@NumberName", "@StringName")]
         [InlineData("RecordName[|", "![RecordName: ![]]")]
-        [InlineData("Test |", "![Test: s]", "-", "&", "&&", "*", "/", "^", "||", "+", "<", "<=", "<>", "=", ">", ">=", "And", "As", "exactin", "in", "Or")]
         [InlineData("Filter(Table, Table[|", "![Table: *[Column: s]]", "@Column")]
 
         // ErrorNodeSuggestionHandler
@@ -300,6 +312,22 @@ namespace Microsoft.PowerFx.Tests.IntellisenseTests
             AdjustConfig(config);
             actualSuggestions = SuggestStrings(expression, config, context);
             Assert.Equal(expectedSuggestions, actualSuggestions);
+        }
+
+        [Theory]
+        [InlineData("Test |", "![Test: s]", "-", "&", "&&", "*", "/", "^", "||", "+", "<", "<=", "<>", "=", ">", ">=", "And", "As", "exactin", "in", "Or")]
+        public void TestSuggestWithContextUnordered(string expression, string context, params string[] expectedSuggestions)
+        {
+            Assert.NotNull(context);
+
+            var config = Default;
+            var actualSuggestions = SuggestStrings(expression, config, context);
+            Assert.Equal(expectedSuggestions.OrderBy(x => x), actualSuggestions.OrderBy(x => x));
+
+            // With adjusted config 
+            AdjustConfig(config);
+            actualSuggestions = SuggestStrings(expression, config, context);
+            Assert.Equal(expectedSuggestions.OrderBy(x => x), actualSuggestions.OrderBy(x => x));
         }
 
         [Theory]
@@ -336,7 +364,7 @@ namespace Microsoft.PowerFx.Tests.IntellisenseTests
                 new TexlFunction[] { BuiltinFunctionsCore.EndsWith, BuiltinFunctionsCore.Filter, BuiltinFunctionsCore.Table });
             var actualSuggestions = SuggestStrings(expression, config, lazyInstance);
             Assert.Equal(expectedSuggestions, actualSuggestions);
-            
+
             // Intellisense requires iterating the field names for some operations
             Assert.Equal(requiresExpansion, lazyInstance.EnumerableIterated);
 
@@ -397,7 +425,7 @@ namespace Microsoft.PowerFx.Tests.IntellisenseTests
             public override int GetHashCode()
             {
                 return 1;
-            }   
+            }
         }
     }
 }

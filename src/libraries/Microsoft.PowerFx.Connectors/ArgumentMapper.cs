@@ -61,7 +61,7 @@ namespace Microsoft.PowerFx.Connectors
             var requiredParams = new List<OpenApiParameter>();
             var optionalParams = new List<OpenApiParameter>();
             var requiredBodyParams = new List<KeyValuePair<string, OpenApiSchema>>();
-            var optionalBodyParams = new List<KeyValuePair<string, OpenApiSchema>>();            
+            var optionalBodyParams = new List<KeyValuePair<string, OpenApiSchema>>();
 
             foreach (var param in OpenApiParameters)
             {
@@ -69,7 +69,7 @@ namespace Microsoft.PowerFx.Connectors
                 var paramType = param.Schema.ToFormulaType();
 
                 HttpFunctionInvoker.VerifyCanHandle(param.In);
-                
+
                 if (param.Schema.TryGetDefaultValue(out var defaultValue))
                 {
                     _parameterDefaultValues[name] = Tuple.Create(defaultValue, paramType._type);
@@ -83,7 +83,7 @@ namespace Microsoft.PowerFx.Connectors
                     if (name == ConnectionIdParamName || param.HasDefaultValue())
                     {
                         continue;
-                    }                    
+                    }
                 }
 
                 if (param.Required)
@@ -144,6 +144,15 @@ namespace Microsoft.PowerFx.Connectors
                             OpenApiBodyParameters.Add(bodyParameter);
                             (requestBody.Required ? requiredParams : optionalParams).Add(bodyParameter);
                         }
+                    }
+                    else
+                    {
+                        // If the content can't be determined, we will expect a string in the body
+                        ContentType = OpenApiExtensions.ContentType_TextPlain;
+                        bodyParameter = new OpenApiParameter() { Schema = new OpenApiSchema() { Type = "string" }, Name = bodyName, Description = "Body", Required = requestBody.Required };
+
+                        OpenApiBodyParameters.Add(bodyParameter);
+                        (requestBody.Required ? requiredParams : optionalParams).Add(bodyParameter);
                     }
                 }
                 else

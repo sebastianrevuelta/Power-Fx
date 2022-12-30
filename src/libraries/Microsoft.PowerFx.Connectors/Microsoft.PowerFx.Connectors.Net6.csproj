@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="17.0">
+  <PropertyGroup>
+    <Version Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)</Version>
+    <Version Condition=" '$(ReleasePackageVersion)' != '' ">$(ReleasePackageVersion)</Version>
+    <PackageVersion Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)-net6</PackageVersion>
+    <PackageVersion Condition=" '$(ReleasePackageVersion)' != '' ">$(ReleasePackageVersion)</PackageVersion>
+    <Configurations>Debug;Release</Configurations>
+  </PropertyGroup>
+
+  <!-- Nuget Properties -->
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <PackageId>Microsoft.PowerFx.Connectors</PackageId>
+    <Title>Microsoft Power Fx Connector Support</Title>
+    <Description>Connectors</Description>
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+    <AssemblyName>Microsoft.PowerFx.Connectors</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="..\..\stylecop.json" Link="stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.OpenApi.Readers" Version="1.4.5" />
+    <PackageReference Include="System.Text.Json" Version="7.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.PowerFx.Core\Microsoft.PowerFx.Core.Net6.csproj" />
+    <ProjectReference Include="..\Microsoft.PowerFx.Interpreter\Microsoft.PowerFx.Interpreter.Net6.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+</Project>

@@ -287,7 +287,17 @@ namespace Microsoft.PowerFx.Interpreter.Tests
             Assert.ThrowsAsync<InvalidOperationException>(() => engine.EvalAsync("2,0", CancellationToken.None, options: us_ParserOptions, runtimeConfig: us_Symbols));
             Assert.Equal(2.0, engine.EvalAsync("2,0", CancellationToken.None, options: fr_ParserOptions, runtimeConfig: fr_Symbols).Result.ToObject());
 
-            Assert.Equal("2/01", engine.EvalAsync("Text(2,01)", CancellationToken.None, options: fr_ParserOptions, runtimeConfig: fa_Symbols).Result.ToObject());
+#if NETCOREAPP3_1
+            var expectedValue = "2/01";
+#elif NET6_0
+            var expectedValue = "2٫01";
+#elif NET7_0
+            var expectedValue = "2٫01";
+#else
+#error Invalid .Net version    
+#endif
+
+            Assert.Equal(expectedValue, engine.EvalAsync("Text(2,01)", CancellationToken.None, options: fr_ParserOptions, runtimeConfig: fa_Symbols).Result.ToObject());
         }
 
         // Verify that a single IR tree can be re-executed across multiple cultures.

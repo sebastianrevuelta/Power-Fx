@@ -1,0 +1,126 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{4269F3C3-6B42-419B-B64A-3E6DC0F1574A}"
+	ProjectSection(SolutionItems) = preProject
+		libraries\Directory.Build.props = libraries\Directory.Build.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{AD743B78-D61F-4FBF-B620-FA83CE599A50}"
+	ProjectSection(SolutionItems) = preProject
+		tests\Directory.Build.props = tests\Directory.Build.props
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.PowerFx.Core.Net6", "libraries\Microsoft.PowerFx.Core\Microsoft.PowerFx.Core.Net6.csproj", "{C4AE1B00-36BB-4D5F-8CC9-E51979BE2830}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.PowerFx.Interpreter.Net6", "libraries\Microsoft.PowerFx.Interpreter\Microsoft.PowerFx.Interpreter.Net6.csproj", "{E59979B0-F267-46DC-B628-941D31C3CB7C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.PowerFx.LanguageServerProtocol.Net6", "libraries\Microsoft.PowerFx.LanguageServerProtocol\Microsoft.PowerFx.LanguageServerProtocol.Net6.csproj", "{AC286BA6-D439-4EDA-A468-2B18DB53E163}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.PowerFx.Core.Net6.Tests", "tests\Microsoft.PowerFx.Core.Tests\Microsoft.PowerFx.Core.Net6.Tests.csproj", "{085B4B1A-1F94-4A9C-AEBF-47E0E0B0A983}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.PowerFx.Interpreter.Net6.Tests", "tests\Microsoft.PowerFx.Interpreter.Tests\Microsoft.PowerFx.Interpreter.Net6.Tests.csproj", "{70C7007C-3288-48F1-A1F0-02F5CC837D4E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1BF2F760-4DBD-450B-ADED-81548000432D}"
+	ProjectSection(SolutionItems) = preProject
+		..\.editorconfig = ..\.editorconfig
+		..\.gitignore = ..\.gitignore
+		CodeCoverage.runsettings = CodeCoverage.runsettings
+		Directory.Build.Props = Directory.Build.Props
+		nuget.config = nuget.config
+		PowerFx.Off.ruleset = PowerFx.Off.ruleset
+		PowerFx.ruleset = PowerFx.ruleset
+		PowerFx.Tests.ruleset = PowerFx.Tests.ruleset
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.PowerFx.Transport.Attributes.Net6", "libraries\Microsoft.PowerFx.Transport.Attributes\Microsoft.PowerFx.Transport.Attributes.Net6.csproj", "{ED98A690-863A-443C-9DBB-8F0F5BCACE2B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.PowerFx.Connectors.Net6", "libraries\Microsoft.PowerFx.Connectors\Microsoft.PowerFx.Connectors.Net6.csproj", "{CEE27893-EE7D-4832-858F-70AF6BA325E3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.PowerFx.Connectors.Net6.Tests", "tests\Microsoft.PowerFx.Connectors.Tests\Microsoft.PowerFx.Connectors.Net6.Tests.csproj", "{81586372-FE63-4F6D-923D-B47E94487676}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.PowerFx.Performance.Net6.Tests", "tests\Microsoft.PowerFx.Performance.Tests\Microsoft.PowerFx.Performance.Net6.Tests.csproj", "{5A2EEF08-7A8A-43E6-B498-EFB32B98CC5A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{5EEC2873-35B5-4364-A2A0-97AAD7BF960D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repl.Net6", "tools\Repl\Repl.Net6.csproj", "{142854D7-409C-4C87-A5B8-39B51477F5B2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuspecs", "nuspecs", "{20CD11E9-DB86-437C-AFFF-A9E38697248D}"
+	ProjectSection(SolutionItems) = preProject
+		nuspecs\Microsoft.PowerFx.Connectors.nuspec = nuspecs\Microsoft.PowerFx.Connectors.nuspec
+		nuspecs\Microsoft.PowerFx.Core.nuspec = nuspecs\Microsoft.PowerFx.Core.nuspec
+		nuspecs\Microsoft.PowerFx.Core.Tests.nuspec = nuspecs\Microsoft.PowerFx.Core.Tests.nuspec
+		nuspecs\Microsoft.PowerFx.Interpreter.nuspec = nuspecs\Microsoft.PowerFx.Interpreter.nuspec
+		nuspecs\Microsoft.PowerFx.LanguageServerProtocol.nuspec = nuspecs\Microsoft.PowerFx.LanguageServerProtocol.nuspec
+		nuspecs\Microsoft.PowerFx.Transport.Attributes.nuspec = nuspecs\Microsoft.PowerFx.Transport.Attributes.nuspec
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C4AE1B00-36BB-4D5F-8CC9-E51979BE2830}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4AE1B00-36BB-4D5F-8CC9-E51979BE2830}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4AE1B00-36BB-4D5F-8CC9-E51979BE2830}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4AE1B00-36BB-4D5F-8CC9-E51979BE2830}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E59979B0-F267-46DC-B628-941D31C3CB7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E59979B0-F267-46DC-B628-941D31C3CB7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E59979B0-F267-46DC-B628-941D31C3CB7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E59979B0-F267-46DC-B628-941D31C3CB7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC286BA6-D439-4EDA-A468-2B18DB53E163}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC286BA6-D439-4EDA-A468-2B18DB53E163}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC286BA6-D439-4EDA-A468-2B18DB53E163}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC286BA6-D439-4EDA-A468-2B18DB53E163}.Release|Any CPU.Build.0 = Release|Any CPU
+		{085B4B1A-1F94-4A9C-AEBF-47E0E0B0A983}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{085B4B1A-1F94-4A9C-AEBF-47E0E0B0A983}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{085B4B1A-1F94-4A9C-AEBF-47E0E0B0A983}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{085B4B1A-1F94-4A9C-AEBF-47E0E0B0A983}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70C7007C-3288-48F1-A1F0-02F5CC837D4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70C7007C-3288-48F1-A1F0-02F5CC837D4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70C7007C-3288-48F1-A1F0-02F5CC837D4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70C7007C-3288-48F1-A1F0-02F5CC837D4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED98A690-863A-443C-9DBB-8F0F5BCACE2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED98A690-863A-443C-9DBB-8F0F5BCACE2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED98A690-863A-443C-9DBB-8F0F5BCACE2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED98A690-863A-443C-9DBB-8F0F5BCACE2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEE27893-EE7D-4832-858F-70AF6BA325E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEE27893-EE7D-4832-858F-70AF6BA325E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEE27893-EE7D-4832-858F-70AF6BA325E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEE27893-EE7D-4832-858F-70AF6BA325E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81586372-FE63-4F6D-923D-B47E94487676}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81586372-FE63-4F6D-923D-B47E94487676}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81586372-FE63-4F6D-923D-B47E94487676}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81586372-FE63-4F6D-923D-B47E94487676}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A2EEF08-7A8A-43E6-B498-EFB32B98CC5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A2EEF08-7A8A-43E6-B498-EFB32B98CC5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A2EEF08-7A8A-43E6-B498-EFB32B98CC5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A2EEF08-7A8A-43E6-B498-EFB32B98CC5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{142854D7-409C-4C87-A5B8-39B51477F5B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{142854D7-409C-4C87-A5B8-39B51477F5B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{142854D7-409C-4C87-A5B8-39B51477F5B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{142854D7-409C-4C87-A5B8-39B51477F5B2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C4AE1B00-36BB-4D5F-8CC9-E51979BE2830} = {4269F3C3-6B42-419B-B64A-3E6DC0F1574A}
+		{E59979B0-F267-46DC-B628-941D31C3CB7C} = {4269F3C3-6B42-419B-B64A-3E6DC0F1574A}
+		{AC286BA6-D439-4EDA-A468-2B18DB53E163} = {4269F3C3-6B42-419B-B64A-3E6DC0F1574A}
+		{085B4B1A-1F94-4A9C-AEBF-47E0E0B0A983} = {AD743B78-D61F-4FBF-B620-FA83CE599A50}
+		{70C7007C-3288-48F1-A1F0-02F5CC837D4E} = {AD743B78-D61F-4FBF-B620-FA83CE599A50}
+		{ED98A690-863A-443C-9DBB-8F0F5BCACE2B} = {4269F3C3-6B42-419B-B64A-3E6DC0F1574A}
+		{CEE27893-EE7D-4832-858F-70AF6BA325E3} = {4269F3C3-6B42-419B-B64A-3E6DC0F1574A}
+		{81586372-FE63-4F6D-923D-B47E94487676} = {AD743B78-D61F-4FBF-B620-FA83CE599A50}
+		{5A2EEF08-7A8A-43E6-B498-EFB32B98CC5A} = {AD743B78-D61F-4FBF-B620-FA83CE599A50}
+		{142854D7-409C-4C87-A5B8-39B51477F5B2} = {5EEC2873-35B5-4364-A2A0-97AAD7BF960D}
+		{20CD11E9-DB86-437C-AFFF-A9E38697248D} = {1BF2F760-4DBD-450B-ADED-81548000432D}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {30372F91-B206-4351-A621-F0E2773C337B}
+	EndGlobalSection
+EndGlobal

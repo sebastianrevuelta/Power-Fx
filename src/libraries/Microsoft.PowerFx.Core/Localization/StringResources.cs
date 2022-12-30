@@ -7,8 +7,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Resources;
-using System.Text.RegularExpressions;
-using System.Xml.Linq;
 using Microsoft.PowerFx.Core.Utils;
 
 namespace Microsoft.PowerFx.Core.Localization
@@ -205,7 +203,16 @@ namespace Microsoft.PowerFx.Core.Localization
         {
             // Get methods on this are threadsafe, as long as we never call ReleaseAll()
             // This wrapper ensures that we don't accidentally do that
+
+#if NETSTANDARD2_0
             private readonly ResourceManager _resourceManager = new ResourceManager("Microsoft.PowerFx.Core.strings.PowerFxResources", typeof(StringResources).Assembly);
+#elif NET6_0
+            private readonly ResourceManager _resourceManager = new ResourceManager("Microsoft.PowerFx.Core.Net6.strings.PowerFxResources", typeof(StringResources).Assembly);
+#elif NET7_0
+            private readonly ResourceManager _resourceManager = new ResourceManager("Microsoft.PowerFx.Core.Net7.strings.PowerFxResources", typeof(StringResources).Assembly);
+#else
+#error Invalid .Net version    
+#endif            
 
             public string GetLocaleResource(string resourceKey, string locale)
             {

@@ -223,8 +223,10 @@ DateTime(2001,2,16,0,0,0,0)
 >> Date(2001, 2, 14) - 10
 DateTime(2001,2,4,0,0,0,0)
 
->> Date(2001, 2, 14) + 2.3
-DateTime(2001,2,16,7,12,0,0)
+// Note: If we use 2.3 instead, we will observe a difference between .Net 6 and .Net 7
+// With .Net 6, C# "new DateTime(2001, 2, 14, 0, 0, 0).AddDays(2.3)" returns "2/16/2001 7:12:00 AM" while we get "2/16/2001 7:11:59 AM" with .Net 7.0 due to internal rounding changes
+>> Date(2001, 2, 14) + 2.301
+DateTime(2001,2,16,7,13,26,400)
 
 >> Date(2001, 2, 14) - 2.3
 DateTime(2001,2,11,16,48,0,0)

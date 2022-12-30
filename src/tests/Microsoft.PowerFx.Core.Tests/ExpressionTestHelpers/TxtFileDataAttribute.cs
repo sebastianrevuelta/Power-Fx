@@ -81,7 +81,7 @@ namespace Microsoft.PowerFx.Core.Tests
 
         internal static string GetDefaultTestDir(string filePath)
         { 
-            var executable = new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath;
+            var executable = new Uri(Assembly.GetExecutingAssembly().Location).LocalPath;
             var curDir = Path.GetFullPath(Path.GetDirectoryName(executable));
             var testDir = Path.Combine(curDir, filePath);
             return testDir;

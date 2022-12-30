@@ -12,7 +12,16 @@ namespace Microsoft.PowerFx.Tests
     {
         public static Stream GetStream(string name)
         {
+#if NETCOREAPP3_1
             var assemblyNamespace = "Microsoft.PowerFx.Connectors.Tests";
+#elif NET6_0
+            var assemblyNamespace = "Microsoft.PowerFx.Connectors.Net6.Tests";
+#elif NET7_0
+            var assemblyNamespace = "Microsoft.PowerFx.Connectors.Net7.Tests";
+#else
+#error Invalid .Net version    
+#endif
+
             var fullName = assemblyNamespace + "." + name.Replace('\\', '.');
 
             var assembly = typeof(BasicRestTests).Assembly;

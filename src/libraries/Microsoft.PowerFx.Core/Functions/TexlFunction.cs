@@ -392,7 +392,11 @@ namespace Microsoft.PowerFx.Core.Functions
                 return name.ToLowerInvariant();
             }
 
+#if NETSTANDARD2_0
             return char.ToLowerInvariant(name[0]).ToString() + name.Substring(1) + suffix + (IsAsync && !suppressAsync ? "Async" : string.Empty);
+#else
+            return string.Concat(char.ToLowerInvariant(name[0]).ToString(), name.AsSpan(1), suffix, IsAsync && !suppressAsync ? "Async" : string.Empty);
+#endif
         }
 
         #region CheckInvocation Replacement Project
@@ -427,7 +431,7 @@ namespace Microsoft.PowerFx.Core.Functions
         public virtual void CheckSemantics(TexlBinding binding, TexlNode[] args, DType[] argTypes, IErrorContainer errors)
         {
         }
-        #endregion
+#endregion
 
         public virtual bool CheckForDynamicReturnType(TexlBinding binding, TexlNode[] args)
         {
@@ -930,7 +934,7 @@ namespace Microsoft.PowerFx.Core.Functions
             return false;
         }
 
-        #region Internal functionality
+#region Internal functionality
 
         public virtual bool SupportsMetadataTypeArg => false;
 
@@ -1368,7 +1372,7 @@ namespace Microsoft.PowerFx.Core.Functions
             return fValid;
         }
 
-        #endregion
+#endregion
 
         internal TransportSchemas.FunctionInfo Info(string locale)
         {
