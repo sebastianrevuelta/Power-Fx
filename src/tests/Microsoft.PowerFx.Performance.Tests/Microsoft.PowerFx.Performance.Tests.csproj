@@ -9,6 +9,7 @@
     <StartupObject>Microsoft.PowerFx.Performance.Tests.Program</StartupObject>
     <LangVersion>9.0</LangVersion>
     <AssemblyName>Microsoft.PowerFx.Performance.Tests</AssemblyName>
+    <SignAssembly>False</SignAssembly>
   </PropertyGroup>
 
   <ItemGroup>
