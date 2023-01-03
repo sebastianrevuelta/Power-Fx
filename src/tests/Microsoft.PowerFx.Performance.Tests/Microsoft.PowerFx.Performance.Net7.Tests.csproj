@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>    
+    <TargetFrameworks>net70</TargetFrameworks>
     <Configurations>Debug;Release</Configurations>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <StartupObject>Microsoft.PowerFx.Performance.Tests.Program</StartupObject>

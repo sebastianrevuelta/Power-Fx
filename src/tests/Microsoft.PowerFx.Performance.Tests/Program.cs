@@ -21,7 +21,7 @@ namespace Microsoft.PowerFx.Performance.Tests
                      Notice that version 3.1.426 is obtained with "dotnet --list-sdks"
              */
 
-            var summary = BenchmarkRunner.Run<PerformanceTest1>();
+            _ = BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
         }
     }
 }
