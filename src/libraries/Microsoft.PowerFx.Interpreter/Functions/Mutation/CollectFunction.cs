@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using System.Collections.Generic;
+using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -16,6 +17,7 @@ using Microsoft.PowerFx.Core.Utils;
 using Microsoft.PowerFx.Functions;
 using Microsoft.PowerFx.Syntax;
 using Microsoft.PowerFx.Types;
+using static Microsoft.PowerFx.Core.Localization.TexlStrings;
 using static Microsoft.PowerFx.Syntax.PrettyPrintVisitor;
 
 namespace Microsoft.PowerFx.Interpreter
@@ -48,15 +50,22 @@ namespace Microsoft.PowerFx.Interpreter
             return argNum >= 1;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CollectFunction"/> class.
+        /// To be consumed by ClearCollect function.
+        /// </summary>
+        protected CollectFunction(string name, TexlStrings.StringGetter description)
+            : base(name, description, FunctionCategories.Behavior, DType.EmptyRecord, 0, 2, 2, DType.EmptyTable, DType.EmptyRecord)
+        {
+        }
+
         public CollectFunction()
         : base(
-              DPath.Root,
               "Collect",
-              "Collect",
-              TexlStrings.AboutSet,
+              TexlStrings.AboutCollect,
               FunctionCategories.Behavior,
-              DType.EmptyTable,
-              0, // no lambdas
+              DType.EmptyRecord,
+              0,
               2,
               2, // Not handling multiple arguments for now
               DType.EmptyTable,
@@ -64,22 +73,9 @@ namespace Microsoft.PowerFx.Interpreter
         {
         }
 
-        public override IEnumerable<TexlStrings.StringGetter[]> GetSignatures()
+        public override IEnumerable<StringGetter[]> GetSignatures()
         {
-            // PR REVIEWERS: These are wrong signature texts.
-            yield return new[] { TexlStrings.WithArg1, TexlStrings.WithArg2 };
-            yield return new[] { TexlStrings.WithArg1, TexlStrings.WithArg2, TexlStrings.WithArg2 };
-            yield return new[] { TexlStrings.WithArg1, TexlStrings.WithArg2, TexlStrings.WithArg2, TexlStrings.WithArg2 };
-        }
-
-        public override IEnumerable<TexlStrings.StringGetter[]> GetSignatures(int arity)
-        {
-            if (arity > 2)
-            {
-                return GetGenericSignatures(arity, TexlStrings.WithArg1, TexlStrings.WithArg2);
-            }
-
-            return base.GetSignatures(arity);
+            yield return new[] { TexlStrings.CollectDataSourceArg, TexlStrings.CollectRecordArg };
         }
 
         public virtual DType GetCollectedType(DType argType)
@@ -117,9 +113,9 @@ namespace Microsoft.PowerFx.Interpreter
                 }
 
                 // Promote the arg type to a table to facilitate unioning.
-                if (!argType.IsTable)
+                if (!argType.IsRecord)
                 {
-                    argType = argType.ToTable();
+                    argType = argType.ToRecord();
                 }
 
                 if (!itemType.IsValid)
@@ -144,8 +140,8 @@ namespace Microsoft.PowerFx.Interpreter
                 }
             }
 
-            Contracts.Assert(!itemType.IsValid || itemType.IsTable);
-            collectedType = itemType.IsValid ? itemType : DType.EmptyTable;
+            Contracts.Assert(!itemType.IsValid || itemType.IsRecord);
+            collectedType = itemType.IsValid ? itemType : DType.EmptyRecord;
             return fValid;
         }
 
@@ -160,11 +156,6 @@ namespace Microsoft.PowerFx.Interpreter
             Contracts.Assert(MinArity <= args.Length && args.Length <= MaxArity);
 
             var fValid = base.CheckTypes(args, argTypes, errors, out returnType, out nodeToCoercedTypeMap);
-            Contracts.Assert(returnType.IsTable);
-
-            // TASK: 75145: SPEC: what if the types align for arg0, but arg0 is not a name node? For example:
-            //      Collect( Filter(T,A<2), {A:10} )
-            // The current behavior is that Collect has no side effects for transient tables/collections.
 
             // Need a collection for the 1st arg
             DType collectionType = argTypes[0];
@@ -177,17 +168,20 @@ namespace Microsoft.PowerFx.Interpreter
             // Get the unified collected type on the RHS. This will generate appropriate
             // document errors for invalid arguments such as unsupported aggregate types.
             fValid &= TryGetUnifiedCollectedType(args, argTypes, errors, out DType collectedType);
-            Contracts.Assert(collectedType.IsTable);
+            Contracts.Assert(collectedType.IsRecord);
 
-            // The item type must be compatible with the collection schema.
-            var fError = false;
-            returnType = DType.Union(ref fError, collectionType, collectedType, useLegacyDateTimeAccepts: true);
-            if (fError)
+            if (fValid)
             {
-                fValid = false;
-                if (!SetErrorForMismatchedColumns(collectionType, collectedType, args[1], errors))
+                // The item type must be compatible with the collection schema.
+                var fError = false;
+                returnType = DType.Union(ref fError, collectionType.ToRecord(), collectedType, useLegacyDateTimeAccepts: true);
+                if (fError)
                 {
-                    errors.EnsureError(DocumentErrorSeverity.Severe, args[0], TexlStrings.ErrNeedValidVariableName_Arg, Name);
+                    fValid = false;
+                    if (!SetErrorForMismatchedColumns(collectionType, collectedType, args[1], errors))
+                    {
+                        errors.EnsureError(DocumentErrorSeverity.Severe, args[0], TexlStrings.ErrNeedValidVariableName_Arg, Name);
+                    }
                 }
             }
 
@@ -210,7 +204,7 @@ namespace Microsoft.PowerFx.Interpreter
             return Arg0RequiresAsync(callNode, binding);
         }
 
-        public async Task<FormulaValue> InvokeAsync(FormulaValue[] args, CancellationToken cancellationToken)
+        public virtual async Task<FormulaValue> InvokeAsync(FormulaValue[] args, CancellationToken cancellationToken)
         {
             var arg0 = args[0];
             var arg1 = args[1];

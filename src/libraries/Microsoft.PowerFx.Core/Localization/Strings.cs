@@ -464,6 +464,17 @@ namespace Microsoft.PowerFx.Core.Localization
         public static StringGetter PatchBaseRecordArg = (b) => StringResources.Get("PatchBaseRecordArg", b);
         public static StringGetter PatchChangeRecordsArg = (b) => StringResources.Get("PatchChangeRecordsArg", b);
 
+        public static StringGetter AboutCollect = (b) => StringResources.Get("AboutCollect", b);
+        public static StringGetter CollectDataSourceArg = (b) => StringResources.Get("CollectDataSourceArg", b);
+        public static StringGetter CollectRecordArg = (b) => StringResources.Get("CollectRecordArg", b);
+
+        public static StringGetter AboutClearCollect = (b) => StringResources.Get("AboutClearCollect", b);
+        public static StringGetter ClearCollectDataSourceArg = (b) => StringResources.Get("ClearCollectDataSourceArg", b);
+        public static StringGetter ClearCollectRecordArg = (b) => StringResources.Get("ClearCollectRecordArg", b);
+
+        public static StringGetter AboutClear = (b) => StringResources.Get("AboutClear", b);
+        public static StringGetter ClearCollectionArg = (b) => StringResources.Get("ClearCollectionArg", b);
+
         public static StringGetter AboutRemove = (b) => StringResources.Get("AboutRemove", b);
         public static StringGetter RemoveDataSourceArg = (b) => StringResources.Get("RemoveDataSourceArg", b);
         public static StringGetter RemoveRecordsArg = (b) => StringResources.Get("RemoveRecordsArg", b);

@@ -3,6 +3,7 @@
 
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis;
 using Microsoft.PowerFx.Core.Tests;
 using Microsoft.PowerFx.Interpreter.Tests.XUnitExtensions;
 using Microsoft.PowerFx.Types;
@@ -68,6 +69,9 @@ namespace Microsoft.PowerFx.Interpreter.Tests
         // Whereas these are fed into a repl and each file maintains state. 
         [Theory]
         [InlineData("Simple1.txt")]
+        [InlineData("Collect.txt")]
+        [InlineData("Clear.txt")]
+        [InlineData("ClearCollect.txt")]
         public void RunMutationTests(string file)
         {
             // var path = @"D:\dev\pa2\Power-Fx\src\tests\Microsoft.PowerFx.Interpreter.Tests\MutationScripts\Simple1.txt";
