@@ -20,7 +20,15 @@ namespace Microsoft.PowerFx.Performance.Tests
     [MeanColumn]
     [Q3Column]
     [MaxColumn]
+#if NETCOREAPP3_1
     [SimpleJob(runtimeMoniker: RuntimeMoniker.NetCoreApp31)]
+#elif NET6_0
+    [SimpleJob(runtimeMoniker: RuntimeMoniker.Net60)]
+#elif NET7_0
+    [SimpleJob(runtimeMoniker: RuntimeMoniker.Net70)]
+#else
+#error Invalid .Net version    
+#endif
     public class PerformanceTest1
     {
         private PowerFxConfig _powerFxConfig;
