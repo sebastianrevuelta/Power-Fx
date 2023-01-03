@@ -1,5 +1,19 @@
-## $env:NugetVersion="0.2.4-preview.20221230-2000"
-## $env:BUILD_SOURCESDIRECTORY = "C:\Data\Power-Fx"
+## To generate these packages locally, build the 3 solutions Microsoft.PowerFx.sln, Microsoft.PowerFx.Net6.sln and Microsoft.PowerFx.Net7.sln in Release mode
+## run this Powershell script from the command line .\GeneratePackages.ps1 after having defined the following variables
+##   $env:NugetVersion="0.2.4-preview.20230101-2000"  ## version of nuget package to create
+##   $env:BUILD_SOURCESDIRECTORY = "C:\Data\Power-Fx" ## location of source directory
+
+function Format-XML ([xml]$xml, $indent=2)
+{
+    $StringWriter = New-Object System.IO.StringWriter
+    $XmlWriter = New-Object System.XMl.XmlTextWriter $StringWriter
+    $xmlWriter.Formatting = “indented”
+    $xmlWriter.Indentation = $Indent
+    $xml.WriteContentTo($XmlWriter)
+    $XmlWriter.Flush()
+    $StringWriter.Flush()
+    $StringWriter.ToString()
+}
 
 $nuspecRoot = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "src\nuspecs\")
 cd $nuspecRoot
@@ -137,15 +151,3 @@ foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }
     nuget.exe pack $newNuspecFile 
 }
 
-
-function Format-XML ([xml]$xml, $indent=2)
-{
-    $StringWriter = New-Object System.IO.StringWriter
-    $XmlWriter = New-Object System.XMl.XmlTextWriter $StringWriter
-    $xmlWriter.Formatting = “indented”
-    $xmlWriter.Indentation = $Indent
-    $xml.WriteContentTo($XmlWriter)
-    $XmlWriter.Flush()
-    $StringWriter.Flush()
-    $StringWriter.ToString()
-}
