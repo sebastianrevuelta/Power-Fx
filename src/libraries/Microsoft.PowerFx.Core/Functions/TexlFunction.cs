@@ -392,11 +392,7 @@ namespace Microsoft.PowerFx.Core.Functions
                 return name.ToLowerInvariant();
             }
 
-#if NETSTANDARD2_0
             return char.ToLowerInvariant(name[0]).ToString() + name.Substring(1) + suffix + (IsAsync && !suppressAsync ? "Async" : string.Empty);
-#else
-            return string.Concat(char.ToLowerInvariant(name[0]).ToString(), name.AsSpan(1), suffix, IsAsync && !suppressAsync ? "Async" : string.Empty);
-#endif
         }
 
         #region CheckInvocation Replacement Project

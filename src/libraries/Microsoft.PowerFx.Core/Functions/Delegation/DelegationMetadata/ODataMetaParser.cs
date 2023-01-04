@@ -65,12 +65,7 @@ namespace Microsoft.PowerFx.Core.Functions.Delegation.DelegationMetadata
 
             private DPath GetReplacementPath(string alias, DPath currentColumnPath)
             {
-#if NETSTANDARD2_0
-
                 if (alias.Contains("/"))
-#else
-                if (alias.Contains('/'))
-#endif
                 {
                     var fullPath = DPath.Root;
 

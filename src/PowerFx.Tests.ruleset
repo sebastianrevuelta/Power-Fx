@@ -216,7 +216,7 @@
     <Rule Id="CA1824" Action="Warning" />
     <Rule Id="CA1825" Action="None" />
     <Rule Id="CA1841" Action="Warning" />
-    <Rule Id="CA1845" Action="Warning" />
+    <Rule Id="CA1845" Action="None" />       <!-- REQUIRED * CA1845: Use span-based 'string.Concat' and 'AsSpan' instead of 'Substring' -->
     <Rule Id="CA2014" Action="Warning" />
     <Rule Id="CA2016" Action="Warning" />
     <Rule Id="CA2234" Action="Warning" />
@@ -372,7 +372,7 @@
     <Rule Id="CA2246" Action="Warning" />
     <Rule Id="CA2247" Action="Warning" />
     <Rule Id="CA2248" Action="None" />       <!-- REQUIRED * CA2248: Provide correct enum argument to Enum.HasFlag -->
-    <Rule Id="CA2249" Action="Warning" />
+    <Rule Id="CA2249" Action="None" />       <!-- REQUIRED * CA2249: Use 'string.Contains' instead of 'string.IndexOf' to improve readability -->
     <Rule Id="CA2300" Action="Warning" />
     <Rule Id="CA2301" Action="Warning" />
     <Rule Id="CA2302" Action="Warning" />
@@ -472,8 +472,8 @@
     <Rule Id="CA1842" Action="Warning" />
     <Rule Id="CA1843" Action="Warning" />
     <Rule Id="CA1844" Action="Warning" />
-    <Rule Id="CA1846" Action="Warning" />
-    <Rule Id="CA1847" Action="Warning" />
+    <Rule Id="CA1846" Action="None" />      <!-- REQUIRED * CA1846: Prefer 'AsSpan' over 'Substring' when span-based overloads are available -->
+    <Rule Id="CA1847" Action="None" />      <!-- REQUIRED * CA1847: Use string.Contains(char) instead of string.Contains(string) with single characters -->
     <Rule Id="CA1848" Action="Warning" />
     <Rule Id="CA1849" Action="Warning" />
     <Rule Id="CA2017" Action="Warning" />

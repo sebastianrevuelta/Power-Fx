@@ -486,11 +486,7 @@ namespace Microsoft.PowerFx.Functions
                     return new BooleanValue(irContext, rightStr.Value.Contains(leftStr.Value));
                 }
 
-#if NETSTANDARD2_0
                 return new BooleanValue(irContext, rightStr.Value.ToLowerInvariant().IndexOf(leftStr.Value.ToLowerInvariant()) >= 0);
-#else
-                return new BooleanValue(irContext, rightStr.Value.Contains(leftStr.Value, StringComparison.OrdinalIgnoreCase));
-#endif
             };
         }
 

@@ -32,11 +32,7 @@ namespace Microsoft.PowerFx.Intellisense
         {
             Contracts.AssertValue(insertedText);
 
-#if NETSTANDARD2_0
             InputText = InputText.Substring(0, CursorPosition) + insertedText + InputText.Substring(CursorPosition);
-#else
-            InputText = string.Concat(InputText.AsSpan(0, CursorPosition), insertedText, InputText.AsSpan(CursorPosition));
-#endif
             CursorPosition += insertedText.Length;
         }
     }

@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.OpenApi.Models;
 using Microsoft.PowerFx.Connectors;
+using Microsoft.PowerFx.Connectors.Net6.Tests.Helpers;
 using Xunit;
 
 namespace Microsoft.PowerFx.Tests
@@ -82,11 +83,7 @@ namespace Microsoft.PowerFx.Tests
                     }
                 }
 
-#if NETCOREAPP3_1
-                var content = await httpContent.ReadAsStringAsync();
-#else
                 var content = await httpContent.ReadAsStringAsync(cancellationToken);
-#endif
 
                 if (!string.IsNullOrEmpty(content))
                 {

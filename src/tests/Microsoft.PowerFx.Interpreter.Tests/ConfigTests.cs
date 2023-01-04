@@ -287,11 +287,11 @@ namespace Microsoft.PowerFx.Interpreter.Tests
             Assert.ThrowsAsync<InvalidOperationException>(() => engine.EvalAsync("2,0", CancellationToken.None, options: us_ParserOptions, runtimeConfig: us_Symbols));
             Assert.Equal(2.0, engine.EvalAsync("2,0", CancellationToken.None, options: fr_ParserOptions, runtimeConfig: fr_Symbols).Result.ToObject());
 
+            // In .Net Core 3.1, Farsi/Persan regional settings define the decimal separator as a "/"
+            // In .Net 6.0 or 7.0, Farsi/Persan regional settings define the decimal separator as a ","
 #if NETCOREAPP3_1
             var expectedValue = "2/01";
-#elif NET6_0
-            var expectedValue = "2٫01";
-#elif NET7_0
+#elif NET6_0 || NET7_0
             var expectedValue = "2٫01";
 #else
 #error Invalid .Net version    

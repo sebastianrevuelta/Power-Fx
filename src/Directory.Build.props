@@ -86,14 +86,16 @@
     <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Project)'!='Microsoft.PowerFx.Performance.Tests'">
+  <PropertyGroup Condition=" '$(ProjectName)' != 'Microsoft.PowerFx.Performance.Tests' And 
+                             '$(ProjectName)' != 'Microsoft.PowerFx.Performance.Net6.Tests' And 
+                             '$(ProjectName)' != 'Microsoft.PowerFx.Performance.Net7.Tests' ">    
     <AssemblyOriginatorKeyFile Condition="EXISTS('..\..\..\src\build\35MSSharedLib1024.snk')">..\..\..\src\build\35MSSharedLib1024.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <DelaySign>true</DelaySign>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'!='DEBUG'">
-    <Optimize>True</Optimize>
+    <Optimize>True</Optimize>   
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TF_BUILD)' != '' ">

@@ -43,12 +43,8 @@ namespace Microsoft.PowerFx.Core.Types
             }
 
             const string punctuators = "*!%:[],";
-#if NETSTANDARD2_0
-            if (punctuators.IndexOf(CurChar) >= 0)
-#else
-            if (punctuators.Contains(CurChar))
 
-#endif
+            if (punctuators.IndexOf(CurChar) >= 0)
             {
                 token = CurChar.ToString();
                 _cursor++;
@@ -84,11 +80,7 @@ namespace Microsoft.PowerFx.Core.Types
                             // else we let the fall-through logic append c once more.
                         }
                     }
-#if NETSTANDARD2_0
                     else if ((quote == '0') && (CharacterUtils.IsSpace(c) || punctuators.IndexOf(c) >= 0))
-#else
-                    else if ((quote == '0') && (CharacterUtils.IsSpace(c) || punctuators.Contains(c)))
-#endif
                     {
                         break;
                     }

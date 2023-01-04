@@ -234,11 +234,7 @@ namespace Microsoft.PowerFx.Core.Types
             // Number (hex) support
             if (token[0] == '#' && token.Length > 1)
             {
-#if NETSTANDARD2_0
                 if (uint.TryParse(token.Substring(1), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var intValue))
-#else
-                if (uint.TryParse(token.AsSpan(1), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var intValue))
-#endif
                 {
                     value = new EquatableObject((double)intValue);
                     return true;
