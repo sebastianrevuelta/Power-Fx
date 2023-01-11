@@ -12,6 +12,7 @@ function Format-XML ([xml]$xml, $indent=2)
     $xml.WriteContentTo($XmlWriter)
     $XmlWriter.Flush()
     $StringWriter.Flush()
+
     $StringWriter.ToString()
 }
 

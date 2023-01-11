@@ -49,6 +49,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repl.Net7", "tools\Repl\Rep
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuspecs", "nuspecs", "{51D0EF27-88A4-47BB-AC35-FF21B76FDF4C}"
 	ProjectSection(SolutionItems) = preProject
+		nuspecs\GeneratePackages.ps1 = nuspecs\GeneratePackages.ps1
 		nuspecs\Microsoft.PowerFx.Connectors.nuspec = nuspecs\Microsoft.PowerFx.Connectors.nuspec
 		nuspecs\Microsoft.PowerFx.Core.nuspec = nuspecs\Microsoft.PowerFx.Core.nuspec
 		nuspecs\Microsoft.PowerFx.Core.Tests.nuspec = nuspecs\Microsoft.PowerFx.Core.Tests.nuspec

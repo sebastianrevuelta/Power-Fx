@@ -18,23 +18,14 @@
     <dependencies>
       <group targetFramework=".NETStandard2.0">
         <dependency id="Microsoft.PowerFx.Core" version="****" exclude="Build,Analyzers" />
-        <dependency id="Microsoft.CodeAnalysis" version="4.2.0" exclude="Build,Analyzers" />
-        <dependency id="System.Collections.Immutable" version="5.0.0" exclude="Build,Analyzers" />
-        <dependency id="System.Memory" version="4.5.4" exclude="Build,Analyzers" />
         <dependency id="System.Text.Json" version="5.0.2" exclude="Build,Analyzers" />
       </group>
       <group targetFramework="net6.0">
         <dependency id="Microsoft.PowerFx.Core" version="****" exclude="Build,Analyzers" />
-        <dependency id="Microsoft.CodeAnalysis" version="4.4.0" exclude="Build,Analyzers" />
-        <dependency id="System.Collections.Immutable" version="7.0.0" exclude="Build,Analyzers" />
-        <dependency id="System.Memory" version="4.5.5" exclude="Build,Analyzers" />
         <dependency id="System.Text.Json" version="7.0.1" exclude="Build,Analyzers" />
       </group>
       <group targetFramework="net7.0">
         <dependency id="Microsoft.PowerFx.Core" version="****" exclude="Build,Analyzers" />
-        <dependency id="Microsoft.CodeAnalysis" version="4.4.0" exclude="Build,Analyzers" />
-        <dependency id="System.Collections.Immutable" version="7.0.0" exclude="Build,Analyzers" />
-        <dependency id="System.Memory" version="4.5.5" exclude="Build,Analyzers" />
         <dependency id="System.Text.Json" version="7.0.1" exclude="Build,Analyzers" />
       </group>
     </dependencies>
