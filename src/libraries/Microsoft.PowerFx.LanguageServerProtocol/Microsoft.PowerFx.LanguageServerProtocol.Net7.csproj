@@ -1,19 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="17.0">
   <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <AssemblyName>Microsoft.PowerFx.LanguageServerProtocol</AssemblyName>
     <Version Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)</Version>
     <Version Condition=" '$(ReleasePackageVersion)' != '' ">$(ReleasePackageVersion)</Version>
     <PackageVersion Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)-net7</PackageVersion>
     <PackageVersion Condition=" '$(ReleasePackageVersion)' != '' ">$(ReleasePackageVersion)</PackageVersion>
     <Configurations>Debug;Release</Configurations>
-  </PropertyGroup>
-
-  <!-- Nuget Properties -->
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <PackageId>Microsoft.PowerFx.LanguageServerProtocol</PackageId>
-    <Title>Microsoft Power Fx LanguageServerProtocol</Title>
-    <Description>The LanguageServerProtocol of the Power Fx compiler. See more from https://microsoft.github.io/language-server-protocol/</Description>
-    <AssemblyName>Microsoft.PowerFx.LanguageServerProtocol</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,13 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.PowerFx.Core\Microsoft.PowerFx.Core.Net7.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.1.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
 
 </Project>

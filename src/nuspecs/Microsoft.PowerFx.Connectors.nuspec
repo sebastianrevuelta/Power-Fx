@@ -4,6 +4,7 @@
     <id>Microsoft.PowerFx.Connectors</id>
     <version>****</version>
     <title>Microsoft Power Fx Connector Support</title>
+    <description>The connector library for Power Fx</description>
     <authors>Microsoft</authors>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <license type="expression">MIT</license>
@@ -11,26 +12,31 @@
     <icon>icon.png</icon>
     <projectUrl>https://github.com/microsoft/Power-Fx</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/microsoft/Power-Fx/master/icon.png</iconUrl>
-    <description>Connectors</description>
     <copyright>© Microsoft Corporation. All rights reserved.</copyright>
-    <tags>powerfx</tags>
     <repository type="git" url="https://github.com/microsoft/Power-Fx" commit="****" />
+    <tags>powerfx</tags>
     <dependencies>
       <group targetFramework=".NETStandard2.0">
         <dependency id="Microsoft.PowerFx.Core" version="****" exclude="Build,Analyzers" />
-        <dependency id="Microsoft.PowerFx.Interpreter" version="****" exclude="Build,Analyzers" />        
+        <dependency id="Microsoft.PowerFx.Interpreter" version="****" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.PowerFx.Json" version="****" exclude="Build,Analyzers" />
+        
         <dependency id="Microsoft.OpenApi.Readers" version="1.3.1" exclude="Build,Analyzers" />
         <dependency id="System.Text.Json" version="5.0.2" exclude="Build,Analyzers" />
       </group>
       <group targetFramework="net6.0">
         <dependency id="Microsoft.PowerFx.Core" version="****" exclude="Build,Analyzers" />
-        <dependency id="Microsoft.PowerFx.Interpreter" version="****" exclude="Build,Analyzers" />        
+        <dependency id="Microsoft.PowerFx.Interpreter" version="****" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.PowerFx.Json" version="****" exclude="Build,Analyzers" />
+        
         <dependency id="Microsoft.OpenApi.Readers" version="1.4.5" exclude="Build,Analyzers" />
         <dependency id="System.Text.Json" version="7.0.1" exclude="Build,Analyzers" />
       </group>
       <group targetFramework="net7.0">
         <dependency id="Microsoft.PowerFx.Core" version="****" exclude="Build,Analyzers" />
-        <dependency id="Microsoft.PowerFx.Interpreter" version="****" exclude="Build,Analyzers" />        
+        <dependency id="Microsoft.PowerFx.Interpreter" version="****" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.PowerFx.Json" version="****" exclude="Build,Analyzers" />
+        
         <dependency id="Microsoft.OpenApi.Readers" version="1.4.5" exclude="Build,Analyzers" />
         <dependency id="System.Text.Json" version="7.0.1" exclude="Build,Analyzers" />
       </group>

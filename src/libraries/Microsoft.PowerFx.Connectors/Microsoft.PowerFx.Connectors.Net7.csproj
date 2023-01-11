@@ -1,20 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="17.0">
   <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <AssemblyName>Microsoft.PowerFx.Connectors</AssemblyName>
     <Version Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)</Version>
     <Version Condition=" '$(ReleasePackageVersion)' != '' ">$(ReleasePackageVersion)</Version>
     <PackageVersion Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)-net7</PackageVersion>
     <PackageVersion Condition=" '$(ReleasePackageVersion)' != '' ">$(ReleasePackageVersion)</PackageVersion>
     <Configurations>Debug;Release</Configurations>
-  </PropertyGroup>
-
-  <!-- Nuget Properties -->
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <PackageId>Microsoft.PowerFx.Connectors</PackageId>
-    <Title>Microsoft Power Fx Connector Support</Title>
-    <Description>Connectors</Description>
-    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
-    <AssemblyName>Microsoft.PowerFx.Connectors</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,12 +21,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.PowerFx.Core\Microsoft.PowerFx.Core.Net7.csproj" />
     <ProjectReference Include="..\Microsoft.PowerFx.Interpreter\Microsoft.PowerFx.Interpreter.Net7.csproj" />
+    <ProjectReference Include="..\Microsoft.PowerFx.Json\Microsoft.PowerFx.Json.Net7.csproj" />
+
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.1.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
 </Project>

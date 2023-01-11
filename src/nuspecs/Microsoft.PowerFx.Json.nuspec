@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
-    <id>Microsoft.PowerFx.Interpreter</id>
+    <id>Microsoft.PowerFx.Json</id>
     <version>****</version>
-    <title>Microsoft Power Fx Compiler - Interpreter Target</title>
-    <description>The Interpreter the Power Fx compiler</description>
+    <title>Microsoft Power Fx JSON</title>
+    <description>The library for all Microsoft Power Fx JSON functionalities</description>
     <authors>Microsoft</authors>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <license type="expression">MIT</license>
@@ -18,17 +18,20 @@
     <dependencies>
       <group targetFramework=".NETStandard2.0">
         <dependency id="Microsoft.PowerFx.Core" version="****" exclude="Build,Analyzers" />
+        <dependency id="System.Text.Json" version="5.0.2" exclude="Build,Analyzers" />
       </group>
       <group targetFramework="net6.0">
         <dependency id="Microsoft.PowerFx.Core" version="****" exclude="Build,Analyzers" />
+        <dependency id="System.Text.Json" version="7.0.1" exclude="Build,Analyzers" />
       </group>
       <group targetFramework="net7.0">
         <dependency id="Microsoft.PowerFx.Core" version="****" exclude="Build,Analyzers" />
+        <dependency id="System.Text.Json" version="7.0.1" exclude="Build,Analyzers" />
       </group>
     </dependencies>
   </metadata>
   <files>
-    <!-- Add files here, from src\libraries\\Microsoft.PowerFx.Interpreter\bin\Release\[netstandard2.0|net6.0|net7.0] (folder & subfolders) -->       
-    <file src="C:\Data\Power-Fx\src\libraries\Microsoft.PowerFx.Interpreter\icon.png" target="\icon.png" />
+    <!-- Add files here with absolute path, from src\libraries\Microsoft.PowerFx.Connectors\bin\Release\[netstandard2.0|net6.0|net7.0] (folder & subfolders) -->
+    <!-- + <file src="C:\Data\Power-Fx\src\libraries\Microsoft.PowerFx.Connectors\icon.png" target="\icon.png" /> -->
   </files>
 </package>

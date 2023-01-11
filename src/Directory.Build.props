@@ -100,27 +100,6 @@
     <DefineConstants>$(DefineConstants);AUTOMATEDBUILD</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <!-- Rules found at: https://aka.ms/Microsoft-NuGet-Compliance -->
-    <PackageProjectUrl>https://github.com/microsoft/Power-Fx</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/microsoft/Power-Fx/master/icon.png</PackageIconUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageIcon>icon.png</PackageIcon>
-    <RepositoryUrl>https://github.com/microsoft/Power-Fx</RepositoryUrl>
-    <PackageTags>powerfx</PackageTags>
-    <RepositoryType />
-    <NeutralLanguage>en-US</NeutralLanguage>
-    <!--
-      Suppress a warning about upcoming deprecation of PackageLicenseUrl. When embedding licenses are supported,
-      replace PackageLicenseUrl with PackageLicenseExpression.
-    -->
-    <NoWarn>$(NoWarn);NU5125</NoWarn>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-  </PropertyGroup>
-
   <ItemGroup Condition="'$(GeneratePackageOnBuild)' == 'True'">
     <None Include="icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>

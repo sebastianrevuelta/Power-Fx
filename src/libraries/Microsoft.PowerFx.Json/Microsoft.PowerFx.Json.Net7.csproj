@@ -1,25 +1,23 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="17.0">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="17.0">
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-    <AssemblyName>Microsoft.PowerFx.Interpreter</AssemblyName>
+    <AssemblyName>Microsoft.PowerFx.Json</AssemblyName>
     <Version Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)</Version>
     <Version Condition=" '$(ReleasePackageVersion)' != '' ">$(ReleasePackageVersion)</Version>
-    <PackageVersion Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)-net7</PackageVersion>
+    <PackageVersion Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)</PackageVersion>
     <PackageVersion Condition=" '$(ReleasePackageVersion)' != '' ">$(ReleasePackageVersion)</PackageVersion>
     <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="7.0.1" />
+  </ItemGroup>
 
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" Link="stylecop.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />
-    <PackageReference Include="System.Text.Json" Version="7.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Microsoft.PowerFx.Core\Microsoft.PowerFx.Core.Net7.csproj" />
   </ItemGroup>
-
 </Project>

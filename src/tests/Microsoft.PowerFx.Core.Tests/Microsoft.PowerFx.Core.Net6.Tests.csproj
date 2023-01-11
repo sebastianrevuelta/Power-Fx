@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <!--Do not generate this package for public builds.  -->
+    <TargetFramework>net6.0</TargetFramework>
+    <AssemblyName>Microsoft.PowerFx.Core.Tests</AssemblyName>
     <IsPackable Condition="'$(InternalBuild)' == 'true'">true</IsPackable>
     <IsPackable Condition="'$(InternalBuild)' != 'true'">false</IsPackable>
     <GeneratePackageOnBuild Condition="'$(InternalBuild)' == 'true'">$(GeneratePackages)</GeneratePackageOnBuild>
@@ -12,14 +13,6 @@
     <Configurations>Debug;Release</Configurations>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <AssemblyName>Microsoft.PowerFx.Core.Tests</AssemblyName>
-  </PropertyGroup>
-
-  <!-- Nuget Properties -->
-  <PropertyGroup>
-    <PackageId>Microsoft.PowerFx.Core.Tests</PackageId>
-    <Title>Microsoft Power Fx Compiler Tests Core</Title>
-    <Description>The core test suite for all Microsoft Power Fx Compiler targets</Description>
-    <Summary>The core test suite for all Microsoft Power Fx Compiler targets</Summary>
   </PropertyGroup>
 
   <ItemGroup>

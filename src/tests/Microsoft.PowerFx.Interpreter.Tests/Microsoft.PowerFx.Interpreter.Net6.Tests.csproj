@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <AssemblyName>Microsoft.PowerFx.Interpreter.Tests</AssemblyName>
     <IsPackable>false</IsPackable>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <Configurations>Debug;Release</Configurations>
-    <OutputType>Library</OutputType>
-    <AssemblyName>Microsoft.PowerFx.Interpreter.Tests</AssemblyName>
+    <OutputType>Library</OutputType>    
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.PowerFx.Core.Tests\Microsoft.PowerFx.Core.Net6.Tests.csproj" />
+    <ProjectReference Include="..\..\libraries\Microsoft.PowerFx.Json\Microsoft.PowerFx.Json.Net6.csproj" />
     <ProjectReference Include="..\..\libraries\Microsoft.PowerFx.Interpreter\Microsoft.PowerFx.Interpreter.Net6.csproj" />
     <ProjectReference Include="..\..\libraries\Microsoft.PowerFx.LanguageServerProtocol\Microsoft.PowerFx.LanguageServerProtocol.Net6.csproj" />
   </ItemGroup>

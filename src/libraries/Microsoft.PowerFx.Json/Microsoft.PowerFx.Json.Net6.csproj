@@ -1,27 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="17.0">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <AssemblyName>Microsoft.PowerFx.Connectors</AssemblyName>
+    <AssemblyName>Microsoft.PowerFx.Json</AssemblyName>
     <Version Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)</Version>
     <Version Condition=" '$(ReleasePackageVersion)' != '' ">$(ReleasePackageVersion)</Version>
-    <PackageVersion Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)-net6</PackageVersion>
+    <PackageVersion Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)</PackageVersion>
     <PackageVersion Condition=" '$(ReleasePackageVersion)' != '' ">$(ReleasePackageVersion)</PackageVersion>
     <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="7.0.1" />
+  </ItemGroup>
 
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" Link="stylecop.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.OpenApi.Readers" Version="1.4.5" />
-    <PackageReference Include="System.Text.Json" Version="7.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Microsoft.PowerFx.Core\Microsoft.PowerFx.Core.Net6.csproj" />
-    <ProjectReference Include="..\Microsoft.PowerFx.Interpreter\Microsoft.PowerFx.Interpreter.Net6.csproj" />
-    <ProjectReference Include="..\Microsoft.PowerFx.Json\Microsoft.PowerFx.Json.Net6.csproj" />
   </ItemGroup>
-
 </Project>

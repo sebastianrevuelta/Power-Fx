@@ -1,5 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Microsoft.PowerFx.Transport.Attributes</AssemblyName>
     <Version Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)</Version>
     <Version Condition=" '$(ReleasePackageVersion)' != '' ">$(ReleasePackageVersion)</Version>
     <PackageVersion Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)</PackageVersion>
@@ -10,14 +12,4 @@
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" Link="stylecop.json" />
   </ItemGroup>
-
-  <!-- Nuget Properties -->
-  <PropertyGroup>
-    <PackageId>Microsoft.PowerFx.Transport.Attributes</PackageId>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <!-- When updating the version, add a note to the release notes below. -->
-    <Title>Microsoft PowerFx Transport Attributes</Title>
-    <Description>This provides attributes used by Microsoft.PowerFx.Core</Description>
-    <Summary>This provides attributes used by Microsoft.PowerFx.Core</Summary>
-  </PropertyGroup>
 </Project>

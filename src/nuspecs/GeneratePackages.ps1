@@ -1,3 +1,9 @@
+param(
+	[Parameter (Mandatory = $false)] 
+    [ValidateSet ('all', 'net31', 'net6', 'net7')] 
+    [String[]]$IncludeVersions = 'net31'
+)
+
 ## To generate these packages locally, build the 3 solutions Microsoft.PowerFx.sln, Microsoft.PowerFx.Net6.sln and Microsoft.PowerFx.Net7.sln in Release mode
 ## run this Powershell script from the command line .\GeneratePackages.ps1 after having defined the following variables
 ##   $env:NugetVersion="0.2.4-preview.20230101-2000"  ## version of nuget package to create
@@ -15,6 +21,20 @@ function Format-XML ([xml]$xml, $indent=2)
 
     $StringWriter.ToString()
 }
+
+$IncludeVersions = $IncludeVersions | Select-Object -Unique
+
+if ($IncludeVersions.Length -eq 0)
+{
+    $IncludeVersions = @('net31')
+}
+
+if ($IncludeVersions -contains 'all')
+{
+    $IncludeVersions = @('net31', 'net6', 'net7')
+}
+
+Write-Host "### Generate packages for $IncludeVersions"
 
 $nuspecRoot = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "src\nuspecs\")
 cd $nuspecRoot
@@ -40,7 +60,29 @@ foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }
     [xml]$nuspec = Get-Content $newNuspecFile 
 
     $nuspec.package.metadata.version = $env:NugetVersion
-    $nuspec.package.metadata.repository.commit = $pfxHash
+
+    if ($nuspec.package.metadata.repository -ne $null)
+    {
+        $nuspec.package.metadata.repository.commit = $pfxHash
+    }
+
+    if (!($IncludeVersions -contains 'net7'))
+    {
+        $toRemove = $nuspec.package.metadata.dependencies.ChildNodes[2]
+        [void]$toRemove.ParentNode.RemoveChild($toRemove)
+    }
+
+    if (!($IncludeVersions -contains 'net6'))
+    {
+        $toRemove = $nuspec.package.metadata.dependencies.ChildNodes[1]
+        [void]$toRemove.ParentNode.RemoveChild($toRemove)
+    }
+
+    if (!($IncludeVersions -contains 'net31'))
+    {
+        $toRemove = $nuspec.package.metadata.dependencies.ChildNodes[0]
+        [void]$toRemove.ParentNode.RemoveChild($toRemove)
+    }
 
     foreach ($group in $nuspec.package.metadata.dependencies.group)
     {
@@ -55,9 +97,14 @@ foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }
 
     if ($fileNameNoExt -ne "Microsoft.PowerFx.Core.Tests")
     {
+        $files = [System.Collections.ArrayList]::new()
         $fileRoot = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "src\libraries\$fileNameNoExt\bin\Release")        
 
-        foreach ($file in (Get-ChildItem $fileRoot -Recurse -File -Exclude @("*.deps.json", "*.pdb", "*.dbg") | % { $_.FullName }))
+        if ($IncludeVersions -contains 'net31') { $files.AddRange((Get-ChildItem ($fileRoot + '\netstandard2.0') -Recurse -File -Exclude @("*.deps.json", "*.pdb", "*.dbg") | % { $_.FullName })) }
+        if ($IncludeVersions -contains 'net6')  { $files.AddRange((Get-ChildItem ($fileRoot + '\net6.0')         -Recurse -File -Exclude @("*.deps.json", "*.pdb", "*.dbg") | % { $_.FullName })) }
+        if ($IncludeVersions -contains 'net7')  { $files.AddRange((Get-ChildItem ($fileRoot + '\net7.0')         -Recurse -File -Exclude @("*.deps.json", "*.pdb", "*.dbg") | % { $_.FullName })) }
+
+        foreach ($file in $files)
         {
             $xfile = $nuspec.CreateElement("file", "http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd")
             
@@ -87,17 +134,22 @@ foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }
 
             [void]$nuspec.package.files.AppendChild($xfile)
         }
-
+        
         foreach ($comment in $nuspec.SelectNodes("//comment()"))
         {
             [void]$comment.ParentNode.RemoveChild($comment)
         }
     }
     else
-    {
-        $fileRoot = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "src\tests\$fileNameNoExt\bin\Release")        
+    {            
+        $files = [System.Collections.ArrayList]::new()
+        $fileRoot = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "src\tests\$fileNameNoExt\bin\Release")
 
-        foreach ($file in (Get-ChildItem -Path @("$fileRoot\*\ExpressionTestCases\*", "$fileRoot\*\IntellisenseTests\*", "$fileRoot\*\TypeSystemTests\*") -Recurse | % { $_.FullName }))
+        if ($IncludeVersions -contains 'net31') { $files.AddRange((Get-ChildItem -Recurse -Path @("$fileRoot\netcoreapp3.1\ExpressionTestCases\*", "$fileRoot\netcoreapp3.1\IntellisenseTests\*", "$fileRoot\netcoreapp3.1\TypeSystemTests\*") | % { $_.FullName })) }
+        if ($IncludeVersions -contains 'net6')  { $files.AddRange((Get-ChildItem -Recurse -Path @("$fileRoot\net6.0\ExpressionTestCases\*",        "$fileRoot\net6.0\IntellisenseTests\*",        "$fileRoot\net6.0\TypeSystemTests\*")        | % { $_.FullName })) }
+        if ($IncludeVersions -contains 'net7')  { $files.AddRange((Get-ChildItem -Recurse -Path @("$fileRoot\net7.0\ExpressionTestCases\*",        "$fileRoot\net7.0\IntellisenseTests\*",        "$fileRoot\net7.0\TypeSystemTests\*")        | % { $_.FullName })) }
+
+        foreach ($file in $files)
         {
             $xfile = $nuspec.CreateElement("files", "http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd")
             
@@ -112,7 +164,12 @@ foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }
             [void]$nuspec.package.metadata.contentFiles.AppendChild($xfile)
         }
 
-        foreach ($file in (Get-ChildItem $fileRoot -Recurse -File -Exclude @("*.deps.json", "*.pdb", "*.dbg") | % { $_.FullName }))
+        $files = [System.Collections.ArrayList]::new()
+        if ($IncludeVersions -contains 'net31') { $files.AddRange((Get-ChildItem ($fileRoot + '\netcoreapp3.1') -Recurse -File -Exclude @("*.deps.json", "*.pdb", "*.dbg") | % { $_.FullName })) }
+        if ($IncludeVersions -contains 'net6')  { $files.AddRange((Get-ChildItem ($fileRoot + '\net6.0')        -Recurse -File -Exclude @("*.deps.json", "*.pdb", "*.dbg") | % { $_.FullName })) }
+        if ($IncludeVersions -contains 'net7')  { $files.AddRange((Get-ChildItem ($fileRoot + '\net7.0')        -Recurse -File -Exclude @("*.deps.json", "*.pdb", "*.dbg") | % { $_.FullName })) }
+
+        foreach ($file in $file)
         {
             $xfile = $nuspec.CreateElement("file", "http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd")
             

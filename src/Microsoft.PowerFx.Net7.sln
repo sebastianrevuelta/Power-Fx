@@ -58,6 +58,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuspecs", "nuspecs", "{51D0
 		nuspecs\Microsoft.PowerFx.Transport.Attributes.nuspec = nuspecs\Microsoft.PowerFx.Transport.Attributes.nuspec
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.PowerFx.Json.Net7", "libraries\Microsoft.PowerFx.Json\Microsoft.PowerFx.Json.Net7.csproj", "{13CC5EC3-50F7-476D-B80A-20182EFCF7DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,6 +106,10 @@ Global
 		{142854D7-409C-4C87-A5B8-39B51477F5B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{142854D7-409C-4C87-A5B8-39B51477F5B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{142854D7-409C-4C87-A5B8-39B51477F5B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13CC5EC3-50F7-476D-B80A-20182EFCF7DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13CC5EC3-50F7-476D-B80A-20182EFCF7DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13CC5EC3-50F7-476D-B80A-20182EFCF7DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13CC5EC3-50F7-476D-B80A-20182EFCF7DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -120,6 +126,7 @@ Global
 		{5A2EEF08-7A8A-43E6-B498-EFB32B98CC5A} = {AD743B78-D61F-4FBF-B620-FA83CE599A50}
 		{142854D7-409C-4C87-A5B8-39B51477F5B2} = {5EEC2873-35B5-4364-A2A0-97AAD7BF960D}
 		{51D0EF27-88A4-47BB-AC35-FF21B76FDF4C} = {1BF2F760-4DBD-450B-ADED-81548000432D}
+		{13CC5EC3-50F7-476D-B80A-20182EFCF7DA} = {4269F3C3-6B42-419B-B64A-3E6DC0F1574A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {30372F91-B206-4351-A621-F0E2773C337B}

@@ -1,5 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="17.0">
   <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <AssemblyName>Microsoft.PowerFx.Interpreter</AssemblyName>
     <Version Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)</Version>
     <Version Condition=" '$(ReleasePackageVersion)' != '' ">$(ReleasePackageVersion)</Version>
     <PackageVersion Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)-net6</PackageVersion>
@@ -7,32 +9,13 @@
     <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
 
-  <!-- Nuget Properties -->
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <PackageId>Microsoft.PowerFx.Interpreter</PackageId>
-    <Title>Microsoft Power Fx Compiler - Interpreter Target</Title>
-    <Description>The Interpreter the Power Fx compiler</Description>
-    <AssemblyName>Microsoft.PowerFx.Interpreter</AssemblyName>
-  </PropertyGroup>
-
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" Link="stylecop.json" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />
-    <PackageReference Include="System.Text.Json" Version="7.0.1" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.PowerFx.Core\Microsoft.PowerFx.Core.Net6.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.1.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
 </Project>

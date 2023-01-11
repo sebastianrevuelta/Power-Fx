@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
+    <AssemblyName>Microsoft.PowerFx.Interpreter.Tests</AssemblyName>
     <IsPackable>false</IsPackable>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <Configurations>Debug;Release</Configurations>
     <OutputType>Library</OutputType>
-    <AssemblyName>Microsoft.PowerFx.Interpreter.Tests</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.PowerFx.Core.Tests\Microsoft.PowerFx.Core.Net7.Tests.csproj" />
+    <ProjectReference Include="..\..\libraries\Microsoft.PowerFx.Json\Microsoft.PowerFx.Json.Net7.csproj" />
     <ProjectReference Include="..\..\libraries\Microsoft.PowerFx.Interpreter\Microsoft.PowerFx.Interpreter.Net7.csproj" />
     <ProjectReference Include="..\..\libraries\Microsoft.PowerFx.LanguageServerProtocol\Microsoft.PowerFx.LanguageServerProtocol.Net7.csproj" />
   </ItemGroup>
