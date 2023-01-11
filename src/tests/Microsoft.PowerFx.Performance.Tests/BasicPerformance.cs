@@ -13,11 +13,14 @@ using Microsoft.PowerFx.Types;
 
 namespace Microsoft.PowerFx.Performance.Tests
 {
+    [MemoryDiagnoser]
+    [NativeMemoryProfiler]    
     [EtwProfiler] // https://benchmarkdotnet.org/articles/features/etwprofiler.html
     [CsvExporter] // https://benchmarkdotnet.org/articles/configs/exporters.html
     [MinColumn]
     [Q1Column]
     [MeanColumn]
+    [MedianColumn]
     [Q3Column]
     [MaxColumn]
 #if NETCOREAPP3_1
@@ -29,7 +32,7 @@ namespace Microsoft.PowerFx.Performance.Tests
 #else
 #error Invalid .Net version    
 #endif
-    public class PerformanceTest1
+    public class BasicPerformance
     {
         private PowerFxConfig _powerFxConfig;
         private Engine _engine;
