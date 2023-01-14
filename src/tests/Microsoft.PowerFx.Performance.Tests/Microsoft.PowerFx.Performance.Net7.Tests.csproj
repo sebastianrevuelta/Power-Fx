@@ -1,8 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
+  <Import Project="..\..\Directory.Build.Net7.Props" />
+  
+  <PropertyGroup>    
     <TargetFrameworks>net70</TargetFrameworks>
+    <OutputType>Exe</OutputType>
     <Configurations>Debug;Release</Configurations>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <StartupObject>Microsoft.PowerFx.Performance.Tests.Program</StartupObject>
@@ -15,10 +17,6 @@
     <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.13.3" />
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="..\..\stylecop.json" Link="stylecop.json" />
   </ItemGroup>
 
   <ItemGroup>

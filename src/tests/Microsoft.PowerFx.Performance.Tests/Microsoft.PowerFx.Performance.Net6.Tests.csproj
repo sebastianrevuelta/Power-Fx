@@ -1,5 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="..\..\Directory.Build.Net6.Props" />
+  
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFrameworks>net60</TargetFrameworks>
@@ -15,10 +17,6 @@
     <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.13.3" />
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="..\..\stylecop.json" Link="stylecop.json" />
   </ItemGroup>
 
   <ItemGroup>

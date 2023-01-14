@@ -1,7 +1,10 @@
 <Project>
 
   <PropertyGroup>
+    <Configurations>Debug;Release</Configurations>
     <LocalPackageVersion>0.3.0-local</LocalPackageVersion>
+    <Version Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)</Version>
+    <Version Condition=" '$(ReleasePackageVersion)' != '' ">$(ReleasePackageVersion)</Version>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -42,6 +45,10 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <AdditionalFiles Include="..\..\stylecop.json" Link="stylecop.json" />
+  </ItemGroup>
+  
   <PropertyGroup Condition=" '$(Configuration)-$(TURN_OFF_STYLECOP_DEBUG)' == 'Debug-True' " >
     <EnableNETAnalyzers>false</EnableNETAnalyzers>
     <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>

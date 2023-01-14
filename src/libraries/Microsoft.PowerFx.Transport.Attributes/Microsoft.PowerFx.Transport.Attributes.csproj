@@ -1,15 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+  
+  <Import Project="..\..\Directory.Build.Net3.Props" />
+  
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Microsoft.PowerFx.Transport.Attributes</AssemblyName>
-    <Version Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)</Version>
-    <Version Condition=" '$(ReleasePackageVersion)' != '' ">$(ReleasePackageVersion)</Version>
     <PackageVersion Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)</PackageVersion>
     <PackageVersion Condition=" '$(ReleasePackageVersion)' != '' ">$(ReleasePackageVersion)</PackageVersion>
-    <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
 
-  <ItemGroup>
-    <AdditionalFiles Include="..\..\stylecop.json" Link="stylecop.json" />
-  </ItemGroup>
 </Project>

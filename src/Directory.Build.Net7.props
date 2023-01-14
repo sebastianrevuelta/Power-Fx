@@ -1,0 +1,21 @@
+<Project>
+
+  <!-- Loaded only in .Net 7.0 projects -->
+
+  <PropertyGroup>
+    <IntermediateOutputPath>obj7</IntermediateOutputPath>    
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="obj\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <None Remove="obj\**" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Remove="obj6\**" />
+    <EmbeddedResource Remove="obj6\**" />
+    <None Remove="obj6\**" />
+  </ItemGroup>
+
+</Project>

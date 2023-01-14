@@ -1,20 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="17.0">
+
+  <Import Project="..\..\Directory.Build.Net7.Props" />
+  
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <AssemblyName>Microsoft.PowerFx.Json</AssemblyName>
-    <Version Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)</Version>
-    <Version Condition=" '$(ReleasePackageVersion)' != '' ">$(ReleasePackageVersion)</Version>
     <PackageVersion Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)</PackageVersion>
     <PackageVersion Condition=" '$(ReleasePackageVersion)' != '' ">$(ReleasePackageVersion)</PackageVersion>
-    <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="System.Text.Json" Version="7.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="..\..\stylecop.json" Link="stylecop.json" />
   </ItemGroup>
 
   <ItemGroup>

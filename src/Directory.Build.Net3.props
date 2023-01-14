@@ -1,0 +1,21 @@
+<Project>
+
+  <!-- Loaded only in .Net Core 3.1 projects -->
+
+  <PropertyGroup>
+    <IntermediateOutputPath>obj</IntermediateOutputPath>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <Compile Remove="obj6\**" />
+    <EmbeddedResource Remove="obj6\**" />
+    <None Remove="obj6\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="obj7\**" />
+    <EmbeddedResource Remove="obj7\**" />
+    <None Remove="obj7\**" />
+  </ItemGroup>
+
+</Project>

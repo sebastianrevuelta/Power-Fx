@@ -1,16 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="17.0">
+
+  <Import Project="..\..\Directory.Build.Net7.Props" />
+  
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <AssemblyName>Microsoft.PowerFx.Transport.Attributes</AssemblyName>
-    <Version Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)</Version>
-    <Version Condition=" '$(ReleasePackageVersion)' != '' ">$(ReleasePackageVersion)</Version>
     <PackageVersion Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)-net7</PackageVersion>
     <PackageVersion Condition=" '$(ReleasePackageVersion)' != '' ">$(ReleasePackageVersion)</PackageVersion>
-    <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="..\..\stylecop.json" Link="stylecop.json" />
-  </ItemGroup>
 
 </Project>

@@ -1,4 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="17.0">
+
+  <Import Project="..\..\Directory.Build.Net6.Props" />
+  
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>Microsoft.PowerFx.LanguageServerProtocol</AssemblyName>
@@ -12,11 +15,7 @@
   <ItemGroup>
     <PackageReference Include="System.Text.Json" Version="7.0.1" />
   </ItemGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="..\..\stylecop.json" Link="stylecop.json" />
-  </ItemGroup>
-
+  
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.PowerFx.Core\Microsoft.PowerFx.Core.Net6.csproj" />
   </ItemGroup>

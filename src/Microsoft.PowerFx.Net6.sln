@@ -28,6 +28,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\.editorconfig = ..\.editorconfig
 		..\.gitignore = ..\.gitignore
 		CodeCoverage.runsettings = CodeCoverage.runsettings
+		Directory.Build.Net6.props = Directory.Build.Net6.props
 		Directory.Build.Props = Directory.Build.Props
 		nuget.config = nuget.config
 		PowerFx.Off.ruleset = PowerFx.Off.ruleset
