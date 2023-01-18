@@ -5,17 +5,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>Microsoft.PowerFx.Core.Tests</AssemblyName>
-    <IsPackable Condition="'$(InternalBuild)' == 'true'">true</IsPackable>
-    <IsPackable Condition="'$(InternalBuild)' != 'true'">false</IsPackable>
-    <GeneratePackageOnBuild Condition="'$(InternalBuild)' == 'true'">$(GeneratePackages)</GeneratePackageOnBuild>
-    <TargetFramework>net6.0</TargetFramework>
-    <Version Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)</Version>
-    <Version Condition=" '$(ReleasePackageVersion)' != '' ">$(ReleasePackageVersion)</Version>
-    <PackageVersion Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)-net6</PackageVersion>
-    <PackageVersion Condition=" '$(ReleasePackageVersion)' != '' ">$(ReleasePackageVersion)</PackageVersion>
-    <Configurations>Debug;Release</Configurations>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <AssemblyName>Microsoft.PowerFx.Core.Tests</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

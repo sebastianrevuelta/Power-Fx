@@ -5,10 +5,8 @@
   <PropertyGroup>    
     <TargetFrameworks>net70</TargetFrameworks>
     <OutputType>Exe</OutputType>
-    <Configurations>Debug;Release</Configurations>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <StartupObject>Microsoft.PowerFx.Performance.Tests.Program</StartupObject>
-    <LangVersion>9.0</LangVersion>
     <AssemblyName>Microsoft.PowerFx.Performance.Net7.Tests</AssemblyName>    
   </PropertyGroup>
 

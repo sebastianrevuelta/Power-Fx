@@ -4,10 +4,7 @@
   
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <IsPackable>false</IsPackable>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <Configurations>Debug;Release</Configurations>
-    <OutputType>Library</OutputType>
     <AssemblyName>Microsoft.PowerFx.Connectors.Tests</AssemblyName>
   </PropertyGroup>
 

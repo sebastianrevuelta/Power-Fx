@@ -6,8 +6,6 @@
   
   <PropertyGroup>
     <Configurations>Debug;Release</Configurations>
-    <Version Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)</Version>
-    <Version Condition=" '$(ReleasePackageVersion)' != '' ">$(ReleasePackageVersion)</Version>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -82,18 +80,6 @@
     <NoWarn>$(NoWarn);CS1591;CS1998</NoWarn>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <Company>Microsoft</Company>
-
-    <!-- Rules found at: https://aka.ms/Microsoft-NuGet-Compliance -->
-
-    <!-- Per rules,this must be *EXACTLY* "Microsoft. Otherwise Nuget.org will reject the packages." -->
-
-    <Authors>Microsoft</Authors>
-    <Product>Microsoft Bot Builder SDK</Product>
-    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
-  </PropertyGroup>
-
   <PropertyGroup Condition=" '$(ProjectName)' != 'Microsoft.PowerFx.Performance.Tests' And 
                              '$(ProjectName)' != 'Microsoft.PowerFx.Performance.Net6.Tests' And 
                              '$(ProjectName)' != 'Microsoft.PowerFx.Performance.Net7.Tests' ">    
@@ -109,10 +95,6 @@
   <PropertyGroup Condition="'$(TF_BUILD)' != '' ">
     <DefineConstants>$(DefineConstants);AUTOMATEDBUILD</DefineConstants>
   </PropertyGroup>
-
-  <ItemGroup Condition="'$(GeneratePackageOnBuild)' == 'True'">
-    <None Include="icon.png" Pack="true" PackagePath="\" />
-  </ItemGroup>
 
   <PropertyGroup>
     <DefaultItemExcludes>.git\**;**\node_modules\**;$(DefaultItemExcludes)</DefaultItemExcludes>

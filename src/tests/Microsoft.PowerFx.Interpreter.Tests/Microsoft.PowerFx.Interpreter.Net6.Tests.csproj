@@ -5,10 +5,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>Microsoft.PowerFx.Interpreter.Tests</AssemblyName>
-    <IsPackable>false</IsPackable>
-    <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <Configurations>Debug;Release</Configurations>
-    <OutputType>Library</OutputType>    
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>  
   </PropertyGroup>
 
   <ItemGroup>

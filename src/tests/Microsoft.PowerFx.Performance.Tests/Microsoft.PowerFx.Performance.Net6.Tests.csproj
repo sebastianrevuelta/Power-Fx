@@ -5,10 +5,8 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFrameworks>net60</TargetFrameworks>
-    <Configurations>Debug;Release</Configurations>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <StartupObject>Microsoft.PowerFx.Performance.Tests.Program</StartupObject>
-    <LangVersion>9.0</LangVersion>
     <AssemblyName>Microsoft.PowerFx.Performance.Net6.Tests</AssemblyName>
   </PropertyGroup>
 

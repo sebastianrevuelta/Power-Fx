@@ -3,14 +3,8 @@
   <Import Project="..\..\Directory.Build.Net3.Props" />
   
   <PropertyGroup>
-    <!--Do not generate this package for public builds.  -->
-    <IsPackable Condition="'$(InternalBuild)' == 'true'">true</IsPackable>
-    <IsPackable Condition="'$(InternalBuild)' != 'true'">false</IsPackable>
-    <GeneratePackageOnBuild Condition="'$(InternalBuild)' == 'true'">$(GeneratePackages)</GeneratePackageOnBuild>
     <TargetFramework Condition="'$(BuildTarget)' == 'netcoreapp31'">netcoreapp3.1</TargetFramework>
     <TargetFrameworks Condition="'$(BuildTarget)' == ''">netcoreapp3.1</TargetFrameworks>
-    <PackageVersion Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)</PackageVersion>
-    <PackageVersion Condition=" '$(ReleasePackageVersion)' != '' ">$(ReleasePackageVersion)</PackageVersion>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
 
