@@ -1,5 +1,5 @@
 param(
-	[Parameter (Mandatory = $false)] 
+    [Parameter (Mandatory = $false)] 
     [ValidateSet ('all', 'net31', 'net6', 'net7')] 
     [String[]]$IncludeVersions = 'net31'
 )
@@ -145,9 +145,9 @@ foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }
         $files = [System.Collections.ArrayList]::new()
         $fileRoot = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "src\tests\$fileNameNoExt\bin\Release")
 
-        if ($IncludeVersions -contains 'net31') { $files.AddRange((Get-ChildItem -Recurse -Path @("$fileRoot\netcoreapp3.1\ExpressionTestCases\*", "$fileRoot\netcoreapp3.1\IntellisenseTests\*", "$fileRoot\netcoreapp3.1\TypeSystemTests\*") | % { $_.FullName })) }
-        if ($IncludeVersions -contains 'net6')  { $files.AddRange((Get-ChildItem -Recurse -Path @("$fileRoot\net6.0\ExpressionTestCases\*",        "$fileRoot\net6.0\IntellisenseTests\*",        "$fileRoot\net6.0\TypeSystemTests\*")        | % { $_.FullName })) }
-        if ($IncludeVersions -contains 'net7')  { $files.AddRange((Get-ChildItem -Recurse -Path @("$fileRoot\net7.0\ExpressionTestCases\*",        "$fileRoot\net7.0\IntellisenseTests\*",        "$fileRoot\net7.0\TypeSystemTests\*")        | % { $_.FullName })) }
+        if ($IncludeVersions -contains 'net31') { $files.AddRange((Get-ChildItem -Recurse -Path @("$fileRoot\netcoreapp3.1\ExpressionTestCases\*", "$fileRoot\netcoreapp3.1\IntellisenseTests\*", "$fileRoot\netcoreapp3.1\TestRunnerTests\*") | % { $_.FullName })) }
+        if ($IncludeVersions -contains 'net6')  { $files.AddRange((Get-ChildItem -Recurse -Path @("$fileRoot\net6.0\ExpressionTestCases\*",        "$fileRoot\net6.0\IntellisenseTests\*",        "$fileRoot\net6.0\TestRunnerTests\*")        | % { $_.FullName })) }
+        if ($IncludeVersions -contains 'net7')  { $files.AddRange((Get-ChildItem -Recurse -Path @("$fileRoot\net7.0\ExpressionTestCases\*",        "$fileRoot\net7.0\IntellisenseTests\*",        "$fileRoot\net7.0\TestRunnerTests\*")        | % { $_.FullName })) }
 
         foreach ($file in $files)
         {
@@ -206,6 +206,6 @@ foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }
     $xmlContent = Format-XML($nuspec.InnerXml)
     Set-Content $newNuspecFile -Value $xmlContent
 
-    nuget.exe pack $newNuspecFile 
+    .\nuget.exe pack $newNuspecFile 
 }
 
