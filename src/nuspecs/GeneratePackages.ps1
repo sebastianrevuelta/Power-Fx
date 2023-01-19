@@ -37,6 +37,7 @@ if ($IncludeVersions -contains 'all')
 }
 
 Write-Host "### Generate packages for $IncludeVersions"
+Write-Host "NugetVersion = $NugetVersion"
 
 $nuspecRoot = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "$pfxFolder\src\nuspecs\")
 cd $nuspecRoot
