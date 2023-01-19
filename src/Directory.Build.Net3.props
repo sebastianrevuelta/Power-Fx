@@ -3,7 +3,7 @@
   <!-- Loaded only in .Net Core 3.1 projects -->
 
   <PropertyGroup>
-    <IntermediateOutputPath>obj</IntermediateOutputPath>
+    <IntermediateOutputPath>obj3</IntermediateOutputPath>
   </PropertyGroup>
   
   <ItemGroup>

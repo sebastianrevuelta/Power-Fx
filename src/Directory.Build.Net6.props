@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="obj\**" />
-    <EmbeddedResource Remove="obj\**" />
-    <None Remove="obj\**" />
+    <Compile Remove="obj3\**" />
+    <EmbeddedResource Remove="obj3\**" />
+    <None Remove="obj3\**" />
   </ItemGroup>
 
   <ItemGroup>
