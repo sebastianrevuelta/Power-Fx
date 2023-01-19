@@ -2,12 +2,13 @@ param(
     [Parameter (Mandatory = $false)] 
     [ValidateSet ('all', 'net31', 'net6', 'net7')] 
     [String[]]$IncludeVersions = 'net31',
-    [String]$pfxFolder
+    [String]$pfxFolder,
+    [String]$NugetVersion
 )
 
 ## To generate these packages locally, build the 3 solutions Microsoft.PowerFx.sln, Microsoft.PowerFx.Net6.sln and Microsoft.PowerFx.Net7.sln in Release mode
 ## run this Powershell script from the command line .\GeneratePackages.ps1 after having defined the following variables
-##   $env:NugetVersion="0.2.4-preview.20230101-2000"  ## version of nuget package to create
+##   $NugetVersion="0.2.4-preview.20230101-2000"  ## version of nuget package to create
 ##   $env:BUILD_SOURCESDIRECTORY = "C:\Data\Power-Fx" ## location of source directory
 
 function Format-XML ([xml]$xml, $indent=2)
@@ -60,7 +61,7 @@ foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }
     
     [xml]$nuspec = Get-Content $newNuspecFile 
 
-    $nuspec.package.metadata.version = $env:NugetVersion
+    $nuspec.package.metadata.version = $NugetVersion
 
     if ($nuspec.package.metadata.repository -ne $null)
     {
@@ -91,7 +92,7 @@ foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }
         {
             if ($dep.version -eq "****")
             {
-                $dep.version = $env:NugetVersion
+                $dep.version = $NugetVersion
             }
         }
     }
