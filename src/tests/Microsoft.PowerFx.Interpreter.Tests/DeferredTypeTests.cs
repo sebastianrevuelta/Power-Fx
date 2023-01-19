@@ -33,11 +33,11 @@ namespace Microsoft.PowerFx.Interpreter
         [InlineData("X + 1", "X")]
         [InlineData("X + \"1\"", "X")]
         [InlineData("X + DateTime(2022, 11, 10, 0, 0, 0)", "d")]
-        [InlineData("X + Date(2022, 11, 10)", "d")]
+        [InlineData("X + Date(2022, 11, 10)", "D")]
         [InlineData("X + Time(0, 0, 0)", "T")]
         [InlineData("1 + X", "X")]
         [InlineData("DateTime(2022, 11, 10, 0, 0, 0) + X", "d")]
-        [InlineData("Date(2022, 11, 10) + X", "d")]
+        [InlineData("Date(2022, 11, 10) + X", "D")]
         [InlineData("Time(0, 0, 0) + X", "T")]
 
         [InlineData("X * 1", "n")]
@@ -148,9 +148,9 @@ namespace Microsoft.PowerFx.Interpreter
             
             Assert.True(result.IsSuccess);
 
-            var returnType = FormulaType.Build(result._binding.ResultType);
+            var returnType = FormulaType.Build(result.Binding.ResultType);
 
-            Assert.Equal(expected, result._binding.ResultType);
+            Assert.Equal(expected, result.Binding.ResultType);
 
             Assert.True(result.Errors.Count() > 0);
 

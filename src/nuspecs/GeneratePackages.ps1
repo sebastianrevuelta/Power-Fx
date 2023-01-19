@@ -37,7 +37,7 @@ if ($IncludeVersions -contains 'all')
 
 Write-Host "### Generate packages for $IncludeVersions"
 
-$nuspecRoot = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "($pfxFolder)\src\nuspecs\")
+$nuspecRoot = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "$pfxFolder\src\nuspecs\")
 cd $nuspecRoot
 $pfxHash = (git log -n 1 --pretty=%H).ToString()
 
@@ -47,7 +47,7 @@ foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }
 
     Write-Host "Processing $fileNameNoExt..."
 
-    $pkgRoot = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "($pfxFolder)\src\nuspecs\$fileNameNoExt")
+    $pkgRoot = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "$pfxFolder\src\nuspecs\$fileNameNoExt")
         
     if (Test-Path -Path $pkgRoot)
     {
@@ -99,7 +99,7 @@ foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }
     if ($fileNameNoExt -ne "Microsoft.PowerFx.Core.Tests")
     {
         $files = [System.Collections.ArrayList]::new()
-        $fileRoot = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "($pfxFolder)\src\libraries\$fileNameNoExt\bin\Release")        
+        $fileRoot = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "$pfxFolder\src\libraries\$fileNameNoExt\bin\Release")        
 
         if ($IncludeVersions -contains 'net31') { $files.AddRange((Get-ChildItem ($fileRoot + '\netstandard2.0') -Recurse -File -Exclude @("*.deps.json", "*.pdb", "*.dbg") | % { $_.FullName })) }
         if ($IncludeVersions -contains 'net6')  { $files.AddRange((Get-ChildItem ($fileRoot + '\net6.0')         -Recurse -File -Exclude @("*.deps.json", "*.pdb", "*.dbg") | % { $_.FullName })) }
@@ -125,7 +125,7 @@ foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }
         {
             $xfile = $nuspec.CreateElement("file", "http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd")
             $src = $nuspec.CreateAttribute("src")
-            $icon = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "($pfxFolder)\src\libraries\$fileNameNoExt\icon.png")
+            $icon = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "$pfxFolder\src\libraries\$fileNameNoExt\icon.png")
             $src.Value = $icon
             [void]$xfile.Attributes.Append($src)
 
@@ -144,7 +144,7 @@ foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }
     else
     {            
         $files = [System.Collections.ArrayList]::new()
-        $fileRoot = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "($pfxFolder)\src\tests\$fileNameNoExt\bin\Release")
+        $fileRoot = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "$pfxFolder\src\tests\$fileNameNoExt\bin\Release")
 
         if ($IncludeVersions -contains 'net31') { $files.AddRange((Get-ChildItem -Recurse -Path @("$fileRoot\netcoreapp3.1\ExpressionTestCases\*", "$fileRoot\netcoreapp3.1\IntellisenseTests\*", "$fileRoot\netcoreapp3.1\TestRunnerTests\*") | % { $_.FullName })) }
         if ($IncludeVersions -contains 'net6')  { $files.AddRange((Get-ChildItem -Recurse -Path @("$fileRoot\net6.0\ExpressionTestCases\*",        "$fileRoot\net6.0\IntellisenseTests\*",        "$fileRoot\net6.0\TestRunnerTests\*")        | % { $_.FullName })) }
@@ -188,7 +188,7 @@ foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }
 
         $xfile = $nuspec.CreateElement("file", "http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd")
         $src = $nuspec.CreateAttribute("src")
-        $icon = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "($pfxFolder)\src\tests\$fileNameNoExt\icon.png")
+        $icon = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "$pfxFolder\src\tests\$fileNameNoExt\icon.png")
         $src.Value = $icon
         [void]$xfile.Attributes.Append($src)
 
