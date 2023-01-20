@@ -258,6 +258,18 @@ foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }
         {
             [void]$comment.ParentNode.RemoveChild($comment)
         }
+
+        $nm = [System.Xml.XmlNamespaceManager]::new($nuspec.NameTable)
+        $nm.AddNamespace("n", "http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd")
+
+        foreach ($inc in $nuspec.SelectNodes("//n:include", $nm))
+        {
+            [void]$inc.ParentNode.RemoveChild($inc)
+        }
+        foreach ($exc in $nuspec.SelectNodes("//n:exclude", $nm))
+        {
+            [void]$exc.ParentNode.RemoveChild($exc)
+        }
     }
     
     $xmlContent = Format-XML($nuspec.InnerXml)
