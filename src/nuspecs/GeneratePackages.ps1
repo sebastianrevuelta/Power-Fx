@@ -209,6 +209,6 @@ foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }
     $xmlContent = Format-XML($nuspec.InnerXml)
     Set-Content $newNuspecFile -Value $xmlContent
 
-    .\nuget.exe pack $newNuspecFile 
+    nuget.exe pack $newNuspecFile 
 }
 
