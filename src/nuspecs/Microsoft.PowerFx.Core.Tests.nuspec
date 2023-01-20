@@ -1,5 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <!-- 
+    This is a custom nuspec file
+    - version or dependency/version are set to "****" when they need to be replaced with the real version number
+    - files contain include/exclude elements to select which files need to be included/excluded in the package
+      when no include/exclude, all files in 'Release' folder will be included
+  -->
   <metadata>
     <id>Microsoft.PowerFx.Core.Tests</id>
     <version>****</version>
@@ -42,10 +48,11 @@
       </group>
     </dependencies>
     <contentFiles>
-      <!-- Add files from ExpressionTestCases, IntellisenseTests, TypeSystemTests folders -->          
+      <!-- Add files from ExpressionTestCases, IntellisenseTests folders -->          
     </contentFiles>
   </metadata>
   <files>
     <!-- Add files -->
+    <include>Microsoft.PowerFx.Core.Tests.*</include>
   </files>
 </package>

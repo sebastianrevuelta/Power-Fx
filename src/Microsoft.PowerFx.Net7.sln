@@ -56,6 +56,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuspecs", "nuspecs", "{51D0
 		nuspecs\Microsoft.PowerFx.Core.nuspec = nuspecs\Microsoft.PowerFx.Core.nuspec
 		nuspecs\Microsoft.PowerFx.Core.Tests.nuspec = nuspecs\Microsoft.PowerFx.Core.Tests.nuspec
 		nuspecs\Microsoft.PowerFx.Interpreter.nuspec = nuspecs\Microsoft.PowerFx.Interpreter.nuspec
+		nuspecs\Microsoft.PowerFx.Json.nuspec = nuspecs\Microsoft.PowerFx.Json.nuspec
 		nuspecs\Microsoft.PowerFx.LanguageServerProtocol.nuspec = nuspecs\Microsoft.PowerFx.LanguageServerProtocol.nuspec
 		nuspecs\Microsoft.PowerFx.Transport.Attributes.nuspec = nuspecs\Microsoft.PowerFx.Transport.Attributes.nuspec
 	EndProjectSection

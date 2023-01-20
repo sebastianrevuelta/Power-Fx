@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <!-- 
+    This is a custom nuspec file
+    - version or dependency/version are set to "****" when they need to be replaced with the real version number
+    - files contain include/exclude elements to select which files need to be included/excluded in the package
+      when no include/exclude, all files in 'Release' folder will be included
+  -->
   <metadata>
     <id>Microsoft.PowerFx.Interpreter</id>
     <version>****</version>
@@ -18,17 +24,20 @@
     <dependencies>
       <group targetFramework=".NETStandard2.0">
         <dependency id="Microsoft.PowerFx.Core" version="****" exclude="Build,Analyzers" />
+        <dependency id="System.Text.Json" version="5.0.2" exclude="Build,Analyzers" />
       </group>
       <group targetFramework="net6.0">
         <dependency id="Microsoft.PowerFx.Core" version="****" exclude="Build,Analyzers" />
+        <dependency id="System.Text.Json" version="7.0.1" exclude="Build,Analyzers" />
       </group>
       <group targetFramework="net7.0">
         <dependency id="Microsoft.PowerFx.Core" version="****" exclude="Build,Analyzers" />
+        <dependency id="System.Text.Json" version="7.0.1" exclude="Build,Analyzers" />
       </group>
     </dependencies>
   </metadata>
   <files>
-    <!-- Add files here, from src\libraries\\Microsoft.PowerFx.Interpreter\bin\Release\[netstandard2.0|net6.0|net7.0] (folder & subfolders) -->       
-    <file src="C:\Data\Power-Fx\src\libraries\Microsoft.PowerFx.Interpreter\icon.png" target="\icon.png" />
+    <!-- Add files here, from src\libraries\\Microsoft.PowerFx.Interpreter\bin\Release\[netstandard2.0|net6.0|net7.0] (folder & subfolders) -->
+    <include>Microsoft.PowerFx.Interpreter.*</include>
   </files>
 </package>

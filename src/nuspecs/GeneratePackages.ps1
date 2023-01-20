@@ -16,7 +16,7 @@ function Format-XML ([xml]$xml, $indent=2)
     $StringWriter = New-Object System.IO.StringWriter
     $XmlWriter = New-Object System.XMl.XmlTextWriter $StringWriter
     $xmlWriter.Formatting = “indented”
-    $xmlWriter.Indentation = $Indent
+    $xmlWriter.Indentation = $Indent    
     $xml.WriteContentTo($XmlWriter)
     $XmlWriter.Flush()
     $StringWriter.Flush()
@@ -29,13 +29,13 @@ $all = $false
 
 if ($IncludeVersions.Length -eq 0)
 {
-    $IncludeVersions = @('net31')
+    $IncludeVersions = [string[]]@('net31')
 }
 
 if ($IncludeVersions -contains 'all')
 {
     $all = $true
-    $IncludeVersions = @('net31', 'net6', 'net7')
+    $IncludeVersions = [string[]]@('net31', 'net6', 'net7')
 }
 
 $idSuffix = [System.String]::Join('-', [System.Linq.Enumerable]::Select($IncludeVersions, [func[string,string]]{$args[0].Substring(0,1).ToUpper()+$args[0].Substring(1) }));
@@ -79,7 +79,9 @@ foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }
         $nuspec.package.metadata.id = $nuspec.package.metadata.id + "." + $idSuffix;
 
         $newName = [System.IO.Path]::Combine($pkgRoot, ($nuspec.package.metadata.id + ".nuspec"))
-        Rename-Item $newNuspecFile $newName
+        $newName2 = [System.IO.Path]::GetFileName($newName)
+        Rename-Item $newNuspecFile $newName2
+
         $newNuspecFile = $newName
     }
 
@@ -135,6 +137,18 @@ foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }
         if ($IncludeVersions -contains 'net6')  { $files.AddRange((Get-ChildItem ($fileRoot + '\net6.0')         -Recurse -File -Exclude @("*.deps.json", "*.pdb", "*.dbg") | % { $_.FullName })) }
         if ($IncludeVersions -contains 'net7')  { $files.AddRange((Get-ChildItem ($fileRoot + '\net7.0')         -Recurse -File -Exclude @("*.deps.json", "*.pdb", "*.dbg") | % { $_.FullName })) }
 
+        $include = [string[]]$nuspec.package.files.include
+        $exclude = [string[]]$nuspec.package.files.exclude
+
+        if ($include -ne $null)
+        {
+            $files = [System.Linq.Enumerable]::Where([string[]]$files, [Func[string, bool]] { $x = $args[0]; [System.Linq.Enumerable]::Any($include, [Func[string, bool]] { $x -match $args[0].Replace("*","").Replace(".","\.") }) })
+        }
+        if ($exclude -ne $null)
+        {
+            $files = [System.Linq.Enumerable]::Where([string[]]$files, [Func[string, bool]] { $x = $args[0]; [System.Linq.Enumerable]::Any($exclude, [Func[string, bool]] { $x -notmatch $args[0].Replace("*","").Replace(".","\.") }) })
+        }
+
         foreach ($file in $files)
         {
             $xfile = $nuspec.CreateElement("file", "http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd")
@@ -176,9 +190,21 @@ foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }
         $files = [System.Collections.ArrayList]::new()
         $fileRoot = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "$pfxFolder\src\tests\$fileNameNoExt\bin\Release")
 
-        if ($IncludeVersions -contains 'net31') { $files.AddRange((Get-ChildItem -Recurse -Path @("$fileRoot\netcoreapp3.1\ExpressionTestCases\*", "$fileRoot\netcoreapp3.1\IntellisenseTests\*", "$fileRoot\netcoreapp3.1\TestRunnerTests\*") | % { $_.FullName })) }
-        if ($IncludeVersions -contains 'net6')  { $files.AddRange((Get-ChildItem -Recurse -Path @("$fileRoot\net6.0\ExpressionTestCases\*",        "$fileRoot\net6.0\IntellisenseTests\*",        "$fileRoot\net6.0\TestRunnerTests\*")        | % { $_.FullName })) }
-        if ($IncludeVersions -contains 'net7')  { $files.AddRange((Get-ChildItem -Recurse -Path @("$fileRoot\net7.0\ExpressionTestCases\*",        "$fileRoot\net7.0\IntellisenseTests\*",        "$fileRoot\net7.0\TestRunnerTests\*")        | % { $_.FullName })) }
+        if ($IncludeVersions -contains 'net31') { $files.AddRange((Get-ChildItem -Recurse -Path @("$fileRoot\netcoreapp3.1\ExpressionTestCases\*", "$fileRoot\netcoreapp3.1\IntellisenseTests\*") | % { $_.FullName })) }
+        if ($IncludeVersions -contains 'net6')  { $files.AddRange((Get-ChildItem -Recurse -Path @("$fileRoot\net6.0\ExpressionTestCases\*",        "$fileRoot\net6.0\IntellisenseTests\*")        | % { $_.FullName })) }
+        if ($IncludeVersions -contains 'net7')  { $files.AddRange((Get-ChildItem -Recurse -Path @("$fileRoot\net7.0\ExpressionTestCases\*",        "$fileRoot\net7.0\IntellisenseTests\*")        | % { $_.FullName })) }
+
+        $include = [string[]]$nuspec.package.files.include
+        $exclude = [string[]]$nuspec.package.files.exclude
+
+        if ($include -ne $null)
+        {
+            $files = [System.Linq.Enumerable]::Where([string[]]$files, [Func[string, bool]] { $x = $args[0]; [System.Linq.Enumerable]::Any($include, [Func[string, bool]] { $x -match $args[0].Replace("*","").Replace(".","\.") }) })
+        }
+        if ($exclude -ne $null)
+        {
+            $files = [System.Linq.Enumerable]::Where([string[]]$files, [Func[string, bool]] { $x = $args[0]; [System.Linq.Enumerable]::Any($exclude, [Func[string, bool]] { $x -notmatch $args[0].Replace("*","").Replace(".","\.") }) })
+        }
 
         foreach ($file in $files)
         {
