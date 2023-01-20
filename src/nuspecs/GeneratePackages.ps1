@@ -78,13 +78,14 @@ foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }
     {        
         $nuspec.package.metadata.id = $nuspec.package.metadata.id + "." + $idSuffix;
 
-        $newName = $nuspec.package.metadata.id + ".nupkg"
+        $newName = [System.IO.Path]::Combine($pkgRoot, ($nuspec.package.metadata.id + ".nuspec"))
         Rename-Item $newNuspecFile $newName
         $newNuspecFile = $newName
     }
 
     $pkgId = $nuspec.package.metadata.id
     Write-Host "Package Id" $pkgId
+    Write-Host "Nuspec file" $newNuspecFile
 
     if ($nuspec.package.metadata.repository -ne $null)
     {
@@ -116,6 +117,11 @@ foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }
             if ($dep.version -eq "****")
             {
                 $dep.version = $NugetVersion
+                
+                if (-not $all)
+                {
+                    $dep.id = $dep.id + "." + $idSuffix;
+                }
             }
         }
     }
