@@ -24,7 +24,8 @@ function Format-XML ([xml]$xml, $indent=2)
     $StringWriter.ToString()
 }
 
-$IncludeVersions = $IncludeVersions | Select-Object -Unique
+$IncludeVersions = [string[]]($IncludeVersions | Select-Object -Unique)
+$all = $false
 
 if ($IncludeVersions.Length -eq 0)
 {
@@ -33,11 +34,20 @@ if ($IncludeVersions.Length -eq 0)
 
 if ($IncludeVersions -contains 'all')
 {
+    $all = $true
     $IncludeVersions = @('net31', 'net6', 'net7')
 }
 
+$idSuffix = [System.String]::Join('-', [System.Linq.Enumerable]::Select($IncludeVersions, [func[string,string]]{$args[0].Substring(0,1).ToUpper()+$args[0].Substring(1) }));
+
 Write-Host "### Generate packages for $IncludeVersions"
 Write-Host "NugetVersion = $NugetVersion"
+Write-Host "IdSuffix = $idSuffix"
+
+if ([System.String]::IsNullOrEmpty($pfxFolder))
+{
+    $pfxFolder = "."
+}
 
 $nuspecRoot = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "$pfxFolder\src\nuspecs\")
 cd $nuspecRoot
@@ -63,6 +73,18 @@ foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }
     [xml]$nuspec = Get-Content $newNuspecFile 
 
     $nuspec.package.metadata.version = $NugetVersion
+
+    if (-not $all)
+    {        
+        $nuspec.package.metadata.id = $nuspec.package.metadata.id + "." + $idSuffix;
+
+        $newName = $nuspec.package.metadata.id + ".nupkg"
+        Rename-Item $newNuspecFile $newName
+        $newNuspecFile = $newName
+    }
+
+    $pkgId = $nuspec.package.metadata.id
+    Write-Host "Package Id" $pkgId
 
     if ($nuspec.package.metadata.repository -ne $null)
     {
