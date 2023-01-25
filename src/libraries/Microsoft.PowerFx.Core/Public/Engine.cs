@@ -58,26 +58,26 @@ namespace Microsoft.PowerFx
 
         // By default, we pull the core functions. 
         // These can be overridden. 
-        internal TexlFunctionSet<TexlFunction> Functions => CreateResolverInternal().Functions;
+        internal TexlFunctionSet Functions => CreateResolverInternal().Functions;
 
         /// <summary>
         /// Get all functions from the config and symbol tables. 
-        /// </summary>
-        [Obsolete("Slow API. Use With* APIs to select functions.")]
+        /// </summary>        
+#pragma warning disable CS0618 // Type or member is obsolete
         public IEnumerable<FunctionInfo> FunctionInfos => Functions.Functions.Select(f => new FunctionInfo(f));
+#pragma warning restore CS0618 // Type or member is obsolete
 
         /// <summary>
         /// List all functions (both builtin and custom) registered with this evaluator. 
         /// </summary>
-#pragma warning disable CA1024 // Use properties where appropriate
-        [Obsolete("Slow API. Use With* APIs to select functions.")]
+#pragma warning disable CA1024 // Use properties where appropriate        
         public IEnumerable<string> GetAllFunctionNames()
 #pragma warning restore CA1024 // Use properties where appropriate
         {
-            return Functions.Keys;
+            return Functions.FunctionNames;
         }
 
-        internal List<TexlFunction> GetFunctionsByName(string name) => Functions.WithName(name);
+        internal IEnumerable<TexlFunction> GetFunctionsByName(string name) => Functions.WithName(name);
 
         internal int FunctionCount => Functions.Count();
 
@@ -415,7 +415,14 @@ namespace Microsoft.PowerFx
             var ruleScope = this.GetRuleScope();
             var symbolTable = (parameters == null) ? null : SymbolTable.NewFromRecord(parameters);
 
-            return ExpressionLocalizationHelper.ConvertExpression(expressionText, ruleScope, GetDefaultBindingConfig(), CreateResolverInternal(symbolTable), CreateBinderGlue(), Config, toDisplay: false);
+            return GetInvariantExpressionWorker(expressionText, symbolTable, Config.CultureInfo);
+        }
+
+        internal string GetInvariantExpressionWorker(string expressionText, ReadOnlySymbolTable symbolTable, CultureInfo parseCulture)
+        {
+            var ruleScope = this.GetRuleScope();
+
+            return ExpressionLocalizationHelper.ConvertExpression(expressionText, ruleScope, GetDefaultBindingConfig(), CreateResolverInternal(symbolTable), CreateBinderGlue(), parseCulture, Config.Features, toDisplay: false);
         }
 
         /// <summary>
