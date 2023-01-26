@@ -23,8 +23,8 @@ namespace Microsoft.PowerFx.Core.Functions
         // List of all function.GetRequiredEnumNames()
         private List<string> _enums;
 
-        // Cont of functions
-        private int _count;
+        // Count of functions
+        internal int _count;
 
         internal Dictionary<string, List<TexlFunction>>.KeyCollection FunctionNames => _functions.Keys;
 
@@ -59,18 +59,27 @@ namespace Microsoft.PowerFx.Core.Functions
             _count = 0;
         }
 
+        private TexlFunctionSet(Dictionary<string, List<TexlFunction>> functions, Dictionary<string, List<TexlFunction>> functionsInvariant, Dictionary<DPath, List<TexlFunction>> functionNamespaces, List<string> enums, int count)
+        {
+            _functions = functions ?? throw new ArgumentNullException(nameof(functions));
+            _functionsInvariant = functionsInvariant ?? throw new ArgumentNullException(nameof(functionsInvariant));
+            _namespaces = functionNamespaces ?? throw new ArgumentNullException(nameof(functionNamespaces));
+            _enums = enums ?? throw new ArgumentNullException(nameof(enums));
+            _count = count;
+        }
+
         internal TexlFunctionSet(TexlFunction function)
             : this()
         {
             if (function == null)
             {
-                throw new ArgumentNullException($"{nameof(function)} cannot be null", nameof(function));
+                throw new ArgumentNullException(nameof(function));
             }
 
             _functions.Add(function.Name, new List<TexlFunction>() { function });
             _functionsInvariant.Add(function.LocaleInvariantName, new List<TexlFunction>() { function });
             _namespaces.Add(function.Namespace, new List<TexlFunction> { function });
-            _enums = function.GetRequiredEnumNames().ToList();
+            _enums = new List<string>(function.GetRequiredEnumNames());
             _count = 1;
         }
 
@@ -86,15 +95,6 @@ namespace Microsoft.PowerFx.Core.Functions
             {
                 Add(func);
             }
-        }
-
-        private TexlFunctionSet(Dictionary<string, List<TexlFunction>> functions, Dictionary<string, List<TexlFunction>> functionsInvariant, Dictionary<DPath, List<TexlFunction>> functionNamespaces, List<string> enums, int count)
-        {
-            _functions = functions ?? throw new ArgumentNullException($"{nameof(functions)} cannot be null", nameof(functions));
-            _functionsInvariant = functionsInvariant ?? throw new ArgumentNullException($"{nameof(functionsInvariant)} cannot be null", nameof(functionsInvariant));
-            _namespaces = functionNamespaces ?? throw new ArgumentNullException($"{nameof(functionNamespaces)} cannot be null", nameof(functionNamespaces));
-            _enums = enums ?? throw new ArgumentNullException($"{nameof(enums)} cannot be null", nameof(enums));
-            _count = count;
         }
 
         internal TexlFunctionSet(TexlFunctionSet other)
@@ -116,7 +116,10 @@ namespace Microsoft.PowerFx.Core.Functions
 
             foreach (var functionSet in functionSets)
             {
-                Add(functionSet);
+                if (functionSet._count > 0)
+                {
+                    Add(functionSet);
+                }
             }
         }
 
@@ -142,7 +145,7 @@ namespace Microsoft.PowerFx.Core.Functions
         {
             if (function == null)
             {
-                throw new ArgumentNullException($"{nameof(function)} cannot be null", nameof(function));
+                throw new ArgumentNullException(nameof(function));
             }
 
             var fList = WithNameInternal(function.Name);
@@ -194,7 +197,6 @@ namespace Microsoft.PowerFx.Core.Functions
             }
 
             _enums.AddRange(function.GetRequiredEnumNames());
-
             _count++;
 
             return function;
@@ -204,7 +206,7 @@ namespace Microsoft.PowerFx.Core.Functions
         {
             if (functionSet == null)
             {
-                throw new ArgumentNullException($"{nameof(functionSet)} cannot be null", nameof(functionSet));
+                throw new ArgumentNullException(nameof(functionSet));
             }
 
             if (_count == 0)
