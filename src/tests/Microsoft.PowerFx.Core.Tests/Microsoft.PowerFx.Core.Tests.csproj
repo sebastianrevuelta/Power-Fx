@@ -10,7 +10,7 @@
     <Version Condition=" '$(ReleasePackageVersion)' != '' ">$(ReleasePackageVersion)</Version>
     <PackageVersion Condition=" '$(ReleasePackageVersion)' == '' ">$(LocalPackageVersion)</PackageVersion>
     <PackageVersion Condition=" '$(ReleasePackageVersion)' != '' ">$(ReleasePackageVersion)</PackageVersion>
-    <Configurations>Debug;Release</Configurations>
+    <Configurations>Debug;Release;DebugProfiler</Configurations>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
 

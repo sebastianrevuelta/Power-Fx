@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Microsoft.PowerFx.Core.Utils;
 
 namespace Microsoft.PowerFx.Core.Types
@@ -12,96 +13,97 @@ namespace Microsoft.PowerFx.Core.Types
     // It is an assertable offense for an aggregate to have invalid children.
     internal struct ValueTree : IEquatable<ValueTree>
     {
-        private readonly RedBlackNode<EquatableObject> _root;
-        private readonly Dictionary<RedBlackNode<EquatableObject>, int> _hashCodeCache;
+        private readonly Dictionary<string, EquatableObject> _dic;
+        private int? _hash;
 
-        private ValueTree(RedBlackNode<EquatableObject> root)
+        private ValueTree(Dictionary<string, EquatableObject> dic)
         {
-            _root = root;
-            _hashCodeCache = new Dictionary<RedBlackNode<EquatableObject>, int>();
+            _dic = dic ?? throw new ArgumentNullException(nameof(dic));
+            _hash = null;
         }
 
-        [Conditional("PARANOID_VALIDATION")]
         internal void AssertValid()
         {
-#if PARANOID_VALIDATION
-                if (_root != null)
-                    _root.AssertValid();
-#endif
         }
 
         public static ValueTree Create(IEnumerable<KeyValuePair<string, EquatableObject>> items)
         {
             Contracts.AssertValue(items);
 
-#if DEBUG
-            foreach (var item in items)
-            {
-                Contracts.AssertNonEmpty(item.Key);
-                Contracts.Assert(item.Value.IsValid);
-            }
-#endif
-            return new ValueTree(RedBlackNode<EquatableObject>.Create(items));
+            return new ValueTree(items.ToDictionary(i => i.Key, i => i.Value));
         }
 
-        public bool IsEmpty => _root == null;
+        public bool IsEmpty => _dic == null || !_dic.Any();
 
-        public int Count => _root == null ? 0 : _root.Count;
+        public int Count => _dic == null ? 0 : _dic.Count;
 
-        public bool Contains(string key)
-        {
-            Contracts.AssertValue(key);
-            return TryGetValue(key, out var value);
-        }
+        public bool Contains(string key) => _dic != null && _dic.ContainsKey(key);
 
         public bool TryGetValue(string key, out EquatableObject value)
         {
-            Contracts.AssertValue(key);
-            var fRet = RedBlackNode<EquatableObject>.TryGetValue(_root, key, out value);
-            Contracts.Assert(fRet == (value.Object != null));
-            return fRet;
+            if (_dic == null)
+            {
+                value = default;
+                return false;
+            }
+
+            return _dic.TryGetValue(key, out value);
         }
 
         public IEnumerable<KeyValuePair<string, EquatableObject>> GetPairs()
         {
-            return RedBlackNode<EquatableObject>.GetPairs(_root);
+            return _dic == null ? Enumerable.Empty<KeyValuePair<string, EquatableObject>>() : _dic.OrderBy(kvp => kvp.Key);
         }
 
         public ValueTree SetItem(string name, EquatableObject value)
         {
-            Contracts.AssertValue(name);
-            Contracts.AssertValue(value.Object);
-            return new ValueTree(RedBlackNode<EquatableObject>.SetItem(_root, name, value));
+            var d2 = _dic == null ? new Dictionary<string, EquatableObject>() : new Dictionary<string, EquatableObject>(_dic);
+            d2[name] = value;
+            return new ValueTree(d2);
         }
 
         // Removes the specified name+value from the tree, and returns a new tree.
         // Sets fMissing if name cannot be found.
         public ValueTree RemoveItem(ref bool fMissing, string name)
         {
-            Contracts.AssertValue(name);
-            return new ValueTree(RedBlackNode<EquatableObject>.RemoveItem(ref fMissing, _root, name, _hashCodeCache));
-        }
-
-        // Removes the specified item from the tree, and returns a new tree.
-        // If any item in 'names' cannot be found, sets fAnyMissing to true.
-        public ValueTree RemoveItems(ref bool fAnyMissing, params DName[] names)
-        {
-            Contracts.AssertNonEmpty(names);
-            Contracts.AssertAllValid(names);
-
-            var root = _root;
-            foreach (string name in names)
+            if (fMissing = !_dic.ContainsKey(name))
             {
-                Contracts.AssertNonEmpty(name);
-                root = RedBlackNode<EquatableObject>.RemoveItem(ref fAnyMissing, root, name, _hashCodeCache);
+                return this;
             }
 
-            return new ValueTree(root);
+            var d2 = new Dictionary<string, EquatableObject>(_dic);
+            d2.Remove(name);
+            return new ValueTree(d2);
         }
 
-        public static bool operator ==(ValueTree tree1, ValueTree tree2) => RedBlackNode<EquatableObject>.Equals(tree1._root, tree2._root);
+        public static bool operator ==(ValueTree tree1, ValueTree tree2) => Equals(tree1, tree2);
 
         public static bool operator !=(ValueTree tree1, ValueTree tree2) => !(tree1 == tree2);
+
+        public static bool Equals(ValueTree tree1, ValueTree tree2)
+        {
+            if ((object)tree1 == (object)tree2)
+            {
+                return true;
+            }
+
+            if ((object)tree1 == null || (object)tree2 == null)
+            {
+                return false;
+            }
+
+            if (tree1._dic == tree2._dic || (tree1._dic == null && !tree2._dic.Any()) || (tree2._dic == null && !tree1._dic.Any()))
+            {
+                return true;
+            }
+
+            if (tree1._dic == null || tree2._dic == null)
+            {
+                return false;
+            }
+
+            return tree1._dic.Count == tree2._dic.Count && !tree1._dic.Except(tree2._dic).Any();
+        }
 
         public bool Equals(ValueTree other)
         {
@@ -120,20 +122,20 @@ namespace Microsoft.PowerFx.Core.Types
 
         public override int GetHashCode()
         {
-            var hash = 0x79B70F13;
-            if (_root != null)
+            if (!_hash.HasValue)
             {
-                if (_hashCodeCache.ContainsKey(_root))
+                int hash = 0x79B70F13;
+
+                foreach (KeyValuePair<string, EquatableObject> kvp in GetPairs())
                 {
-                    hash = _hashCodeCache[_root];
+                    hash = Hashing.CombineHash(hash, kvp.Key.GetHashCode());
+                    hash = Hashing.CombineHash(hash, kvp.Value.GetHashCode());
                 }
-                else
-                {
-                    hash = Hashing.CombineHash(hash, _root.GetHashCode());
-                }
+
+                _hash = hash;
             }
 
-            return hash;
+            return _hash.Value;
         }
     }
 }

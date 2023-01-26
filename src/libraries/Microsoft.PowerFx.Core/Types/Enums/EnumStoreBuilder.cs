@@ -349,6 +349,7 @@ namespace Microsoft.PowerFx.Core.Types.Enums
             });
 
             var list = ImmutableList.CreateBuilder<(DName name, DType typeSpec)>();
+
             foreach (var enumSpec in _workingEnums)
             {
                 Contracts.Assert(DName.IsValidDName(enumSpec.Key));
@@ -360,13 +361,12 @@ namespace Microsoft.PowerFx.Core.Types.Enums
             return list.ToImmutable();
         }
 
-        private IEnumerable<EnumSymbol> EnumSymbols =>
-            CollectionUtils.EnsureInstanceCreated(
-                    ref _enumSymbols, () => RegenerateEnumSymbols());
+        private IEnumerable<EnumSymbol> EnumSymbols => CollectionUtils.EnsureInstanceCreated(ref _enumSymbols, () => RegenerateEnumSymbols());
 
         private ImmutableList<EnumSymbol> RegenerateEnumSymbols()
         {
             var list = ImmutableList.CreateBuilder<EnumSymbol>();
+
             foreach (var (name, typeSpec) in Enums())
             {
                 list.Add(new EnumSymbol(name, typeSpec));

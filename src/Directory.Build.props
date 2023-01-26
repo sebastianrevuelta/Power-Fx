@@ -79,7 +79,9 @@
     <DelaySign>true</DelaySign>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'!='DEBUG'">
+  <!-- No optimization for Debug and DebugProfiler -->
+  <!-- DebugProfiler doesn't declare DEBUG and avoids all Contract.* checks -->
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <Optimize>True</Optimize>
   </PropertyGroup>
 

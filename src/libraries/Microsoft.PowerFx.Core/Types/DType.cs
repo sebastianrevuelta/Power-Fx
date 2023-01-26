@@ -139,7 +139,7 @@ namespace Microsoft.PowerFx.Core.Types
         /// Eventually, all display names should come from this centralized source.
         /// We should not be using individual DataSource/OptionSet/View references.
         /// </summary>
-        internal DisplayNameProvider DisplayNameProvider { get; private set; }
+        internal DisplayNameProvider DisplayNameProvider { get; set; }
 
         /// <summary>
         /// NamedValueKind is used only for values of kind NamedValue
@@ -153,7 +153,7 @@ namespace Microsoft.PowerFx.Core.Types
         /// Describes OptionSets. Includes display names and naming info. 
         /// Can create <see cref="OptionSetValue"/>s. 
         /// </summary>
-        internal IExternalOptionSet OptionSetInfo { get; }
+        internal IExternalOptionSet OptionSetInfo { get; set; }
 
         #endregion
 
@@ -267,12 +267,12 @@ namespace Microsoft.PowerFx.Core.Types
                 LazyTypeProvider);
         }
 
-        // Constructor for aggregate types (record, table)
+        // Constructor for aggregate types (record, table, option set)
         public DType(DKind kind, TypeTree tree, bool isFile = false, bool isLargeImage = false)
         {
             Contracts.Assert(kind >= DKind._Min && kind < DKind._Lim);
             tree.AssertValid();
-            Contracts.Assert(tree.IsEmpty || kind == DKind.Table || kind == DKind.Record);
+            Contracts.Assert(tree.IsEmpty || kind == DKind.Table || kind == DKind.Record || kind == DKind.OptionSet);
 
             Kind = kind;
             TypeTree = tree;
@@ -861,17 +861,8 @@ namespace Microsoft.PowerFx.Core.Types
 
         public static DType CreateOptionSetType(IExternalOptionSet info)
         {
-            Contracts.AssertValue(info);
-
-            var typedNames = new List<TypedName>();
-
-            foreach (var name in info.OptionNames)
-            {
-                var type = new DType(DKind.OptionSetValue, info);
-                typedNames.Add(new TypedName(type, name));
-            }
-
-            return new DType(DKind.OptionSet, TypeTree.Create(typedNames.Select(TypedNameToKVP)), info);
+            Contracts.AssertValue(info);                        
+            return new DType(DKind.OptionSet, TypeTree.Create(info.OptionNames.Select(on => new KeyValuePair<string, DType>(on.Value, new DType(DKind.OptionSetValue, info)))), info);
         }
 
         public static DType CreateViewType(IExternalViewInfo info)
@@ -2272,7 +2263,7 @@ namespace Microsoft.PowerFx.Core.Types
 
                 while (fAtor1 && fAtor2)
                 {
-                    var cmp = RedBlackNode<DType>.Compare(ator1.Current.Key, ator2.Current.Key);
+                    var cmp = string.CompareOrdinal(ator1.Current.Key, ator2.Current.Key);
                     if (cmp == 0)
                     {
                         var innerType = Supertype(ator1.Current.Value, ator2.Current.Value, useLegacyDateTimeAccepts);

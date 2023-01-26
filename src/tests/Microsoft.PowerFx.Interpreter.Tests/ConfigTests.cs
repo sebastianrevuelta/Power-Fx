@@ -686,7 +686,7 @@ namespace Microsoft.PowerFx.Interpreter.Tests
 
             var engine = new Engine(new PowerFxConfig());
             var check = engine.Check("DisplayFoo.key1", symbolTable: s1);
-            Assert.True(check.IsSuccess);
+            Assert.True(check.IsSuccess, string.Join("\r\n", check.Errors));
         }
 
         // Can change default builtin functions.

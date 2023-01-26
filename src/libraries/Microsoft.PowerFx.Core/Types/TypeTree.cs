@@ -5,6 +5,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.PowerFx.Core.Utils;
 
 namespace Microsoft.PowerFx.Core.Types
@@ -12,96 +14,124 @@ namespace Microsoft.PowerFx.Core.Types
     // Implements a red-black tree mapping from string-valued key to DType.
     internal struct TypeTree : IEquatable<TypeTree>, IEnumerable<KeyValuePair<string, DType>>
     {
-        private readonly RedBlackNode<DType> _root;
-        private readonly Dictionary<RedBlackNode<DType>, int> _hashCodeCache;
+        private readonly Dictionary<string, DType> _dic;
+        private int? _hash;
 
-        private TypeTree(RedBlackNode<DType> root)
+        private TypeTree(Dictionary<string, DType> dic)
         {
-            _root = root;
-            _hashCodeCache = new Dictionary<RedBlackNode<DType>, int>();
+            _dic = dic ?? throw new ArgumentNullException(nameof(dic));
+            _hash = null;
         }
 
-        public bool IsEmpty => _root == null;
+        public bool IsEmpty => _dic == null || !_dic.Any();
 
-        public int Count => _root == null ? 0 : _root.Count;
+        public int Count => _dic == null ? 0 : _dic.Count;
 
-        public static bool operator ==(TypeTree tree1, TypeTree tree2) => RedBlackNode<DType>.Equals(tree1._root, tree2._root);
+        public static bool operator ==(TypeTree tree1, TypeTree tree2) => Equals(tree1, tree2);
 
         public static bool operator !=(TypeTree tree1, TypeTree tree2) => !(tree1 == tree2);
 
-        [Conditional("PARANOID_VALIDATION")]
+        public static bool Equals(TypeTree tree1, TypeTree tree2)
+        {
+            if ((object)tree1 == (object)tree2)
+            {
+                return true;
+            }
+
+            if ((object)tree1 == null || (object)tree2 == null)
+            {
+                return false;
+            }
+
+            if (tree1._dic == tree2._dic || (tree1._dic == null && !tree2._dic.Any()) || (tree2._dic == null && !tree1._dic.Any()))
+            {
+                return true;
+            }
+
+            if (tree1._dic == null || tree2._dic == null)
+            {
+                return false;
+            }
+
+            return tree1._dic.Count == tree2._dic.Count && !tree1._dic.Except(tree2._dic).Any();
+        }
+
         internal void AssertValid()
         {
-#if PARANOID_VALIDATION
-                if (_root != null)
-                    _root.AssertValid();
-#endif
         }
 
         public static TypeTree Create(IEnumerable<KeyValuePair<string, DType>> items)
         {
             Contracts.AssertValue(items);
-
-#if DEBUG
-            foreach (var item in items)
-            {
-                Contracts.AssertNonEmpty(item.Key);
-                Contracts.Assert(item.Value.IsValid);
-            }
-#endif
-            return new TypeTree(RedBlackNode<DType>.Create(items));
+            return new TypeTree(items.GroupBy(i => i.Key).ToDictionary(i => i.Key, i => i.Last().Value));
         }
 
-        public bool Contains(string key)
-        {
-            Contracts.AssertValue(key);
-            return TryGetValue(key, out var value);
-        }
+        public bool Contains(string key) => _dic != null && _dic.ContainsKey(key);
 
         public bool TryGetValue(string key, out DType value)
         {
             Contracts.AssertValue(key);
-            var fRet = RedBlackNode<DType>.TryGetValue(_root, key, out value);
+
+            if (_dic == null)
+            {
+                value = default;
+                return false;
+            }
+
+            var fRet = _dic.TryGetValue(key, out value);
             value = value ?? DType.Invalid;
+
             Contracts.Assert(fRet == value.IsValid);
+
             return fRet;
         }
 
         public IEnumerable<KeyValuePair<string, DType>> GetPairs()
         {
-            return RedBlackNode<DType>.GetPairs(_root);
+            return _dic == null ? Enumerable.Empty<KeyValuePair<string, DType>>() : _dic.OrderBy(kvp => kvp.Key);
         }
 
-        public TypeTree SetItem(string name, DType type, bool skipCompare = false)
+        internal TypeTree SetItem(string name, DType type, bool useless = false)
         {
-            Contracts.AssertValue(name);
-            Contracts.Assert(type.IsValid);
-            return new TypeTree(RedBlackNode<DType>.SetItem(_root, name, type, skipCompare));
+            var d2 = _dic == null ? new Dictionary<string, DType>() : new Dictionary<string, DType>(_dic);
+            d2[name] = type;
+            return new TypeTree(d2);
         }
 
         // Removes the specified name/field from the tree, and returns a new tree.
         // Sets fMissing if name cannot be found.
-        public TypeTree RemoveItem(ref bool fMissing, string name)
+        internal TypeTree RemoveItem(ref bool fMissing, string name)
         {
-            Contracts.AssertValue(name);
-            return new TypeTree(RedBlackNode<DType>.RemoveItem(ref fMissing, _root, name, _hashCodeCache));
+            if (fMissing = !_dic.ContainsKey(name))
+            {
+                return this;
+            }
+
+            var d2 = new Dictionary<string, DType>(_dic);
+            d2.Remove(name);
+            return new TypeTree(d2);
         }
 
-        // Removes the specified item from the tree, and returns a new tree.
-        // If any item in rgname cannot be found, sets fAnyMissing to true.
         public TypeTree RemoveItems(ref bool fAnyMissing, params DName[] rgname)
         {
             Contracts.AssertNonEmpty(rgname);
             Contracts.AssertAllValid(rgname);
 
-            var root = _root;
+            var d2 = new Dictionary<string, DType>(_dic);
+            fAnyMissing = false;
+
             foreach (string name in rgname)
             {
-                Contracts.AssertNonEmpty(name);
-                root = RedBlackNode<DType>.RemoveItem(ref fAnyMissing, root, name, _hashCodeCache);
+                bool c = d2.ContainsKey(name);
+                fAnyMissing |= !c;
+
+                if (c)
+                {
+                    d2.Remove(name);
+                }
             }
 
-            return new TypeTree(root);
+            return new TypeTree(d2);
         }
 
         public bool Equals(TypeTree other)
@@ -121,32 +151,30 @@ namespace Microsoft.PowerFx.Core.Types
 
         public override int GetHashCode()
         {
-            var hash = 0x450C1E25;
-            if (_root != null)
+            if (!_hash.HasValue)
             {
-                if (_hashCodeCache.ContainsKey(_root))
+                int hash = 0x450C1E25;
+
+                foreach (KeyValuePair<string, DType> kvp in GetPairs())
                 {
-                    hash = _hashCodeCache[_root];
+                    hash = Hashing.CombineHash(hash, kvp.Key.GetHashCode());
+                    hash = Hashing.CombineHash(hash, kvp.Value.GetHashCode());
                 }
-                else
-                {
-                    hash = Hashing.CombineHash(hash, _root.GetHashCode());
-                }
+
+                _hash = hash;
             }
 
-            return hash;
+            return _hash.Value;
         }
 
         IEnumerator<KeyValuePair<string, DType>> IEnumerable<KeyValuePair<string, DType>>.GetEnumerator()
         {
-            // The IEnumerable functionality of DType should only be used for debug scenarios.
-            return GetPairs().GetEnumerator();
+            return _dic.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            // The IEnumerable functionality of DType should only be used for debug scenarios.
-            return GetPairs().GetEnumerator();
+            return _dic.GetEnumerator();
         }
     }
 }
