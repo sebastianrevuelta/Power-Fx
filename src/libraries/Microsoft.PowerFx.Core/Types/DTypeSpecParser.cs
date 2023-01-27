@@ -13,11 +13,35 @@ namespace Microsoft.PowerFx.Core.Types
         private const string _typeEncodings = "?ebnshdipmgo$cDT!*%lLNZPQqVOX";
         private static readonly DType[] _types = new DType[]
         {
-            DType.Unknown, DType.Error, DType.Boolean, DType.Number, DType.String, DType.Hyperlink,
-            DType.DateTime, DType.Image, DType.PenImage, DType.Media, DType.Guid, DType.Blob, DType.Currency, DType.Color,
-            DType.Date, DType.Time, DType.EmptyRecord, DType.EmptyTable, DType.EmptyEnum,
-            DType.OptionSetValue, DType.OptionSet, DType.ObjNull, DType.DateTimeNoTimeZone, DType.Polymorphic, DType.View, DType.ViewValue,
-            DType.NamedValue, DType.UntypedObject, DType.Deferred
+            DType.Unknown,            // ?
+            DType.Error,              // e
+            DType.Boolean,            // b
+            DType.Number,             // n
+            DType.String,             // s
+            DType.Hyperlink,          // h
+            DType.DateTime,           // d
+            DType.Image,              // i
+            DType.PenImage,           // p
+            DType.Media,              // m
+            DType.Guid,               // g
+            DType.Blob,               // o
+            DType.Currency,           // $
+            DType.Color,              // c
+            DType.Date,               // D
+            DType.Time,               // T
+            DType.EmptyRecord,        // !
+            DType.EmptyTable,         // *
+            DType.EmptyEnum,          // %
+            DType.OptionSetValue,     // l 
+            DType.OptionSet,          // L
+            DType.ObjNull,            // N
+            DType.DateTimeNoTimeZone, // Z
+            DType.Polymorphic,        // P
+            DType.View,               // Q
+            DType.ViewValue,          // q
+            DType.NamedValue,         // V
+            DType.UntypedObject,      // O
+            DType.Deferred,           // X
         };
 
         // Parses a type specification, returns true and sets 'type' on success.

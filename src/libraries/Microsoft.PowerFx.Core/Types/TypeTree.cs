@@ -60,10 +60,20 @@ namespace Microsoft.PowerFx.Core.Types
         {
         }
 
+        // Efficient API
+        public static TypeTree Create(Dictionary<string, DType> items)
+        {
+            Contracts.AssertValue(items);
+
+            return new TypeTree(items);
+        }
+
         public static TypeTree Create(IEnumerable<KeyValuePair<string, DType>> items)
         {
             Contracts.AssertValue(items);
-            return new TypeTree(items.GroupBy(i => i.Key).ToDictionary(i => i.Key, i => i.Last().Value));
+
+            // return new TypeTree(items.GroupBy(i => i.Key).ToDictionary(i => i.Key, i => i.Last().Value));
+            return new TypeTree(items.ToDictionary(i => i.Key, i => i.Value));
         }
 
         public bool Contains(string key) => _dic != null && _dic.ContainsKey(key);
@@ -88,12 +98,17 @@ namespace Microsoft.PowerFx.Core.Types
 
         public IEnumerable<KeyValuePair<string, DType>> GetPairs()
         {
-            return _dic == null ? Enumerable.Empty<KeyValuePair<string, DType>>() : _dic.OrderBy(kvp => kvp.Key);
+            return _dic == null 
+                ? Enumerable.Empty<KeyValuePair<string, DType>>() 
+                : _dic.OrderBy(kvp => kvp.Key);
         }
 
         internal TypeTree SetItem(string name, DType type, bool useless = false)
         {
-            var d2 = _dic == null ? new Dictionary<string, DType>() : new Dictionary<string, DType>(_dic);
+            var d2 = _dic == null 
+                ? new Dictionary<string, DType>() 
+                : new Dictionary<string, DType>(_dic);
+
             d2[name] = type;
             return new TypeTree(d2);
         }

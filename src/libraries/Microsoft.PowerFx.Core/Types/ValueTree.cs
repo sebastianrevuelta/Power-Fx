@@ -33,6 +33,12 @@ namespace Microsoft.PowerFx.Core.Types
             return new ValueTree(items.ToDictionary(i => i.Key, i => i.Value));
         }
 
+        // Efficient API
+        public static ValueTree Create(Dictionary<string, EquatableObject> items)
+        {
+            return new ValueTree(items);
+        }
+
         public bool IsEmpty => _dic == null || !_dic.Any();
 
         public int Count => _dic == null ? 0 : _dic.Count;
@@ -58,6 +64,7 @@ namespace Microsoft.PowerFx.Core.Types
         public ValueTree SetItem(string name, EquatableObject value)
         {
             var d2 = _dic == null ? new Dictionary<string, EquatableObject>() : new Dictionary<string, EquatableObject>(_dic);
+
             d2[name] = value;
             return new ValueTree(d2);
         }
@@ -69,7 +76,7 @@ namespace Microsoft.PowerFx.Core.Types
             if (fMissing = !_dic.ContainsKey(name))
             {
                 return this;
-            }
+            }            
 
             var d2 = new Dictionary<string, EquatableObject>(_dic);
             d2.Remove(name);

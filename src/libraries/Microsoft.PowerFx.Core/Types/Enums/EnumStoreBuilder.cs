@@ -15,276 +15,584 @@ namespace Microsoft.PowerFx.Core.Types.Enums
     /// </summary>
     internal sealed class EnumStoreBuilder
     {
-        #region Default Enums
-        internal static IReadOnlyDictionary<string, string> DefaultEnums { get; } =
-            new Dictionary<string, string>()
+        internal static IReadOnlyDictionary<string, string> DefaultEnums { get; } = DefaultEnums2.ToDictionary(e => e.Key, e => e.Value.ToString());
+
+        internal static IReadOnlyDictionary<string, DType> DefaultEnums2 { get; } =
+            new Dictionary<string, DType>(StringComparer.InvariantCultureIgnoreCase)
             {
                 {
                     EnumConstants.BorderStyleEnumString,
-                    "%s[None:\"none\", Dashed:\"dashed\", Solid:\"solid\", Dotted:\"dotted\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "None", new EquatableObject("none") }, { "Dashed", new EquatableObject("dashed") }, { "Solid", new EquatableObject("solid") },
+                        { "Dotted", new EquatableObject("dotted") }
+                    })
                 },
                 {
                     EnumConstants.ColorEnumString,
-                    ColorTable.ToString()
+                    DType.CreateEnum(DType.Color, ((Dictionary<string, uint>)ColorTable.InvariantNameToHexMap).ToDictionary(kvp => kvp.Key, kvp => new EquatableObject((double)kvp.Value)))
                 },
                 {
                     EnumConstants.DateTimeFormatEnumString,
-                    "%s[LongDate:\"'longdate'\", ShortDate:\"'shortdate'\", LongTime:\"'longtime'\", ShortTime:\"'shorttime'\", LongTime24:\"'longtime24'\", " +
-                    "ShortTime24:\"'shorttime24'\", LongDateTime:\"'longdatetime'\", ShortDateTime:\"'shortdatetime'\", " +
-                    "LongDateTime24:\"'longdatetime24'\", ShortDateTime24:\"'shortdatetime24'\", UTC:\"utc\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "LongDate", new EquatableObject("'longdate'") }, { "ShortDate", new EquatableObject("'shortdate'") }, { "LongTime", new EquatableObject("'longtime'") },
+                        { "ShortTime", new EquatableObject("'shorttime'") }, { "LongTime24", new EquatableObject("'longtime24'") },
+                        { "ShortTime24", new EquatableObject("'shorttime24'") }, { "LongDateTime", new EquatableObject("'longdatetime'") },
+                        { "ShortDateTime", new EquatableObject("'shortdatetime'") }, { "LongDateTime24", new EquatableObject("'longdatetime24'") },
+                        { "ShortDateTime24", new EquatableObject("'shortdatetime24'") }, { "UTC", new EquatableObject("utc") }
+                    })
                 },
                 {
                     EnumConstants.StartOfWeekEnumString,
-                    "%n[Sunday:1, Monday:2, MondayZero:3, Tuesday:12, Wednesday:13, Thursday:14, Friday:15, Saturday:16]"
+                    DType.CreateEnum(DType.Number, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Sunday", new EquatableObject(1d) }, { "Monday", new EquatableObject(2d) }, { "MondayZero", new EquatableObject(3d) },
+                        { "Tuesday", new EquatableObject(12d) }, { "Wednesday", new EquatableObject(13d) }, { "Thursday", new EquatableObject(14d) },
+                        { "Friday", new EquatableObject(15d) }, { "Saturday", new EquatableObject(16d) }
+                    })
                 },
                 {
                     EnumConstants.DirectionEnumString,
-                    "%s[Start:\"start\", End:\"end\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Start", new EquatableObject("start") }, { "End", new EquatableObject("end") }
+                    })
                 },
                 {
                     EnumConstants.DisplayModeEnumString,
-                    "%s[Edit:\"edit\", View:\"view\", Disabled:\"disabled\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Edit", new EquatableObject("edit") }, { "View", new EquatableObject("view") }, { "Disabled", new EquatableObject("disabled") }
+                    })
                 },
                 {
                     EnumConstants.LayoutModeEnumString,
-                    "%s[Manual:\"manual\", Auto:\"auto\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Manual", new EquatableObject("manual") }, { "Auto", new EquatableObject("auto") }
+                    })
                 },
                 {
                     EnumConstants.LayoutAlignItemsEnumString,
-                    "%s[Start:\"flex-start\", Center:\"center\", End:\"flex-end\", Stretch:\"stretch\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Start", new EquatableObject("flex-start") }, { "Center", new EquatableObject("center") }, { "End", new EquatableObject("flex-end") },
+                        { "Stretch", new EquatableObject("stretch") }
+                    })
                 },
                 {
                     EnumConstants.AlignInContainerEnumString,
-                    "%s[Start:\"flex-start\", Center:\"center\", End:\"flex-end\", Stretch:\"stretch\", SetByContainer:\"auto\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Start", new EquatableObject("flex-start") }, { "Center", new EquatableObject("center") }, { "End", new EquatableObject("flex-end") },
+                        { "Stretch", new EquatableObject("stretch") }, { "SetByContainer", new EquatableObject("auto") }
+                    })
                 },
                 {
                     EnumConstants.LayoutJustifyContentEnumString,
-                    "%s[Start:\"flex-start\", Center:\"center\", End:\"flex-end\", SpaceBetween:\"space-between\"]"
-                }, // SpaceEvenly:\"space-evenly\", SpaceAround:\"space-around\",
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Start", new EquatableObject("flex-start") }, { "Center", new EquatableObject("center") }, { "End", new EquatableObject("flex-end") },
+                        { "SpaceBetween", new EquatableObject("space-between") }
+                    })
+                },
                 {
                     EnumConstants.LayoutOverflowEnumString,
-                    "%s[Hide:\"hidden\", Scroll:\"auto\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Hide", new EquatableObject("hidden") }, { "Scroll", new EquatableObject("auto") }
+                    })
                 },
                 {
                     EnumConstants.FontEnumString,
-                    "%s['Segoe UI':\"'Segoe UI', 'Open Sans', sans-serif\", Arial:\"Arial, sans-serif\",'Lato Hairline':\"'Lato Hairline', sans-serif\", 'Lato':\"'Lato', sans-serif\"," +
-                    "'Lato Light':\"'Lato Light', sans-serif\", 'Courier New':\"'Courier New', monospace\",Georgia:\"Georgia, serif\", " +
-                    "'Dancing Script':\"'Dancing Script', sans-serif\",'Lato Black':\"'Lato Black', sans-serif\", Verdana:\"Verdana, sans-serif\", " +
-                    "'Open Sans':\"'Open Sans', sans-serif\",'Open Sans Condensed':\"'Open Sans Condensed', sans-serif\", 'Great Vibes':\"'Great Vibes', sans-serif\"," +
-                    "'Patrick Hand':\"'Patrick Hand', sans-serif\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Segoe UI", new EquatableObject("'Segoe UI', 'Open Sans', sans-serif") }, { "Arial", new EquatableObject("Arial, sans-serif") },
+                        { "Lato Hairline", new EquatableObject("'Lato Hairline', sans-serif") }, { "Lato", new EquatableObject("'Lato', sans-serif") },
+                        { "Lato Light", new EquatableObject("'Lato Light', sans-serif") }, { "Courier New", new EquatableObject("'Courier New', monospace") },
+                        { "Georgia", new EquatableObject("Georgia, serif") }, { "Dancing Script", new EquatableObject("'Dancing Script', sans-serif") },
+                        { "Lato Black", new EquatableObject("'Lato Black', sans-serif") }, { "Verdana", new EquatableObject("Verdana, sans-serif") },
+                        { "Open Sans", new EquatableObject("'Open Sans', sans-serif") }, { "Open Sans Condensed", new EquatableObject("'Open Sans Condensed', sans-serif") },
+                        { "Great Vibes", new EquatableObject("'Great Vibes', sans-serif") }, { "Patrick Hand", new EquatableObject("'Patrick Hand', sans-serif") }
+                    })
                 },
                 {
                     EnumConstants.FontWeightEnumString,
-                    "%s[Normal:\"normal\", Semibold:\"600\", Bold:\"bold\", Lighter:\"lighter\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Normal", new EquatableObject("normal") }, { "Semibold", new EquatableObject("600") }, { "Bold", new EquatableObject("bold") },
+                        { "Lighter", new EquatableObject("lighter") }
+                    })
                 },
                 {
                     EnumConstants.ImagePositionEnumString,
-                    "%s[Fill:\"fill\", Fit:\"fit\", Stretch:\"stretch\", Tile:\"tile\", Center:\"center\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Fill", new EquatableObject("fill") }, { "Fit", new EquatableObject("fit") }, { "Stretch", new EquatableObject("stretch") },
+                        { "Tile", new EquatableObject("tile") }, { "Center", new EquatableObject("center") }
+                    })
                 },
-
-                // Keep the next two enums in order for back-compat reasons.
-                // See: #9003434 and #9003431
                 {
                     EnumConstants.LayoutEnumString,
-                    "%s[Horizontal:\"horizontal\", Vertical:\"vertical\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Horizontal", new EquatableObject("horizontal") }, { "Vertical", new EquatableObject("vertical") }
+                    })
                 },
                 {
                     EnumConstants.LayoutDirectionEnumString,
-                    "%s[Horizontal:\"row\", Vertical:\"column\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Horizontal", new EquatableObject("row") }, { "Vertical", new EquatableObject("column") }
+                    })
                 },
                 {
                     EnumConstants.TextPositionEnumString,
-                    "%s[Left:\"left\", Right:\"right\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Left", new EquatableObject("left") }, { "Right", new EquatableObject("right") }
+                    })
                 },
                 {
                     EnumConstants.TextModeEnumString,
-                    "%s[SingleLine:\"singleline\", Password:\"password\", MultiLine:\"multiline\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "SingleLine", new EquatableObject("singleline") }, { "Password", new EquatableObject("password") }, { "MultiLine", new EquatableObject("multiline") }
+                    })
                 },
                 {
                     EnumConstants.TextFormatEnumString,
-                    "%s[Text:\"text\", Number:\"number\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Text", new EquatableObject("text") }, { "Number", new EquatableObject("number") }
+                    })
                 },
                 {
                     EnumConstants.VirtualKeyboardModeEnumString,
-                    "%s[Auto:\"auto\", Numeric:\"numeric\", Text:\"text\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Auto", new EquatableObject("auto") }, { "Numeric", new EquatableObject("numeric") }, { "Text", new EquatableObject("text") }
+                    })
                 },
                 {
                     EnumConstants.TeamsThemeEnumString,
-                    "%s[Default:\"default\", Dark:\"dark\", Contrast:\"contrast\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Default", new EquatableObject("default") }, { "Dark", new EquatableObject("dark") }, { "Contrast", new EquatableObject("contrast") }
+                    })
                 },
                 {
                     EnumConstants.ThemesEnumString,
-                    "%c[Vivid: 8573268208, Eco: 8577703760, Harvest: 8588214850, Dust: 8580980564, Awakening: 8575207804]"
+                    DType.CreateEnum(DType.Color, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Vivid", new EquatableObject(8573268208d) }, { "Eco", new EquatableObject(8577703760d) }, { "Harvest", new EquatableObject(8588214850d) },
+                        { "Dust", new EquatableObject(8580980564d) }, { "Awakening", new EquatableObject(8575207804d) }
+                    })
                 },
                 {
                     EnumConstants.PenModeEnumString,
-                    "%s[Draw:\"draw\", Erase:\"erase\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Draw", new EquatableObject("draw") }, { "Erase", new EquatableObject("erase") }
+                    })
                 },
                 {
                     EnumConstants.RemoveFlagsEnumString,
-                    "%s[First:\"first\", All:\"all\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "First", new EquatableObject("first") }, { "All", new EquatableObject("all") }
+                    })
                 },
                 {
                     EnumConstants.ScreenTransitionEnumString,
-                    "%s[Fade:\"fade\", Cover:\"cover\", UnCover:\"uncover\", CoverRight:\"coverright\", UnCoverRight:\"uncoverright\", None:\"none\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Fade", new EquatableObject("fade") }, { "Cover", new EquatableObject("cover") }, { "UnCover", new EquatableObject("uncover") },
+                        { "CoverRight", new EquatableObject("coverright") }, { "UnCoverRight", new EquatableObject("uncoverright") }, { "None", new EquatableObject("none") }
+                    })
                 },
                 {
                     LanguageConstants.SortOrderEnumString,
-                    "%s[Ascending:\"ascending\", Descending:\"descending\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Ascending", new EquatableObject("ascending") }, { "Descending", new EquatableObject("descending") }
+                    })
                 },
                 {
                     EnumConstants.AlignEnumString,
-                    "%s[Left:\"left\", Right:\"right\", Center:\"center\", Justify:\"justify\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Left", new EquatableObject("left") }, { "Right", new EquatableObject("right") }, { "Center", new EquatableObject("center") },
+                        { "Justify", new EquatableObject("justify") }
+                    })
                 },
                 {
                     EnumConstants.VerticalAlignEnumString,
-                    "%s[Top:\"top\", Middle:\"middle\", Bottom:\"bottom\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Top", new EquatableObject("top") }, { "Middle", new EquatableObject("middle") }, { "Bottom", new EquatableObject("bottom") }
+                    })
                 },
                 {
                     EnumConstants.TransitionEnumString,
-                    "%s[Push:\"push\", Pop:\"pop\", None:\"none\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Push", new EquatableObject("push") }, { "Pop", new EquatableObject("pop") }, { "None", new EquatableObject("none") }
+                    })
                 },
                 {
                     EnumConstants.TimeUnitEnumString,
-                    "%s[Years:\"years\", Quarters:\"quarters\", Months:\"months\", Days:\"days\", Hours:\"hours\", Minutes:\"minutes\", Seconds:\"seconds\", Milliseconds:\"milliseconds\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Years", new EquatableObject("years") }, { "Quarters", new EquatableObject("quarters") }, { "Months", new EquatableObject("months") },
+                        { "Days", new EquatableObject("days") }, { "Hours", new EquatableObject("hours") }, { "Minutes", new EquatableObject("minutes") },
+                        { "Seconds", new EquatableObject("seconds") }, { "Milliseconds", new EquatableObject("milliseconds") }
+                    })
                 },
                 {
                     EnumConstants.OverflowEnumString,
-                    "%s[Hidden:\"hidden\", Scroll:\"scroll\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Hidden", new EquatableObject("hidden") }, { "Scroll", new EquatableObject("scroll") }
+                    })
                 },
                 {
                     EnumConstants.MapStyleEnumString,
-                    "%s[Road:\"road\", Aerial:\"aerial\", Auto:\"auto\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Road", new EquatableObject("road") }, { "Aerial", new EquatableObject("aerial") }, { "Auto", new EquatableObject("auto") }
+                    })
                 },
                 {
                     EnumConstants.GridStyleEnumString,
-                    "%s[All:\"all\", None:\"none\", XOnly:\"xonly\", YOnly:\"yonly\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "All", new EquatableObject("all") }, { "None", new EquatableObject("none") }, { "XOnly", new EquatableObject("xonly") },
+                        { "YOnly", new EquatableObject("yonly") }
+                    })
                 },
                 {
                     EnumConstants.LabelPositionEnumString,
-                    "%s[Inside:\"inside\", Outside:\"outside\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Inside", new EquatableObject("inside") }, { "Outside", new EquatableObject("outside") }
+                    })
                 },
                 {
                     EnumConstants.DataSourceInfoEnumString,
-                    "%s[DisplayName:\"displayname\", Required:\"required\", MaxLength:\"maxlength\", MinLength:\"minlength\", MaxValue:\"maxvalue\", MinValue:\"minvalue\", " +
-                    "AllowedValues:\"allowedvalues\", EditPermission:\"editpermission\", ReadPermission:\"readpermission\", CreatePermission:\"createpermission\", " +
-                    "DeletePermission:\"deletepermission\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "DisplayName", new EquatableObject("displayname") }, { "Required", new EquatableObject("required") }, { "MaxLength", new EquatableObject("maxlength") },
+                        { "MinLength", new EquatableObject("minlength") }, { "MaxValue", new EquatableObject("maxvalue") }, { "MinValue", new EquatableObject("minvalue") },
+                        { "AllowedValues", new EquatableObject("allowedvalues") }, { "EditPermission", new EquatableObject("editpermission") },
+                        { "ReadPermission", new EquatableObject("readpermission") }, { "CreatePermission", new EquatableObject("createpermission") },
+                        { "DeletePermission", new EquatableObject("deletepermission") }
+                    })
                 },
                 {
                     EnumConstants.RecordInfoEnumString,
-                    "%s[EditPermission:\"editpermission\", ReadPermission:\"readpermission\", DeletePermission:\"deletepermission\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "EditPermission", new EquatableObject("editpermission") }, { "ReadPermission", new EquatableObject("readpermission") },
+                        { "DeletePermission", new EquatableObject("deletepermission") }
+                    })
                 },
                 {
                     EnumConstants.StateEnumString,
-                    "%n[NoChange:1, Added:2, Updated:4, Deleted:8, All:4294967295]"
+                    DType.CreateEnum(DType.Number, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "NoChange", new EquatableObject(1d) }, { "Added", new EquatableObject(2d) }, { "Updated", new EquatableObject(4d) },
+                        { "Deleted", new EquatableObject(8d) }, { "All", new EquatableObject(4294967295d) }
+                    })
                 },
                 {
                     EnumConstants.ErrorStateEnumString,
-                    "%n[NoError:1, DataSourceError:2, All:4294967295]"
+                    DType.CreateEnum(DType.Number, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "NoError", new EquatableObject(1d) }, { "DataSourceError", new EquatableObject(2d) }, { "All", new EquatableObject(4294967295d) }
+                    })
                 },
                 {
                     EnumConstants.ErrorSeverityEnumString,
-                    "%n[NoError:0, Warning:1, Moderate:2, Severe:3]"
+                    DType.CreateEnum(DType.Number, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "NoError", new EquatableObject(0d) }, { "Warning", new EquatableObject(1d) }, { "Moderate", new EquatableObject(2d) },
+                        { "Severe", new EquatableObject(3d) }
+                    })
                 },
                 {
                     EnumConstants.ErrorKindEnumString,
-                    "%n[None:0, Sync:1, MissingRequired:2, CreatePermission:3, EditPermissions:4, DeletePermissions:5, Conflict:6, NotFound:7, " +
-                    "ConstraintViolated:8, GeneratedValue:9, ReadOnlyValue:10, Validation: 11, Unknown: 12, Div0: 13, BadLanguageCode: 14, " +
-                    "BadRegex: 15, InvalidFunctionUsage: 16, FileNotFound: 17, AnalysisError: 18, ReadPermission: 19, NotSupported: 20, " +
-                    "InsufficientMemory: 21, QuotaExceeded: 22, Network: 23, Numeric: 24, InvalidArgument: 25, Internal: 26, NotApplicable: 27, Custom: 1000]"
+                    DType.CreateEnum(DType.Number, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "None", new EquatableObject(0d) }, { "Sync", new EquatableObject(1d) }, { "MissingRequired", new EquatableObject(2d) },
+                        { "CreatePermission", new EquatableObject(3d) }, { "EditPermissions", new EquatableObject(4d) }, { "DeletePermissions", new EquatableObject(5d) },
+                        { "Conflict", new EquatableObject(6d) }, { "NotFound", new EquatableObject(7d) }, { "ConstraintViolated", new EquatableObject(8d) },
+                        { "GeneratedValue", new EquatableObject(9d) }, { "ReadOnlyValue", new EquatableObject(10d) }, { "Validation", new EquatableObject(11d) },
+                        { "Unknown", new EquatableObject(12d) }, { "Div0", new EquatableObject(13d) }, { "BadLanguageCode", new EquatableObject(14d) },
+                        { "BadRegex", new EquatableObject(15d) }, { "InvalidFunctionUsage", new EquatableObject(16d) }, { "FileNotFound", new EquatableObject(17d) },
+                        { "AnalysisError", new EquatableObject(18d) }, { "ReadPermission", new EquatableObject(19d) }, { "NotSupported", new EquatableObject(20d) },
+                        { "InsufficientMemory", new EquatableObject(21d) }, { "QuotaExceeded", new EquatableObject(22d) }, { "Network", new EquatableObject(23d) },
+                        { "Numeric", new EquatableObject(24d) }, { "InvalidArgument", new EquatableObject(25d) }, { "Internal", new EquatableObject(26d) },
+                        { "NotApplicable", new EquatableObject(27d) }, { "Custom", new EquatableObject(1000d) }
+                    })
                 },
                 {
                     EnumConstants.ZoomEnumString,
-                    "%n[FitWidth:-1, FitHeight:-2, FitBoth:-3]"
-                }, // When changing, keep in sync with AppMagic/js/controls/WebViewPdfViewer/Zoom.ts
+                    DType.CreateEnum(DType.Number, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "FitWidth", new EquatableObject(-1d) }, { "FitHeight", new EquatableObject(-2d) }, { "FitBoth", new EquatableObject(-3d) }
+                    })
+                },
                 {
                     EnumConstants.FormModeEnumString,
-                    "%n[Edit:0, New:1, View:2]"
-                }, // When changing, keep in sync with AppMagic/js/Core/Core.Data/Enums.ts
+                    DType.CreateEnum(DType.Number, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Edit", new EquatableObject(0d) }, { "New", new EquatableObject(1d) }, { "View", new EquatableObject(2d) }
+                    })
+                },
                 {
                     EnumConstants.PDFPasswordStateEnumString,
-                    "%n[NoPasswordNeeded:0, PasswordNeeded:1, IncorrectPassword:2]"
-                }, // When changing, keep in sync with AppMagic/js/controls/WebViewPdfViewer/WebViewPdfViewerBridge.ts
+                    DType.CreateEnum(DType.Number, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "NoPasswordNeeded", new EquatableObject(0d) }, { "PasswordNeeded", new EquatableObject(1d) }, { "IncorrectPassword", new EquatableObject(2d) }
+                    })
+                },
                 {
                     EnumConstants.DateTimeZoneEnumString,
-                    "%s[Local:\"local\", UTC:\"utc\"]"
-                }, // When changing, keep in sync with AppMagic/js/controls/DatePicker/DatePicker.ts
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Local", new EquatableObject("local") }, { "UTC", new EquatableObject("utc") }
+                    })
+                },
                 {
                     EnumConstants.BarcodeTypeEnumString,
-                    "%s[Auto:\"any\", Aztec:\"aztec\", Codabar:\"codabar\", Code128:\"code128\", Code39:\"code39\", Code93:\"code93\", DataMatrix:\"dataMatrix\", Ean:\"ean\", I2of5:\"i2of5\", Pdf417:\"pdf417\", QRCode:\"qrCode\", Rss14:\"rss14\", RssExpanded:\"rssExpanded\", Upc:\"upc\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Auto", new EquatableObject("any") }, { "Aztec", new EquatableObject("aztec") }, { "Codabar", new EquatableObject("codabar") },
+                        { "Code128", new EquatableObject("code128") }, { "Code39", new EquatableObject("code39") }, { "Code93", new EquatableObject("code93") },
+                        { "DataMatrix", new EquatableObject("dataMatrix") }, { "Ean", new EquatableObject("ean") }, { "I2of5", new EquatableObject("i2of5") },
+                        { "Pdf417", new EquatableObject("pdf417") }, { "QRCode", new EquatableObject("qrCode") }, { "Rss14", new EquatableObject("rss14") },
+                        { "RssExpanded", new EquatableObject("rssExpanded") }, { "Upc", new EquatableObject("upc") }
+                    })
                 },
                 {
                     EnumConstants.ImageRotationEnumString,
-                    "%s[None:\"none\", Rotate90:\"rotate90\", Rotate180:\"rotate180\", Rotate270:\"rotate270\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "None", new EquatableObject("none") }, { "Rotate90", new EquatableObject("rotate90") }, { "Rotate180", new EquatableObject("rotate180") },
+                        { "Rotate270", new EquatableObject("rotate270") }
+                    })
                 },
                 {
                     EnumConstants.MatchEnumString,
-                    "%s[Email:\".+@.+\\.[^\\.]{2,}\", Letter:\"\\p{L}\", MultipleLetters:\"\\p{L}+\", OptionalLetters:\"\\p{L}*\", Digit:\"\\d\", MultipleDigits:\"\\d+\", OptionalDigits:\"\\d*\", Any:\".\", Hyphen:\"\\-\", Period:\"\\.\", Comma:\",\", LeftParen:\"\\(\", RightParen:\"\\)\", Space:\"\\s\", MultipleSpaces:\"\\s+\", OptionalSpaces:\"\\s*\", NonSpace:\"\\S\", MultipleNonSpaces:\"\\S+\", OptionalNonSpaces:\"\\S*\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Email", new EquatableObject(".+@.+\\.[^\\.]{2,}") }, { "Letter", new EquatableObject("\\p{L}") }, { "MultipleLetters", new EquatableObject("\\p{L}+") },
+                        { "OptionalLetters", new EquatableObject("\\p{L}*") }, { "Digit", new EquatableObject("\\d") }, { "MultipleDigits", new EquatableObject("\\d+") },
+                        { "OptionalDigits", new EquatableObject("\\d*") }, { "Any", new EquatableObject(".") }, { "Hyphen", new EquatableObject("\\-") },
+                        { "Period", new EquatableObject("\\.") }, { "Comma", new EquatableObject(",") }, { "LeftParen", new EquatableObject("\\(") },
+                        { "RightParen", new EquatableObject("\\)") }, { "Space", new EquatableObject("\\s") }, { "MultipleSpaces", new EquatableObject("\\s+") },
+                        { "OptionalSpaces", new EquatableObject("\\s*") }, { "NonSpace", new EquatableObject("\\S") }, { "MultipleNonSpaces", new EquatableObject("\\S+") },
+                        { "OptionalNonSpaces", new EquatableObject("\\S*") }
+                    })
                 },
                 {
                     EnumConstants.MatchOptionsEnumString,
-                    "%s[BeginsWith:\"^c\", EndsWith:\"$c\", Contains:\"c\", Complete:\"^c$\", IgnoreCase:\"i\", Multiline:\"m\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "BeginsWith", new EquatableObject("^c") }, { "EndsWith", new EquatableObject("$c") }, { "Contains", new EquatableObject("c") },
+                        { "Complete", new EquatableObject("^c$") }, { "IgnoreCase", new EquatableObject("i") }, { "Multiline", new EquatableObject("m") }
+                    })
                 },
                 {
                     EnumConstants.JSONFormatEnumString,
-                    "%s[Compact:\"\", IndentFour:\"4\", IgnoreBinaryData:\"G\", IncludeBinaryData:\"B\", IgnoreUnsupportedTypes:\"I\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Compact", new EquatableObject(string.Empty) }, { "IndentFour", new EquatableObject("4") }, { "IgnoreBinaryData", new EquatableObject("G") },
+                        { "IncludeBinaryData", new EquatableObject("B") }, { "IgnoreUnsupportedTypes", new EquatableObject("I") }
+                    })
                 },
                 {
                     EnumConstants.TraceOptionsEnumString,
-                    "%s[None:\"none\",IgnoreUnsupportedTypes:\"I\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "None", new EquatableObject("none") }, { "IgnoreUnsupportedTypes", new EquatableObject("I") }
+                    })
                 },
                 {
                     EnumConstants.EntityFormPatternEnumString,
-                    "%s[None:\"none\", Details:\"details\", List:\"list\", CardList:\"cardlist\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "None", new EquatableObject("none") }, { "Details", new EquatableObject("details") }, { "List", new EquatableObject("list") },
+                        { "CardList", new EquatableObject("cardlist") }
+                    })
                 },
                 {
                     EnumConstants.ListItemTemplateEnumString,
-                    "%s[Single:\"single\", Double:\"double\", Person:\"person\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Single", new EquatableObject("single") }, { "Double", new EquatableObject("double") }, { "Person", new EquatableObject("person") }
+                    })
                 },
                 {
                     EnumConstants.LoadingSpinnerEnumString,
-                    "%n[Controls:0, Data:1, None:2]"
-                }, // When changing, keep in sync with AppMagic/js/AppMagic.Controls/Controls/ScreenControl.tsx
+                    DType.CreateEnum(DType.Number, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Controls", new EquatableObject(0d) }, { "Data", new EquatableObject(1d) }, { "None", new EquatableObject(2d) }
+                    })
+                },
                 {
                     EnumConstants.NotificationTypeEnumString,
-                    "%n[Error:0, Warning:1, Success:2, Information:3]"
+                    DType.CreateEnum(DType.Number, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Error", new EquatableObject(0d) }, { "Warning", new EquatableObject(1d) }, { "Success", new EquatableObject(2d) },
+                        { "Information", new EquatableObject(3d) }
+                    })
                 },
                 {
                     EnumConstants.LiveEnumString,
-                    "%s[Off:\"off\", Polite:\"polite\", Assertive:\"assertive\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Off", new EquatableObject("off") }, { "Polite", new EquatableObject("polite") }, { "Assertive", new EquatableObject("assertive") }
+                    })
                 },
                 {
                     EnumConstants.TextRoleEnumString,
-                    "%s[Default:\"default\", Heading1:\"heading1\", Heading2:\"heading2\", Heading3:\"heading3\", Heading4:\"heading4\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Default", new EquatableObject("default") }, { "Heading1", new EquatableObject("heading1") }, { "Heading2", new EquatableObject("heading2") },
+                        { "Heading3", new EquatableObject("heading3") }, { "Heading4", new EquatableObject("heading4") }
+                    })
                 },
                 {
                     EnumConstants.ScreenSizeEnumString,
-                    "%n[Small:1, Medium:2, Large:3, ExtraLarge:4]"
+                    DType.CreateEnum(DType.Number, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Small", new EquatableObject(1d) }, { "Medium", new EquatableObject(2d) }, { "Large", new EquatableObject(3d) },
+                        { "ExtraLarge", new EquatableObject(4d) }
+                    })
                 },
                 {
                     EnumConstants.IconEnumString,
-                    "%s[Add:\"builtinicon:Add\", Cancel:\"builtinicon:Cancel\", CancelBadge:\"builtinicon:CancelBadge\", Edit:\"builtinicon:Edit\", Check:\"builtinicon:Check\", CheckBadge:\"builtinicon:CheckBadge\", Search:\"builtinicon:Search\", Filter:\"builtinicon:Filter\", FilterFlat:\"builtinicon:FilterFlat\", FilterFlatFilled:\"builtinicon:FilterFlatFilled\", Sort:\"builtinicon:Sort\", Reload:\"builtinicon:Reload\", Trash:\"builtinicon:Trash\", Save:\"builtinicon:Save\", Download:\"builtinicon:Download\", Copy:\"builtinicon:Copy\", LikeDislike:\"builtinicon:LikeDislike\", Crop:\"builtinicon:Crop\", Pin:\"builtinicon:Pin\", ClearDrawing:\"builtinicon:ClearDrawing\", ExpandView:\"builtinicon:ExpandView\", CollapseView:\"builtinicon:CollapseView\", Draw:\"builtinicon:Draw\", Compose:\"builtinicon:Compose\", Erase:\"builtinicon:Erase\", Message:\"builtinicon:Message\", Post:\"builtinicon:Post\", AddDocument:\"builtinicon:AddDocument\", AddLibrary:\"builtinicon:AddLibrary\", Home:\"builtinicon:Home\", Hamburger:\"builtinicon:Hamburger\", Settings:\"builtinicon:Settings\", More:\"builtinicon:More\", Waffle:\"builtinicon:Waffle\", ChevronLeft:\"builtinicon:ChevronLeft\", ChevronRight:\"builtinicon:ChevronRight\", ChevronUp:\"builtinicon:ChevronUp\", ChevronDown:\"builtinicon:ChevronDown\", NextArrow:\"builtinicon:NextArrow\", BackArrow:\"builtinicon:BackArrow\", ArrowDown:\"builtinicon:ArrowDown\", ArrowUp:\"builtinicon:ArrowUp\", ArrowLeft:\"builtinicon:ArrowLeft\", ArrowRight:\"builtinicon:ArrowRight\", Camera:\"builtinicon:Camera\", Document:\"builtinicon:Document\", DockCheckProperties:\"builtinicon:DockCheckProperties\", Folder:\"builtinicon:Folder\", Journal:\"builtinicon:Journal\", ForkKnife:\"builtinicon:ForkKnife\", Transportation:\"builtinicon:Transportation\", Airplane:\"builtinicon:Airplane\", Bus:\"builtinicon:Bus\", Cars:\"builtinicon:Cars\", Money:\"builtinicon:Money\", Currency:\"builtinicon:Currency\", AddToCalendar:\"builtinicon:AddToCalendar\", CalendarBlank:\"builtinicon:CalendarBlank\", OfficeBuilding:\"builtinicon:OfficeBuilding\", PaperClip:\"builtinicon:PaperClip\", Newspaper:\"builtinicon:Newspaper\", Lock:\"builtinicon:Lock\", Waypoint:\"builtinicon:Waypoint\", Location:\"builtinicon:Location\", DocumentPDF:\"builtinicon:DocumentPDF\", Bell:\"builtinicon:Bell\", ShoppingCart:\"builtinicon:ShoppingCart\", Phone:\"builtinicon:Phone\", PhoneHangUp:\"builtinicon:PhoneHangUp\", Mobile:\"builtinicon:Mobile\", Laptop:\"builtinicon:Laptop\", ComputerDesktop:\"builtinicon:ComputerDesktop\", Devices:\"builtinicon:Devices\", Controller:\"builtinicon:Controller\", Tools:\"builtinicon:Tools\", ToolsWrench:\"builtinicon:ToolsWrench\", Mail:\"builtinicon:Mail\", Send:\"builtinicon:Send\", Clock:\"builtinicon:Clock\", ListWatchlistRemind:\"builtinicon:ListWatchlistRemind\", LogJournal:\"builtinicon:LogJournal\", Note:\"builtinicon:Note\", PhotosPictures:\"builtinicon:PhotosPictures\", RadarActivityMonitor:\"builtinicon:RadarActivityMonitor\", Tablet:\"builtinicon:Tablet\", Tag:\"builtinicon:Tag\", CameraAperture:\"builtinicon:CameraAperture\", ColorPicker:\"builtinicon:ColorPicker\", DetailList:\"builtinicon:DetailList\", DocumentWithContent:\"builtinicon:DocumentWithContent\", ListScrollEmpty:\"builtinicon:ListScrollEmpty\", ListScrollWatchlist:\"builtinicon:ListScrollWatchlist\", OptionsList:\"builtinicon:OptionsList\", People:\"builtinicon:People\", Person:\"builtinicon:Person\", EmojiFrown:\"builtinicon:EmojiFrown\", EmojiSmile:\"builtinicon:EmojiSmile\", EmojiSad:\"builtinicon:EmojiSad\", EmojiNeutral:\"builtinicon:EmojiNeutral\", EmojiHappy:\"builtinicon:EmojiHappy\", Warning:\"builtinicon:Warning\", Information:\"builtinicon:Information\", Database:\"builtinicon:Database\", Weather:\"builtinicon:Weather\", TrendingHashtag:\"builtinicon:TrendingHashtag\", TrendingUpwards:\"builtinicon:TrendingUpwards\", Items:\"builtinicon:Items\", LevelsLayersItems:\"builtinicon:LevelsLayersItems\", Trending:\"builtinicon:Trending\", LineWeight:\"builtinicon:LineWeight\", Printing3D:\"builtinicon:Printing3D\", Import:\"builtinicon:Import\", Export:\"builtinicon:Export\", QuestionMark:\"builtinicon:QuestionMark\", Help:\"builtinicon:Help\", ThumbsDown:\"builtinicon:ThumbsDown\", ThumbsUp:\"builtinicon:ThumbsUp\", ThumbsDownFilled:\"builtinicon:ThumbsDownFilled\", ThumbsUpFilled:\"builtinicon:ThumbsUpFilled\", Undo:\"builtinicon:Undo\", Redo:\"builtinicon:Redo\", ZoomIn:\"builtinicon:ZoomIn\", ZoomOut:\"builtinicon:ZoomOut\", OpenInNewWindow:\"builtinicon:OpenInNewWindow\", Share:\"builtinicon:Share\", Publish:\"builtinicon:Publish\", Link:\"builtinicon:Link\", Sync:\"builtinicon:Sync\", View:\"builtinicon:View\", Hide:\"builtinicon:Hide\", Bookmark:\"builtinicon:Bookmark\", BookmarkFilled:\"builtinicon:BookmarkFilled\", Reset:\"builtinicon:Reset\", Blocked:\"builtinicon:Blocked\", DockLeft:\"builtinicon:DockLeft\", DockRight:\"builtinicon:DockRight\", LightningBolt:\"builtinicon:LightningBolt\", HorizontalLine:\"builtinicon:HorizontalLine\", VerticalLine:\"builtinicon:VerticalLine\", Ribbon:\"builtinicon:Ribbon\", Diamond:\"builtinicon:Diamond\", Alarm:\"builtinicon:Alarm\", History:\"builtinicon:History\", Heart:\"builtinicon:Heart\", Print:\"builtinicon:Print\", Error:\"builtinicon:Error\", Flag:\"builtinicon:Flag\", Notebook:\"builtinicon:Notebook\", Bug:\"builtinicon:Bug\", Microphone:\"builtinicon:Microphone\", Video:\"builtinicon:Video\", Shop:\"builtinicon:Shop\", Phonebook:\"builtinicon:Phonebook\", Enhance:\"builtinicon:Enhance\", Unlock:\"builtinicon:Unlock\", Calculator:\"builtinicon:Calculator\", Support:\"builtinicon:Support\", Lightbulb:\"builtinicon:Lightbulb\", Key:\"builtinicon:Key\", Scan:\"builtinicon:Scan\", Hospital:\"builtinicon:Hospital\", Health:\"builtinicon:Health\", Medical:\"builtinicon:Medical\", Manufacture:\"builtinicon:Manufacture\", Train:\"builtinicon:Train\", Globe:\"builtinicon:Globe\", HalfFilledCircle:\"builtinicon:HalfFilledCircle\", Tray:\"builtinicon:Tray\", AddUser:\"builtinicon:AddUser\", Text:\"builtinicon:Text\", Shirt:\"builtinicon:Shirt\", Signal:\"builtinicon:Signal\", Cut:\"builtinicon:Cut\", Paste:\"builtinicon:Paste\", Leave:\"builtinicon:Leave\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Add", new EquatableObject("builtinicon:Add") }, { "Cancel", new EquatableObject("builtinicon:Cancel") },
+                        { "CancelBadge", new EquatableObject("builtinicon:CancelBadge") }, { "Edit", new EquatableObject("builtinicon:Edit") },
+                        { "Check", new EquatableObject("builtinicon:Check") }, { "CheckBadge", new EquatableObject("builtinicon:CheckBadge") },
+                        { "Search", new EquatableObject("builtinicon:Search") }, { "Filter", new EquatableObject("builtinicon:Filter") },
+                        { "FilterFlat", new EquatableObject("builtinicon:FilterFlat") }, { "FilterFlatFilled", new EquatableObject("builtinicon:FilterFlatFilled") },
+                        { "Sort", new EquatableObject("builtinicon:Sort") }, { "Reload", new EquatableObject("builtinicon:Reload") },
+                        { "Trash", new EquatableObject("builtinicon:Trash") }, { "Save", new EquatableObject("builtinicon:Save") },
+                        { "Download", new EquatableObject("builtinicon:Download") }, { "Copy", new EquatableObject("builtinicon:Copy") },
+                        { "LikeDislike", new EquatableObject("builtinicon:LikeDislike") }, { "Crop", new EquatableObject("builtinicon:Crop") },
+                        { "Pin", new EquatableObject("builtinicon:Pin") }, { "ClearDrawing", new EquatableObject("builtinicon:ClearDrawing") },
+                        { "ExpandView", new EquatableObject("builtinicon:ExpandView") }, { "CollapseView", new EquatableObject("builtinicon:CollapseView") },
+                        { "Draw", new EquatableObject("builtinicon:Draw") }, { "Compose", new EquatableObject("builtinicon:Compose") },
+                        { "Erase", new EquatableObject("builtinicon:Erase") }, { "Message", new EquatableObject("builtinicon:Message") },
+                        { "Post", new EquatableObject("builtinicon:Post") }, { "AddDocument", new EquatableObject("builtinicon:AddDocument") },
+                        { "AddLibrary", new EquatableObject("builtinicon:AddLibrary") }, { "Home", new EquatableObject("builtinicon:Home") },
+                        { "Hamburger", new EquatableObject("builtinicon:Hamburger") }, { "Settings", new EquatableObject("builtinicon:Settings") },
+                        { "More", new EquatableObject("builtinicon:More") }, { "Waffle", new EquatableObject("builtinicon:Waffle") },
+                        { "ChevronLeft", new EquatableObject("builtinicon:ChevronLeft") }, { "ChevronRight", new EquatableObject("builtinicon:ChevronRight") },
+                        { "ChevronUp", new EquatableObject("builtinicon:ChevronUp") }, { "ChevronDown", new EquatableObject("builtinicon:ChevronDown") },
+                        { "NextArrow", new EquatableObject("builtinicon:NextArrow") }, { "BackArrow", new EquatableObject("builtinicon:BackArrow") },
+                        { "ArrowDown", new EquatableObject("builtinicon:ArrowDown") }, { "ArrowUp", new EquatableObject("builtinicon:ArrowUp") },
+                        { "ArrowLeft", new EquatableObject("builtinicon:ArrowLeft") }, { "ArrowRight", new EquatableObject("builtinicon:ArrowRight") },
+                        { "Camera", new EquatableObject("builtinicon:Camera") }, { "Document", new EquatableObject("builtinicon:Document") },
+                        { "DockCheckProperties", new EquatableObject("builtinicon:DockCheckProperties") }, { "Folder", new EquatableObject("builtinicon:Folder") },
+                        { "Journal", new EquatableObject("builtinicon:Journal") }, { "ForkKnife", new EquatableObject("builtinicon:ForkKnife") },
+                        { "Transportation", new EquatableObject("builtinicon:Transportation") }, { "Airplane", new EquatableObject("builtinicon:Airplane") },
+                        { "Bus", new EquatableObject("builtinicon:Bus") }, { "Cars", new EquatableObject("builtinicon:Cars") },
+                        { "Money", new EquatableObject("builtinicon:Money") }, { "Currency", new EquatableObject("builtinicon:Currency") },
+                        { "AddToCalendar", new EquatableObject("builtinicon:AddToCalendar") }, { "CalendarBlank", new EquatableObject("builtinicon:CalendarBlank") },
+                        { "OfficeBuilding", new EquatableObject("builtinicon:OfficeBuilding") }, { "PaperClip", new EquatableObject("builtinicon:PaperClip") },
+                        { "Newspaper", new EquatableObject("builtinicon:Newspaper") }, { "Lock", new EquatableObject("builtinicon:Lock") },
+                        { "Waypoint", new EquatableObject("builtinicon:Waypoint") }, { "Location", new EquatableObject("builtinicon:Location") },
+                        { "DocumentPDF", new EquatableObject("builtinicon:DocumentPDF") }, { "Bell", new EquatableObject("builtinicon:Bell") },
+                        { "ShoppingCart", new EquatableObject("builtinicon:ShoppingCart") }, { "Phone", new EquatableObject("builtinicon:Phone") },
+                        { "PhoneHangUp", new EquatableObject("builtinicon:PhoneHangUp") }, { "Mobile", new EquatableObject("builtinicon:Mobile") },
+                        { "Laptop", new EquatableObject("builtinicon:Laptop") }, { "ComputerDesktop", new EquatableObject("builtinicon:ComputerDesktop") },
+                        { "Devices", new EquatableObject("builtinicon:Devices") }, { "Controller", new EquatableObject("builtinicon:Controller") },
+                        { "Tools", new EquatableObject("builtinicon:Tools") }, { "ToolsWrench", new EquatableObject("builtinicon:ToolsWrench") },
+                        { "Mail", new EquatableObject("builtinicon:Mail") }, { "Send", new EquatableObject("builtinicon:Send") },
+                        { "Clock", new EquatableObject("builtinicon:Clock") }, { "ListWatchlistRemind", new EquatableObject("builtinicon:ListWatchlistRemind") },
+                        { "LogJournal", new EquatableObject("builtinicon:LogJournal") }, { "Note", new EquatableObject("builtinicon:Note") },
+                        { "PhotosPictures", new EquatableObject("builtinicon:PhotosPictures") },
+                        { "RadarActivityMonitor", new EquatableObject("builtinicon:RadarActivityMonitor") }, { "Tablet", new EquatableObject("builtinicon:Tablet") },
+                        { "Tag", new EquatableObject("builtinicon:Tag") }, { "CameraAperture", new EquatableObject("builtinicon:CameraAperture") },
+                        { "ColorPicker", new EquatableObject("builtinicon:ColorPicker") }, { "DetailList", new EquatableObject("builtinicon:DetailList") },
+                        { "DocumentWithContent", new EquatableObject("builtinicon:DocumentWithContent") },
+                        { "ListScrollEmpty", new EquatableObject("builtinicon:ListScrollEmpty") },
+                        { "ListScrollWatchlist", new EquatableObject("builtinicon:ListScrollWatchlist") }, { "OptionsList", new EquatableObject("builtinicon:OptionsList") },
+                        { "People", new EquatableObject("builtinicon:People") }, { "Person", new EquatableObject("builtinicon:Person") },
+                        { "EmojiFrown", new EquatableObject("builtinicon:EmojiFrown") }, { "EmojiSmile", new EquatableObject("builtinicon:EmojiSmile") },
+                        { "EmojiSad", new EquatableObject("builtinicon:EmojiSad") }, { "EmojiNeutral", new EquatableObject("builtinicon:EmojiNeutral") },
+                        { "EmojiHappy", new EquatableObject("builtinicon:EmojiHappy") }, { "Warning", new EquatableObject("builtinicon:Warning") },
+                        { "Information", new EquatableObject("builtinicon:Information") }, { "Database", new EquatableObject("builtinicon:Database") },
+                        { "Weather", new EquatableObject("builtinicon:Weather") }, { "TrendingHashtag", new EquatableObject("builtinicon:TrendingHashtag") },
+                        { "TrendingUpwards", new EquatableObject("builtinicon:TrendingUpwards") }, { "Items", new EquatableObject("builtinicon:Items") },
+                        { "LevelsLayersItems", new EquatableObject("builtinicon:LevelsLayersItems") }, { "Trending", new EquatableObject("builtinicon:Trending") },
+                        { "LineWeight", new EquatableObject("builtinicon:LineWeight") }, { "Printing3D", new EquatableObject("builtinicon:Printing3D") },
+                        { "Import", new EquatableObject("builtinicon:Import") }, { "Export", new EquatableObject("builtinicon:Export") },
+                        { "QuestionMark", new EquatableObject("builtinicon:QuestionMark") }, { "Help", new EquatableObject("builtinicon:Help") },
+                        { "ThumbsDown", new EquatableObject("builtinicon:ThumbsDown") }, { "ThumbsUp", new EquatableObject("builtinicon:ThumbsUp") },
+                        { "ThumbsDownFilled", new EquatableObject("builtinicon:ThumbsDownFilled") }, { "ThumbsUpFilled", new EquatableObject("builtinicon:ThumbsUpFilled") },
+                        { "Undo", new EquatableObject("builtinicon:Undo") }, { "Redo", new EquatableObject("builtinicon:Redo") },
+                        { "ZoomIn", new EquatableObject("builtinicon:ZoomIn") }, { "ZoomOut", new EquatableObject("builtinicon:ZoomOut") },
+                        { "OpenInNewWindow", new EquatableObject("builtinicon:OpenInNewWindow") }, { "Share", new EquatableObject("builtinicon:Share") },
+                        { "Publish", new EquatableObject("builtinicon:Publish") }, { "Link", new EquatableObject("builtinicon:Link") },
+                        { "Sync", new EquatableObject("builtinicon:Sync") }, { "View", new EquatableObject("builtinicon:View") },
+                        { "Hide", new EquatableObject("builtinicon:Hide") }, { "Bookmark", new EquatableObject("builtinicon:Bookmark") },
+                        { "BookmarkFilled", new EquatableObject("builtinicon:BookmarkFilled") }, { "Reset", new EquatableObject("builtinicon:Reset") },
+                        { "Blocked", new EquatableObject("builtinicon:Blocked") }, { "DockLeft", new EquatableObject("builtinicon:DockLeft") },
+                        { "DockRight", new EquatableObject("builtinicon:DockRight") }, { "LightningBolt", new EquatableObject("builtinicon:LightningBolt") },
+                        { "HorizontalLine", new EquatableObject("builtinicon:HorizontalLine") }, { "VerticalLine", new EquatableObject("builtinicon:VerticalLine") },
+                        { "Ribbon", new EquatableObject("builtinicon:Ribbon") }, { "Diamond", new EquatableObject("builtinicon:Diamond") },
+                        { "Alarm", new EquatableObject("builtinicon:Alarm") }, { "History", new EquatableObject("builtinicon:History") },
+                        { "Heart", new EquatableObject("builtinicon:Heart") }, { "Print", new EquatableObject("builtinicon:Print") },
+                        { "Error", new EquatableObject("builtinicon:Error") }, { "Flag", new EquatableObject("builtinicon:Flag") },
+                        { "Notebook", new EquatableObject("builtinicon:Notebook") }, { "Bug", new EquatableObject("builtinicon:Bug") },
+                        { "Microphone", new EquatableObject("builtinicon:Microphone") }, { "Video", new EquatableObject("builtinicon:Video") },
+                        { "Shop", new EquatableObject("builtinicon:Shop") }, { "Phonebook", new EquatableObject("builtinicon:Phonebook") },
+                        { "Enhance", new EquatableObject("builtinicon:Enhance") }, { "Unlock", new EquatableObject("builtinicon:Unlock") },
+                        { "Calculator", new EquatableObject("builtinicon:Calculator") }, { "Support", new EquatableObject("builtinicon:Support") },
+                        { "Lightbulb", new EquatableObject("builtinicon:Lightbulb") }, { "Key", new EquatableObject("builtinicon:Key") },
+                        { "Scan", new EquatableObject("builtinicon:Scan") }, { "Hospital", new EquatableObject("builtinicon:Hospital") },
+                        { "Health", new EquatableObject("builtinicon:Health") }, { "Medical", new EquatableObject("builtinicon:Medical") },
+                        { "Manufacture", new EquatableObject("builtinicon:Manufacture") }, { "Train", new EquatableObject("builtinicon:Train") },
+                        { "Globe", new EquatableObject("builtinicon:Globe") }, { "HalfFilledCircle", new EquatableObject("builtinicon:HalfFilledCircle") },
+                        { "Tray", new EquatableObject("builtinicon:Tray") }, { "AddUser", new EquatableObject("builtinicon:AddUser") },
+                        { "Text", new EquatableObject("builtinicon:Text") }, { "Shirt", new EquatableObject("builtinicon:Shirt") },
+                        { "Signal", new EquatableObject("builtinicon:Signal") }, { "Cut", new EquatableObject("builtinicon:Cut") },
+                        { "Paste", new EquatableObject("builtinicon:Paste") }, { "Leave", new EquatableObject("builtinicon:Leave") }
+                    })
                 },
                 {
                     EnumConstants.LaunchTargetEnumString,
-                    "%s[New:\"_blank\", Replace:\"_self\"]"
+                    DType.CreateEnum(DType.String, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "New", new EquatableObject("_blank") }, { "Replace", new EquatableObject("_self") }
+                    })
                 },
                 {
                     EnumConstants.TraceSeverityEnumString,
-                    "%n[Information:3, Warning:1, Error:0, Critical:-1]"
-                }, // Those values should match the ones from NotificationType (whenever applicable }, since there similar values. They are mapped to AppInsights-specific values in behaviorReplacementFunctions.ts
+                    DType.CreateEnum(DType.Number, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Information", new EquatableObject(3d) }, { "Warning", new EquatableObject(1d) }, { "Error", new EquatableObject(0d) },
+                        { "Critical", new EquatableObject(-1d) }
+                    })
+                },
                 {
                     EnumConstants.SelectedStateString,
-                    "%n[Edit:0, New:1, View:2]"
-                }, // When changing, keep in sync with AppMagic/js/Core/Core.Data/Enums.ts
-#if FEATUREGATE_DOCUMENTPREVIEWFLAGS_EXTERNALMESSAGE
-                { EnumConstants.ExternalMessageEnumString,
-                    "%s[BarcodeScanner:\"barcodescanner\"]" },
-#endif
+                    DType.CreateEnum(DType.Number, new Dictionary<string, EquatableObject>(StringComparer.InvariantCultureIgnoreCase)
+                    {
+                        { "Edit", new EquatableObject(0d) }, { "New", new EquatableObject(1d) }, { "View", new EquatableObject(2d) }
+                    })
+                }
             };
-        #endregion
 
-        private readonly Dictionary<string, string> _workingEnums = new Dictionary<string, string>();
+        private readonly Dictionary<string, DType> _workingEnums = new Dictionary<string, DType>();
 
         private ImmutableList<EnumSymbol> _enumSymbols;
 
@@ -293,13 +601,13 @@ namespace Microsoft.PowerFx.Core.Types.Enums
         #region Internal methods
         internal EnumStoreBuilder WithRequiredEnums(TexlFunctionSet functions)
         {
-            var missingEnums = new Dictionary<string, string>();
+            var missingEnums = new Dictionary<string, DType>();
 
             foreach (var name in functions.Enums)
             {
                 if (!_workingEnums.ContainsKey(name) && !missingEnums.ContainsKey(name))
                 {
-                    missingEnums.Add(name, DefaultEnums[name]);
+                    missingEnums.Add(name, DefaultEnums2[name]);
                 }
             }
 
@@ -313,7 +621,7 @@ namespace Microsoft.PowerFx.Core.Types.Enums
 
         internal EnumStoreBuilder WithDefaultEnums()
         {
-            foreach (var defaultEnum in DefaultEnums)
+            foreach (var defaultEnum in DefaultEnums2)
             {
                 if (!_workingEnums.ContainsKey(defaultEnum.Key))
                 {
@@ -331,14 +639,8 @@ namespace Microsoft.PowerFx.Core.Types.Enums
         #endregion
 
         private Dictionary<string, DType> RegenerateEnumTypes()
-        {
-            var enumTypes = _workingEnums.ToDictionary(enumSpec => enumSpec.Key, enumSpec =>
-            {
-                DType.TryParse(enumSpec.Value, out var type).Verify();
-                return type;
-            });
-
-            return enumTypes;
+        {            
+            return _workingEnums;
         }
 
         private IEnumerable<(DName name, DType typeSpec)> Enums()

@@ -10,6 +10,7 @@ using Microsoft.PowerFx.Core.Entities;
 using Microsoft.PowerFx.Core.Errors;
 using Microsoft.PowerFx.Core.Functions.Delegation;
 using Microsoft.PowerFx.Core.Localization;
+using Microsoft.PowerFx.Core.Types.Enums;
 using Microsoft.PowerFx.Core.Utils;
 using Microsoft.PowerFx.Syntax;
 using Conditional = System.Diagnostics.ConditionalAttribute;
@@ -267,12 +268,12 @@ namespace Microsoft.PowerFx.Core.Types
                 LazyTypeProvider);
         }
 
-        // Constructor for aggregate types (record, table, option set)
+        // Constructor for aggregate types (record, table)
         public DType(DKind kind, TypeTree tree, bool isFile = false, bool isLargeImage = false)
         {
             Contracts.Assert(kind >= DKind._Min && kind < DKind._Lim);
             tree.AssertValid();
-            Contracts.Assert(tree.IsEmpty || kind == DKind.Table || kind == DKind.Record || kind == DKind.OptionSet);
+            Contracts.Assert(tree.IsEmpty || kind == DKind.Table || kind == DKind.Record);
 
             Kind = kind;
             TypeTree = tree;
@@ -808,7 +809,7 @@ namespace Microsoft.PowerFx.Core.Types
             Contracts.Assert(kind == DKind.Record || kind == DKind.Table);
             Contracts.AssertValue(typedNames);
 
-            return new DType(kind, TypeTree.Create(typedNames.Select(TypedNameToKVP)), isFile, isLargeImage);
+            return new DType(kind, TypeTree.Create(typedNames.Select(typedName => new KeyValuePair<string, DType>(typedName.Name, typedName.Type))), isFile, isLargeImage);
         }
 
         public static DType CreateExpandType(IExpandInfo info)
@@ -861,7 +862,7 @@ namespace Microsoft.PowerFx.Core.Types
 
         public static DType CreateOptionSetType(IExternalOptionSet info)
         {
-            Contracts.AssertValue(info);                        
+            Contracts.AssertValue(info);
             return new DType(DKind.OptionSet, TypeTree.Create(info.OptionNames.Select(on => new KeyValuePair<string, DType>(on.Value, new DType(DKind.OptionSetValue, info)))), info);
         }
 
@@ -930,6 +931,15 @@ namespace Microsoft.PowerFx.Core.Types
             Contracts.AssertValue(pairs);
 
             return new DType(supertype.Kind, ValueTree.Create(pairs.Select(NamedObjectToKVP)));
+        }
+
+        // Efficient API
+        public static DType CreateEnum(DType enumType, Dictionary<string, EquatableObject> values)
+        {            
+            Contracts.Assert(enumType.IsValid);
+            Contracts.AssertValue(values);
+
+            return new DType(enumType.Kind, ValueTree.Create(values));
         }
 
         private static KeyValuePair<string, EquatableObject> NamedObjectToKVP(KeyValuePair<DName, object> pair)
