@@ -889,7 +889,7 @@ namespace Microsoft.PowerFx.Syntax
             private int CurrentPos { get; set; }
 
             // The current character. Zero if we've hit the end of input.
-            private char CurrentChar => CurrentPos < _charCount ? _text[CurrentPos] : '\0';
+            private char CurrentChar => _text[CurrentPos];
 
             // Advance to the next character and returns it.
             private char NextChar()
@@ -1119,6 +1119,7 @@ namespace Microsoft.PowerFx.Syntax
                 Contracts.Assert(CharacterUtils.IsDigit(CurrentChar) || (CurrentChar == _lex._decimalSeparator && CharacterUtils.IsDigit(PeekChar(1))));
 
                 bool hasDot = false, isCorrect = true;
+                bool eof = false;
 
                 _sb.Length = 0;
                 if (CurrentChar == _lex._decimalSeparator)
@@ -1131,7 +1132,8 @@ namespace Microsoft.PowerFx.Syntax
 
                 for (; ;)
                 {
-                    if (NextChar() == _lex._decimalSeparator)
+                    var nc = NextChar();
+                    if (nc == _lex._decimalSeparator)
                     {
                         if (hasDot)
                         {
@@ -1141,6 +1143,11 @@ namespace Microsoft.PowerFx.Syntax
 
                         hasDot = true;
                         _sb.Append(CurrentChar);
+                    }
+                    else if (nc == '\0')
+                    {
+                        eof = true;
+                        break;
                     }
                     else
                     {
@@ -1155,25 +1162,28 @@ namespace Microsoft.PowerFx.Syntax
                     }
                 }
 
-                // Check for an exponent.
-                if (CurrentChar == 'e' || CurrentChar == 'E')
+                if (!eof)
                 {
-                    var chTmp = PeekChar(1);
-                    if (CharacterUtils.IsDigit(chTmp) || (IsSign(chTmp) && CharacterUtils.IsDigit(PeekChar(2))))
+                    // Check for an exponent.
+                    if (CurrentChar == 'e' || CurrentChar == 'E')
                     {
-                        _sb.Append(CurrentChar);
-                        NextChar(); // Skip the e.
-                        if (IsSign(chTmp))
-                        {
-                            _sb.Append(chTmp);
-                            NextChar(); // Skip the sign
-                        }
-
-                        do
+                        var chTmp = PeekChar(1);
+                        if (CharacterUtils.IsDigit(chTmp) || (IsSign(chTmp) && CharacterUtils.IsDigit(PeekChar(2))))
                         {
                             _sb.Append(CurrentChar);
+                            NextChar(); // Skip the e.
+                            if (IsSign(chTmp))
+                            {
+                                _sb.Append(chTmp);
+                                NextChar(); // Skip the sign
+                            }
+
+                            do
+                            {
+                                _sb.Append(CurrentChar);
+                            }
+                            while (CharacterUtils.IsDigit(NextChar()));
                         }
-                        while (CharacterUtils.IsDigit(NextChar()));
                     }
                 }
 
@@ -1228,11 +1238,13 @@ namespace Microsoft.PowerFx.Syntax
 
                 if (!fDelimiterStart)
                 {
+                    bool eof = false;
+
                     // Simple identifier.
-                    while (IsSimpleIdentCh(CurrentChar))
+                    while (!eof && IsSimpleIdentCh(CurrentChar))
                     {
                         _sb.Append(CurrentChar);
-                        NextChar();
+                        eof = NextChar() == '\0';
                     }
 
                     return _sb.ToString();
@@ -1451,9 +1463,11 @@ namespace Microsoft.PowerFx.Syntax
                 Contracts.Assert(CharacterUtils.IsSpace(CurrentChar) || CharacterUtils.IsLineTerm(CurrentChar));
 
                 _sb.Length = 0;
-                while (CharacterUtils.IsSpace(NextChar()) || CharacterUtils.IsLineTerm(CurrentChar))
+                char nc = NextChar();
+                while (nc != '\0' && (CharacterUtils.IsSpace(nc) || CharacterUtils.IsLineTerm(CurrentChar)))
                 {
                     _sb.Append(CurrentChar);
+                    nc = NextChar();
                 }
 
                 return new WhitespaceToken(_sb.ToString(), GetTextSpan());
