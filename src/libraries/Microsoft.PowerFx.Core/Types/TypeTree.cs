@@ -4,9 +4,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.PowerFx.Core.Utils;
 
 namespace Microsoft.PowerFx.Core.Types
@@ -66,7 +64,7 @@ namespace Microsoft.PowerFx.Core.Types
             Contracts.AssertValue(items);
 
             return new TypeTree(items);
-        }
+        }       
 
         public static TypeTree Create(IEnumerable<KeyValuePair<string, DType>> items)
         {

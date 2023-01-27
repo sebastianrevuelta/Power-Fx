@@ -15,8 +15,6 @@ namespace Microsoft.PowerFx.Core.Types.Enums
     /// </summary>
     internal sealed class EnumStoreBuilder
     {
-        internal static IReadOnlyDictionary<string, string> DefaultEnums { get; } = DefaultEnums2.ToDictionary(e => e.Key, e => e.Value.ToString());
-
         internal static IReadOnlyDictionary<string, DType> DefaultEnums2 { get; } =
             new Dictionary<string, DType>(StringComparer.InvariantCultureIgnoreCase)
             {
@@ -591,6 +589,8 @@ namespace Microsoft.PowerFx.Core.Types.Enums
                     })
                 }
             };
+
+        internal static IReadOnlyDictionary<string, string> DefaultEnums { get; } = DefaultEnums2.ToDictionary(e => e.Key, e => e.Value.ToString());
 
         private readonly Dictionary<string, DType> _workingEnums = new Dictionary<string, DType>();
 

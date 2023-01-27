@@ -863,7 +863,9 @@ namespace Microsoft.PowerFx.Core.Types
         public static DType CreateOptionSetType(IExternalOptionSet info)
         {
             Contracts.AssertValue(info);
-            return new DType(DKind.OptionSet, TypeTree.Create(info.OptionNames.Select(on => new KeyValuePair<string, DType>(on.Value, new DType(DKind.OptionSetValue, info)))), info);
+            
+            var osType = new DType(DKind.OptionSetValue, info);
+            return new DType(DKind.OptionSet, TypeTree.Create(info.OptionNames.ToDictionary(on => on.Value, on => osType)), info);
         }
 
         public static DType CreateViewType(IExternalViewInfo info)
