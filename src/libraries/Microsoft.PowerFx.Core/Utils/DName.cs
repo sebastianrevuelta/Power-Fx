@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using System;
+using System.Linq;
 using System.Text;
 
 namespace Microsoft.PowerFx.Core.Utils
@@ -141,9 +142,7 @@ namespace Microsoft.PowerFx.Core.Utils
             }
 
             return false;
-        }
-
-        // $$$ Needs optimization $$$
+        }        
 
         /// <summary>
         /// Takes a name and makes it into a valid <see cref="DName" />.
@@ -161,12 +160,17 @@ namespace Microsoft.PowerFx.Core.Utils
                 return new DName(StrUnderscore);
             }
 
+            if (strName.All(c => char.IsLetterOrDigit(c)))
+            {
+                fModified = false;
+                return new DName(strName);
+            }
+
             var fAllSpaces = true;
             var fHasDisallowedWhiteSpaceCharacters = false;
 
             fModified = false;
 
-            // $$$ Needs optimization
             for (var i = 0; i < strName.Length; i++)
             {
                 var fIsSpace = strName[i] == ChSpace;
