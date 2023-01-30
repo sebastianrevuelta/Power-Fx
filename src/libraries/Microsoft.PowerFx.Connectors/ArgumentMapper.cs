@@ -206,7 +206,7 @@ namespace Microsoft.PowerFx.Connectors
                         bodyParameter = new OpenApiParameter() { Schema = new OpenApiSchema() { Type = "string" }, Name = bodyName, Description = "Body", Required = requestBody.Required };
 
                         OpenApiBodyParameters.Add(bodyParameter);
-                        (requestBody.Required ? requiredParams : optionalParams).Add(bodyParameter);
+                        (requestBody.Required ? requiredParams : optionalParams).Add((bodyParameter, FormulaType.String));
                     }
                 }
                 else
