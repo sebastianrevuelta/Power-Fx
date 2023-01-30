@@ -160,7 +160,7 @@ namespace Microsoft.PowerFx.Core.Utils
                 return new DName(StrUnderscore);
             }
 
-            if (strName.All(c => char.IsLetterOrDigit(c)))
+            if (strName.All(c => c > 32 && c < 128))
             {
                 fModified = false;
                 return new DName(strName);
