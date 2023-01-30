@@ -63,6 +63,7 @@ namespace Microsoft.PowerFx.Tests
                 $"{nsType}.{nameof(QueryableTableValue)}",
                 $"{ns}.InterpreterConfigException",
                 $"{ns}.Interpreter.{nameof(NotDelegableException)}",
+                $"{ns}.Interpreter.{nameof(CustomFunctionErrorException)}",
                 $"{ns}.Interpreter.UDF.{nameof(DefineFunctionsResult)}",                               
 
                 // Services for functions. 
@@ -105,6 +106,24 @@ namespace Microsoft.PowerFx.Tests
             var result = engine.Eval("With({y:2}, x+y)", context);
 
             Assert.Equal(17.0, ((NumberValue)result).Value);
+        }
+
+        [Fact]
+        public void EvalWithoutParse()
+        {
+            var engine = new RecalcEngine();
+            engine.UpdateVariable("x", 2);
+
+            var check = new CheckResult(engine)
+                .SetText("x*3")
+                .SetBindingInfo();
+
+            // Call Evaluator directly.
+            // Ensure it also pulls engine's symbols. 
+            var run = check.GetEvaluator();
+
+            var result = run.Eval();
+            Assert.Equal(2.0 * 3, result.ToObject());
         }
 
         /// <summary>

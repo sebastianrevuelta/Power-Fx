@@ -41,6 +41,8 @@ namespace Microsoft.PowerFx.Performance.Tests
                      cd <repo root>\src
                      tests\Microsoft.PowerFx.Performance.Tests\bin\Release\net70\Microsoft.PowerFx.Performance.Tests.exe -f *
             
+                     To identify the list of tests available
+                       "tests\Microsoft.PowerFx.Performance.Tests\bin\Release\netcoreapp3.1\Microsoft.PowerFx.Performance.Tests.exe" --list flat
              */
 
             _ = BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
