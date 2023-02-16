@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.PowerFx.Core;
 using Microsoft.PowerFx.Core.Functions;
 using Microsoft.PowerFx.Core.Texl;
 using Microsoft.PowerFx.Core.Types.Enums;
@@ -43,6 +44,14 @@ namespace Microsoft.PowerFx.Tests.IntellisenseTests
             Assert.NotNull(expression);
 
             var intellisense = Suggest(expression, config, context);
+            return intellisense.Suggestions.Select(suggestion => suggestion.DisplayText.Text).ToArray();
+        }
+
+        private string[] SuggestStrings(string expression, PowerFxConfig config, ReadOnlySymbolTable symTable)
+        {
+            Assert.NotNull(expression);
+
+            var intellisense = Suggest(expression, config, symTable);
             return intellisense.Suggestions.Select(suggestion => suggestion.DisplayText.Text).ToArray();
         }
 
