@@ -199,6 +199,7 @@ namespace Microsoft.PowerFx.Connectors
                     {
                         case null:
                         case "uuid":
+                        case "binary":
                             return (FormulaType.String, null);
 
                         case "date-time":
@@ -207,7 +208,7 @@ namespace Microsoft.PowerFx.Connectors
                             return (FormulaType.String, null);
 
                         default:
-                            throw new NotImplementedException("Unsupported type of string");
+                            throw new NotImplementedException($"Unsupported type of string ({schema.Format})");
                     }
 
                 // OpenAPI spec: Format could be float, double
