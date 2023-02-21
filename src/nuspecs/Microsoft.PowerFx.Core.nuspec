@@ -3,8 +3,7 @@
   <!-- 
     This is a custom nuspec file
     - version or dependency/version are set to "****" when they need to be replaced with the real version number
-    - files contain include/exclude elements to select which files need to be included/excluded in the package
-      when no include/exclude, all files in 'Release' folder will be included
+    - files contain include/exclude elements to select which files need to be included/excluded in the package      
   -->
   <metadata>
     <id>Microsoft.PowerFx.Core</id>

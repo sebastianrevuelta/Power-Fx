@@ -72,6 +72,7 @@ $pfxHash = (git log -n 1 --pretty=%H).ToString() ## Get last git commit hash
 foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }))
 { 
     $fileNameNoExt = [System.IO.Path]::GetFileNameWithoutExtension($nuspecFile)
+    Write-Host
     Write-Host "Processing $fileNameNoExt..."
     $pkgRoot = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "$pfxFolder\src\nuspecs\$fileNameNoExt")
     $pkgRoot = [System.IO.Path]::GetFullPath($pkgRoot)
@@ -147,13 +148,13 @@ foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }
     ## Microsoft.PowerFx.Core.Tests has a special treatment which is managed seperately
     if ($fileNameNoExt -ne "Microsoft.PowerFx.Core.Tests")
     {
-        $frameworks = @{"net31"="netstandard2.0"; "net6"="net60"; "net7"="net70"}
+        $frameworks = @{"net31"="netstandard2.0"; "net6"="net6.0"; "net7"="net7.0"}
         $fileRoot = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "$pfxFolder\src\libraries\$fileNameNoExt\bin\$config")
         $icon = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "$pfxFolder\src\libraries\$fileNameNoExt\icon.png")
     }
     else
     {
-        $frameworks = @{"net31"="netcoreapp3.1"; "net6"="net60"; "net7"="net70"}
+        $frameworks = @{"net31"="netcoreapp3.1"; "net6"="net6.0"; "net7"="net7.0"}
         $fileRoot = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "$pfxFolder\src\tests\$fileNameNoExt\bin\$config")
         $icon = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "$pfxFolder\src\tests\$fileNameNoExt\icon.png")
     }
