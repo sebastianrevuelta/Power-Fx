@@ -46,10 +46,9 @@ if ($IncludeVersions -contains 'all')
 $idSuffix = [System.String]::Join('-', [System.Linq.Enumerable]::Select($IncludeVersions, [func[string,string]]{$args[0].Substring(0,1).ToUpper()+$args[0].Substring(1) }));
 
 if ($UseDrop)
-{
-    Write-Host "Using drop folder..."
-
+{    
     $dropFolder = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "$pfxFolder\src\nuspecs\..\..\..\drop")) 
+    Write-Host "Using drop folder " $dropFolder
     $m = Select-String ".*Net[0-9]+\.(.*)" -InputObject ([System.IO.Directory]::EnumerateDirectories($dropFolder) | ? { $_ -match 'Microsoft.PowerFx' })[0]
     $NugetVersion = $m.Matches.Groups[1].Value
 }
@@ -163,9 +162,9 @@ foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }
     if ($UseDrop)
     {
         foreach ($nugetFolder in [System.IO.Directory]::EnumerateDirectories($dropFolder) | ? { $_ -match ($fileNameNoExt + ".Net") })
-        {                
-            $files.AddRange((Get-ChildItem ($nugetFolder + "\ExpressionTestCases") -Recurse -File | % { $_.FullName }))
-            $files.AddRange((Get-ChildItem ($nugetFolder + "\IntellisenseTests") -Recurse -File | % { $_.FullName }))
+        {   
+            $fmk = (Select-String ($fileNameNoExt + "\.(Net[0-9]+)\.") -InputObject $nugetFolder).Matches.Groups[1].Value
+            $files.AddRange((Get-ChildItem @(($nugetFolder + "\lib"), ($nugetFolder + "\content"), ($nugetFolder + "\contentFiles")) -Recurse -File | % { $frameworks[$fmk] + "|" + $_.FullName + "|" + $nugetFolder}))
         }
     }
     else
@@ -181,34 +180,53 @@ foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }
     $include = [object[]]$nuspec.package.files.include
     $exclude = [string[]]$nuspec.package.files.exclude
 
-    if ($include -ne $null)
+    if (-not $UseDrop)
     {
-        $files = [System.Linq.Enumerable]::Where([string[]]$files, [Func[string, bool]] { $x = $args[0]; [System.Linq.Enumerable]::Any($include, [Func[object, bool]] { $x -match $args[0].'#text'.Replace("\","\\").Replace("*","").Replace(".","\.") }) })
-    }
-    if ($exclude -ne $null)
-    {
-        $files = [System.Linq.Enumerable]::Where([string[]]$files, [Func[string, bool]] { $x = $args[0]; [System.Linq.Enumerable]::Any($exclude, [Func[string, bool]] { $x -notmatch $args[0].Replace("\","\\").Replace("*","").Replace(".","\.") }) })
+        if ($include -ne $null)
+        {
+            $files = [System.Linq.Enumerable]::Where([string[]]$files, [Func[string, bool]] { $x = $args[0]; [System.Linq.Enumerable]::Any($include, [Func[object, bool]] { $x -match $args[0].'#text'.Replace("\","\\").Replace("*","").Replace(".","\.") }) })
+        }
+        if ($exclude -ne $null)
+        {
+            $files = [System.Linq.Enumerable]::Where([string[]]$files, [Func[string, bool]] { $x = $args[0]; [System.Linq.Enumerable]::Any($exclude, [Func[string, bool]] { $x -notmatch $args[0].Replace("\","\\").Replace("*","").Replace(".","\.") }) })
+        }
     }
 
+    $lst = [System.Collections.ArrayList]::new()
     foreach ($fileZ in $files)
     {
-        $fmk = $fileZ.Split('|')[0]
+        $fmk = $fileZ.Split('|')[0]        
         $file = $fileZ.Split('|')[1]
+        
         foreach ($inc in [System.Linq.Enumerable]::ToList([System.Linq.Enumerable]::Where($include, [Func[object, bool]] { $file -match $args[0].'#text'.Replace("\","\\").Replace("*","").Replace(".","\.") })))
-        {
-            $xfile = $nuspec.CreateElement("file", $schema)
+        {   
+            if ($UseDrop) 
+            { 
+                $fileRoot = $fileZ.Split('|')[2]
+                $t = $file.Substring($fileRoot.Length)
+            }        
+            else
+            {
+                $t = $inc.Folder.Replace("FRAMEWORK", $fmk) + $file.Substring($fileRoot.Length + $fmk.Length + 2)
+            }
             
-            $src = $nuspec.CreateAttribute("src")
-            $src.Value = $file
-            [void]$xfile.Attributes.Append($src)
+            if (-not $lst.Contains($t))
+            {
+                [void]$lst.Add($t)      
+                $xfile = $nuspec.CreateElement("file", $schema)
+            
+                $src = $nuspec.CreateAttribute("src")
+                $src.Value = $file
+                [void]$xfile.Attributes.Append($src)
 
-            $target = $nuspec.CreateAttribute("target")                
-            $target.Value = $inc.Folder.Replace("FRAMEWORK", $fmk) + $file.Substring($fileRoot.Length + $fmk.Length + 2)
-            [void]$xfile.Attributes.Append($target)
+                $target = $nuspec.CreateAttribute("target")                     
+                $target.Value = $t                
+                [void]$xfile.Attributes.Append($target)
 
-            Write-Host "Adding" $target.Value
-            [void]$nuspec.package.files.AppendChild($xfile)
-        }
+                Write-Host "Adding" $target.Value
+                [void]$nuspec.package.files.AppendChild($xfile)
+            }
+        }        
     }
 
     $xfile = $nuspec.CreateElement("file", $schema)
