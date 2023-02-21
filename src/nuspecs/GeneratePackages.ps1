@@ -4,7 +4,8 @@ param(
     [String[]]$IncludeVersions = 'net31',
     [String]$pfxFolder,
     [String]$NugetVersion,
-    [String]$Config = 'Release'
+    [String]$Config = 'Release',
+    [Boolean]$UseDrop = $false
 )
 
 ## To generate these packages locally, build the 3 solutions Microsoft.PowerFx.sln, Microsoft.PowerFx.Net6.sln and Microsoft.PowerFx.Net7.sln in Release mode
@@ -21,7 +22,6 @@ function Format-XML ([xml]$xml, $indent=2)
     $xml.WriteContentTo($XmlWriter)
     $XmlWriter.Flush()
     $StringWriter.Flush()
-
     $StringWriter.ToString()
 }
 
@@ -44,6 +44,15 @@ if ($IncludeVersions -contains 'all')
 
 ## Will generate 'Net31-Net7' when IncludeVersions is 'net31,net7'
 $idSuffix = [System.String]::Join('-', [System.Linq.Enumerable]::Select($IncludeVersions, [func[string,string]]{$args[0].Substring(0,1).ToUpper()+$args[0].Substring(1) }));
+
+if ($UseDrop)
+{
+    Write-Host "Using drop folder..."
+
+    $dropFolder = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "$pfxFolder\src\nuspecs\..\..\..\drop")) 
+    $m = Select-String ".*Net[0-9]+\.(.*)" -InputObject ([System.IO.Directory]::EnumerateDirectories($dropFolder) | ? { $_ -match 'Microsoft.PowerFx' })[0]
+    $NugetVersion = $m.Matches.Groups[1].Value
+}
 
 Write-Host "### Generate packages for $IncludeVersions"
 Write-Host "NugetVersion = $NugetVersion"
@@ -138,98 +147,53 @@ foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }
     ## Microsoft.PowerFx.Core.Tests has a special treatment which is managed seperately
     if ($fileNameNoExt -ne "Microsoft.PowerFx.Core.Tests")
     {
-        $files = [System.Collections.ArrayList]::new()
-        $fileRoot = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "$pfxFolder\src\libraries\$fileNameNoExt\bin\$config")        
-        $fileRoot = [System.IO.Path]::GetFullPath($fileRoot)
-
-        if ($IncludeVersions -contains 'net31') { $files.AddRange((Get-ChildItem ($fileRoot + '\netstandard2.0') -Recurse -File -Exclude @("*.deps.json", "*.pdb", "*.dbg") | % { $_.FullName })) }
-        if ($IncludeVersions -contains 'net6')  { $files.AddRange((Get-ChildItem ($fileRoot + '\net6.0')         -Recurse -File -Exclude @("*.deps.json", "*.pdb", "*.dbg") | % { $_.FullName })) }
-        if ($IncludeVersions -contains 'net7')  { $files.AddRange((Get-ChildItem ($fileRoot + '\net7.0')         -Recurse -File -Exclude @("*.deps.json", "*.pdb", "*.dbg") | % { $_.FullName })) }
-
-        ## Identify the list of files we need to include/exclude
-        $include = [string[]]$nuspec.package.files.include
-        $exclude = [string[]]$nuspec.package.files.exclude
-
-        if ($include -ne $null)
-        {
-            $files = [System.Linq.Enumerable]::Where([string[]]$files, [Func[string, bool]] { $x = $args[0]; [System.Linq.Enumerable]::Any($include, [Func[string, bool]] { $x -match $args[0].Replace("*","").Replace(".","\.") }) })
-        }
-        if ($exclude -ne $null)
-        {
-            $files = [System.Linq.Enumerable]::Where([string[]]$files, [Func[string, bool]] { $x = $args[0]; [System.Linq.Enumerable]::Any($exclude, [Func[string, bool]] { $x -notmatch $args[0].Replace("*","").Replace(".","\.") }) })
-        }
-
-        foreach ($file in $files)
-        {
-            $xfile = $nuspec.CreateElement("file", $schema)
-            
-            $src = $nuspec.CreateAttribute("src")
-            $src.Value = $file
-            [void]$xfile.Attributes.Append($src)
-
-            $target = $nuspec.CreateAttribute("target")
-            $relative = "\lib" + $file.Substring($fileRoot.Length)
-            $target.Value = $relative
-            [void]$xfile.Attributes.Append($target)
-
-            [void]$nuspec.package.files.AppendChild($xfile)
-        }        
-        
-        $xfile = $nuspec.CreateElement("file", $schema)
-        $src = $nuspec.CreateAttribute("src")
+        $frameworks = @{"net31"="netstandard2.0"; "net6"="net60"; "net7"="net70"}
+        $fileRoot = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "$pfxFolder\src\libraries\$fileNameNoExt\bin\$config")
         $icon = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "$pfxFolder\src\libraries\$fileNameNoExt\icon.png")
-        $src.Value = $icon
-        [void]$xfile.Attributes.Append($src)
-
-        $target = $nuspec.CreateAttribute("target")        
-        $target.Value = "\icon.png"
-        [void]$xfile.Attributes.Append($target)
-
-        [void]$nuspec.package.files.AppendChild($xfile)               
     }
     else
-    {            
-        $files = [System.Collections.ArrayList]::new()
+    {
+        $frameworks = @{"net31"="netcoreapp3.1"; "net6"="net60"; "net7"="net70"}
         $fileRoot = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "$pfxFolder\src\tests\$fileNameNoExt\bin\$config")
+        $icon = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "$pfxFolder\src\tests\$fileNameNoExt\icon.png")
+    }
+            
+    $files = [System.Collections.ArrayList]::new()
+    if ($UseDrop)
+    {
+        foreach ($nugetFolder in [System.IO.Directory]::EnumerateDirectories($dropFolder) | ? { $_ -match ($fileNameNoExt + ".Net") })
+        {                
+            $files.AddRange((Get-ChildItem ($nugetFolder + "\ExpressionTestCases") -Recurse -File | % { $_.FullName }))
+            $files.AddRange((Get-ChildItem ($nugetFolder + "\IntellisenseTests") -Recurse -File | % { $_.FullName }))
+        }
+    }
+    else
+    {        
         $fileRoot = [System.IO.Path]::GetFullPath($fileRoot)
 
-        if ($IncludeVersions -contains 'net31') { $files.AddRange((Get-ChildItem -Recurse -Path @("$fileRoot\netcoreapp3.1\ExpressionTestCases\*", "$fileRoot\netcoreapp3.1\IntellisenseTests\*") | % { $_.FullName })) }
-        if ($IncludeVersions -contains 'net6')  { $files.AddRange((Get-ChildItem -Recurse -Path @("$fileRoot\net6.0\ExpressionTestCases\*",        "$fileRoot\net6.0\IntellisenseTests\*")        | % { $_.FullName })) }
-        if ($IncludeVersions -contains 'net7')  { $files.AddRange((Get-ChildItem -Recurse -Path @("$fileRoot\net7.0\ExpressionTestCases\*",        "$fileRoot\net7.0\IntellisenseTests\*")        | % { $_.FullName })) }        
+        if ($IncludeVersions -contains 'net31') { $files.AddRange((Get-ChildItem -Recurse -Path ("$fileRoot\"+$frameworks["net31"]) -File -Exclude @("*.deps.json", "*.dev.json", "*.pdb", "*.dbg") | % { $frameworks["net31"] + "|" + $_.FullName })) }
+        if ($IncludeVersions -contains 'net6')  { $files.AddRange((Get-ChildItem -Recurse -Path ("$fileRoot\"+$frameworks["net6"])  -File -Exclude @("*.deps.json", "*.dev.json", "*.pdb", "*.dbg") | % { $frameworks["net6"]  + "|" + $_.FullName })) }
+        if ($IncludeVersions -contains 'net7')  { $files.AddRange((Get-ChildItem -Recurse -Path ("$fileRoot\"+$frameworks["net7"])  -File -Exclude @("*.deps.json", "*.dev.json", "*.pdb", "*.dbg") | % { $frameworks["net7"]  + "|" + $_.FullName })) }
+    }
 
-        foreach ($file in $files)
-        {
-            $xfile = $nuspec.CreateElement("files", $schema)
-            
-            $include = $nuspec.CreateAttribute("include")
-            $include.Value = "any" + $file.Substring($fileRoot.Length)
-            [void]$xfile.Attributes.Append($include)
+    ## Identify the list of files we need to include/exclude
+    $include = [object[]]$nuspec.package.files.include
+    $exclude = [string[]]$nuspec.package.files.exclude
 
-            $buildAction = $nuspec.CreateAttribute("buildAction")            
-            $buildAction.Value = "Content"
-            [void]$xfile.Attributes.Append($buildAction)
+    if ($include -ne $null)
+    {
+        $files = [System.Linq.Enumerable]::Where([string[]]$files, [Func[string, bool]] { $x = $args[0]; [System.Linq.Enumerable]::Any($include, [Func[object, bool]] { $x -match $args[0].'#text'.Replace("\","\\").Replace("*","").Replace(".","\.") }) })
+    }
+    if ($exclude -ne $null)
+    {
+        $files = [System.Linq.Enumerable]::Where([string[]]$files, [Func[string, bool]] { $x = $args[0]; [System.Linq.Enumerable]::Any($exclude, [Func[string, bool]] { $x -notmatch $args[0].Replace("\","\\").Replace("*","").Replace(".","\.") }) })
+    }
 
-            [void]$nuspec.package.metadata.contentFiles.AppendChild($xfile)
-        }
-
-        $files = [System.Collections.ArrayList]::new()
-        if ($IncludeVersions -contains 'net31') { $files.AddRange((Get-ChildItem ($fileRoot + '\netcoreapp3.1') -Recurse -File -Exclude @("*.deps.json", "*.pdb", "*.dbg") | % { $_.FullName })) }
-        if ($IncludeVersions -contains 'net6')  { $files.AddRange((Get-ChildItem ($fileRoot + '\net6.0')        -Recurse -File -Exclude @("*.deps.json", "*.pdb", "*.dbg") | % { $_.FullName })) }
-        if ($IncludeVersions -contains 'net7')  { $files.AddRange((Get-ChildItem ($fileRoot + '\net7.0')        -Recurse -File -Exclude @("*.deps.json", "*.pdb", "*.dbg") | % { $_.FullName })) }
-
-        $include = [string[]]$nuspec.package.files.include
-        $exclude = [string[]]$nuspec.package.files.exclude
-
-        if ($include -ne $null)
-        {
-            $files = [System.Linq.Enumerable]::Where([string[]]$files, [Func[string, bool]] { $x = $args[0]; [System.Linq.Enumerable]::Any($include, [Func[string, bool]] { $x -match $args[0].Replace("\","\\").Replace("*","").Replace(".","\.") }) })
-        }
-        if ($exclude -ne $null)
-        {
-            $files = [System.Linq.Enumerable]::Where([string[]]$files, [Func[string, bool]] { $x = $args[0]; [System.Linq.Enumerable]::Any($exclude, [Func[string, bool]] { $x -notmatch $args[0].Replace("\","\\").Replace("*","").Replace(".","\.") }) })
-        }
-
-        foreach ($file in $file)
+    foreach ($fileZ in $files)
+    {
+        $fmk = $fileZ.Split('|')[0]
+        $file = $fileZ.Split('|')[1]
+        foreach ($inc in [System.Linq.Enumerable]::ToList([System.Linq.Enumerable]::Where($include, [Func[object, bool]] { $file -match $args[0].'#text'.Replace("\","\\").Replace("*","").Replace(".","\.") })))
         {
             $xfile = $nuspec.CreateElement("file", $schema)
             
@@ -237,26 +201,26 @@ foreach ($nuspecFile in (Get-Item ($nuspecRoot + "*.nuspec") | % { $_.FullName }
             $src.Value = $file
             [void]$xfile.Attributes.Append($src)
 
-            $target = $nuspec.CreateAttribute("target")
-            $relative = "\lib" + $file.Substring($fileRoot.Length)
-            $target.Value = $relative
+            $target = $nuspec.CreateAttribute("target")                
+            $target.Value = $inc.Folder.Replace("FRAMEWORK", $fmk) + $file.Substring($fileRoot.Length + $fmk.Length + 2)
             [void]$xfile.Attributes.Append($target)
 
+            Write-Host "Adding" $target.Value
             [void]$nuspec.package.files.AppendChild($xfile)
         }
-
-        $xfile = $nuspec.CreateElement("file", $schema)
-        $src = $nuspec.CreateAttribute("src")
-        $icon = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "$pfxFolder\src\tests\$fileNameNoExt\icon.png")
-        $src.Value = $icon
-        [void]$xfile.Attributes.Append($src)
-
-        $target = $nuspec.CreateAttribute("target")        
-        $target.Value = "\icon.png"
-        [void]$xfile.Attributes.Append($target)
-
-        [void]$nuspec.package.files.AppendChild($xfile)
     }
+
+    $xfile = $nuspec.CreateElement("file", $schema)
+    $src = $nuspec.CreateAttribute("src")    
+    $src.Value = $icon
+    [void]$xfile.Attributes.Append($src)
+
+    $target = $nuspec.CreateAttribute("target")        
+    $target.Value = "\icon.png"
+    [void]$xfile.Attributes.Append($target)
+
+    [void]$nuspec.package.files.AppendChild($xfile)
+    
 
     ## Remove comments
     foreach ($comment in $nuspec.SelectNodes("//comment()"))

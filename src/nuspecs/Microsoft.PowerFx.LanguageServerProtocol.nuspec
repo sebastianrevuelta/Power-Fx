@@ -37,8 +37,6 @@
     </dependencies>
   </metadata>
   <files>
-    <!-- Add files here with absolute path, from src\libraries\Microsoft.PowerFx.LanguageServerProtocol\bin\Release\[netstandard2.0|net6.0|net7.0] (folder & subfolders) -->
-    <!-- + <file src="src\libraries\Microsoft.PowerFx.LanguageServerProtocol\icon.png" target="\icon.png" /> -->
-    <include>Microsoft.PowerFx.LanguageServerProtocol.*</include>
+    <include folder="\lib\FRAMEWORK\">Microsoft.PowerFx.LanguageServerProtocol.*</include>
   </files>
 </package>

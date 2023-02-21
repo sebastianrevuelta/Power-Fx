@@ -28,7 +28,6 @@
     </dependencies>
   </metadata>
   <files>
-    <!-- Add files here with absolute path, from src\libraries\Microsoft.PowerFx.TransportAttributes\bin\Release\[netstandard2.0|net6.0|net7.0] (folder & subfolders) -->
-    <!-- + <file src="src\libraries\Microsoft.PowerFx.TransportAttributes\icon.png" target="\icon.png" /> -->
+    <include folder="\lib\FRAMEWORK\">Microsoft.PowerFx.Transport.Attributes.*</include>
   </files>
 </package>

@@ -46,13 +46,13 @@
         <dependency id="xunit" version="2.4.2" exclude="Build,Analyzers" />
         <dependency id="xunit.extensibility.core" version="2.4.2" exclude="Build,Analyzers" />
       </group>
-    </dependencies>
-    <contentFiles>
-      <!-- Add files from ExpressionTestCases, IntellisenseTests folders -->          
-    </contentFiles>
+    </dependencies>    
   </metadata>
-  <files>
-    <!-- Add files -->
-    <include>Microsoft.PowerFx.Core.Tests.*</include>
+  <files>    
+    <include folder="\content\">ExpressionTestCases\*</include>
+    <include folder="\content\">IntellisenseTests\*</include>    
+    <include folder="\contentFiles\any\FRAMEWORK\">ExpressionTestCases\*</include>
+    <include folder="\contentFiles\any\FRAMEWORK\">IntellisenseTests\*</include>    
+    <include folder="\lib\FRAMEWORK\">Microsoft.PowerFx.Core.Tests.*</include>
   </files>
 </package>

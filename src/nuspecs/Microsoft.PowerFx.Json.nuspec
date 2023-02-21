@@ -36,9 +36,7 @@
       </group>
     </dependencies>
   </metadata>
-  <files>
-    <!-- Add files here with absolute path, from src\libraries\Microsoft.PowerFx.Connectors\bin\Release\[netstandard2.0|net6.0|net7.0] (folder & subfolders) -->
-    <!-- + <file src="C:\Data\Power-Fx\src\libraries\Microsoft.PowerFx.Connectors\icon.png" target="\icon.png" /> -->
-    <include>Microsoft.PowerFx.Json.*</include>
+  <files>    
+    <include folder="\lib\FRAMEWORK\">Microsoft.PowerFx.Json.*</include>
   </files>
 </package>
