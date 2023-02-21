@@ -45,9 +45,16 @@ if ($IncludeVersions -contains 'all')
 ## Will generate 'Net31-Net7' when IncludeVersions is 'net31,net7'
 $idSuffix = [System.String]::Join('-', [System.Linq.Enumerable]::Select($IncludeVersions, [func[string,string]]{$args[0].Substring(0,1).ToUpper()+$args[0].Substring(1) }));
 
+## Use current folder by default
+if ([System.String]::IsNullOrEmpty($pfxFolder))
+{
+    $pfxFolder = "."
+}
+
 if ($UseDrop)
-{    
-    $dropFolder = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "$pfxFolder\src\nuspecs\..\..\..\drop")) 
+{   
+    if ($pfxFolder -eq ".") { $y = "" } else { $y = "..\" }
+    $dropFolder = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "$pfxFolder\src\nuspecs\$y..\..\..\drop")) 
     Write-Host "Using drop folder " $dropFolder
     $m = Select-String ".*Net[0-9]+\.(.*)" -InputObject ([System.IO.Directory]::EnumerateDirectories($dropFolder) | ? { $_ -match 'Microsoft.PowerFx' })[0]
     $NugetVersion = $m.Matches.Groups[1].Value
@@ -56,12 +63,6 @@ if ($UseDrop)
 Write-Host "### Generate packages for $IncludeVersions"
 Write-Host "NugetVersion = $NugetVersion"
 Write-Host "IdSuffix = $idSuffix"
-
-## Use current folder by default
-if ([System.String]::IsNullOrEmpty($pfxFolder))
-{
-    $pfxFolder = "."
-}
 
 $nuspecRoot = [System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "$pfxFolder\src\nuspecs\")
 $nuspecRoot = [System.IO.Path]::GetFullPath($nuspecRoot)
