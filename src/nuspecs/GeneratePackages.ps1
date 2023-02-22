@@ -5,7 +5,10 @@ param(
     [String]$pfxFolder,
     [String]$NugetVersion,
     [String]$Config = 'Release',
-    [Boolean]$UseDrop = $false
+    [Boolean]$UseDrop = $false,
+    [Boolean]$n31 = $false,
+    [Boolean]$n60 = $false,
+    [Boolean]$n70 = $false
 )
 
 ## To generate these packages locally, build the 3 solutions Microsoft.PowerFx.sln, Microsoft.PowerFx.Net6.sln and Microsoft.PowerFx.Net7.sln in Release mode
@@ -23,6 +26,15 @@ function Format-XML ([xml]$xml, $indent=2)
     $XmlWriter.Flush()
     $StringWriter.Flush()
     $StringWriter.ToString()
+}
+
+if ($n31 -or $n60 -or $n70)
+{
+    $v = [System.Collections.ArrayList]::new()
+    if ($n31 -eq $true ) { [void]$v.Add('net31') }
+    if ($n60 -eq $true ) { [void]$v.Add('net6') }
+    if ($n70 -eq $true ) { [void]$v.Add('net7') }
+    $IncludeVersions = [string]::Join(",", $v.ToArray())
 }
 
 $schema = "http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd"
