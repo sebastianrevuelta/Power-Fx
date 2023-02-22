@@ -29,7 +29,7 @@ function Format-XML ([xml]$xml, $indent=2)
     $StringWriter.ToString()
 }
 
-if ($n31 -or $n60 -or $n70)
+if (([bool]$n31) -or ([bool]$n60) -or ([bool]$n70))
 {
     $v = [System.Collections.ArrayList]::new()
     if ([bool]$n31) { [void]$v.Add('net31') }
