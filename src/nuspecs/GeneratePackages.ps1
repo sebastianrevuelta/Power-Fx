@@ -36,9 +36,9 @@ $n70b = [bool]::Parse($n70)
 if ($n31b -or $n60b -or $n70b)
 {    
     $v = [System.Collections.ArrayList]::new()
-    if ([bool]$n31) { [void]$v.Add('net31') }
-    if ([bool]$n60) { [void]$v.Add('net6') }
-    if ([bool]$n70) { [void]$v.Add('net7') }
+    if ($n31b) { [void]$v.Add('net31') }
+    if ($n60b) { [void]$v.Add('net6') }
+    if ($n70b) { [void]$v.Add('net7') }
     if ($v.ToArray().Length -eq 3) { $IncludeVersions = 'all' } else { $IncludeVersions = $v.ToArray() }
 }
 
