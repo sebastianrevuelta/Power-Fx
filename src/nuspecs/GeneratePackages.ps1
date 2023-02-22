@@ -7,9 +7,9 @@ param(
     [String]$Config = 'Release',
     ## These parameters are only used by the build system
     [Boolean]$UseDrop = $false,    
-    [Boolean]$n31 = $false,
-    [Boolean]$n60 = $false,
-    [Boolean]$n70 = $false
+    [string]$n31 = 'false',
+    [string]$n60 = 'false',
+    [string]$n70 = 'false'
 )
 
 ## To generate these packages locally, build the 3 solutions Microsoft.PowerFx.sln, Microsoft.PowerFx.Net6.sln and Microsoft.PowerFx.Net7.sln in Release mode
@@ -32,9 +32,9 @@ function Format-XML ([xml]$xml, $indent=2)
 if ($n31 -or $n60 -or $n70)
 {
     $v = [System.Collections.ArrayList]::new()
-    if ($n31 -eq $true ) { [void]$v.Add('net31') }
-    if ($n60 -eq $true ) { [void]$v.Add('net6') }
-    if ($n70 -eq $true ) { [void]$v.Add('net7') }
+    if ([bool]$n31) { [void]$v.Add('net31') }
+    if ([bool]$n60) { [void]$v.Add('net6') }
+    if ([bool]$n70) { [void]$v.Add('net7') }
     if ($v.ToArray().Length -eq 3) { $IncludeVersions = 'all' } else { $IncludeVersions = [string]::Join(",", $v.ToArray()) }
 }
 
