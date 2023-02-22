@@ -54,7 +54,7 @@ if ([System.String]::IsNullOrEmpty($pfxFolder))
 if ($UseDrop)
 {   
     if ($pfxFolder -eq ".") { $y = "" } else { $y = "..\" }
-    $dropFolder = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "$pfxFolder\src\nuspecs\$y..\..\..\drop")) 
+    $dropFolder = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, "$pfxFolder\src\nuspecs\$y..\..\..\drop\packages")) 
     Write-Host "Using drop folder " $dropFolder
     $m = Select-String ".*Net[0-9]+\.(.*)" -InputObject ([System.IO.Directory]::EnumerateDirectories($dropFolder) | ? { $_ -match 'Microsoft.PowerFx' })[0]
     $NugetVersion = $m.Matches.Groups[1].Value
