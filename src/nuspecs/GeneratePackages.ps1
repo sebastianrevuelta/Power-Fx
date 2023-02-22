@@ -35,7 +35,7 @@ if ($n31 -or $n60 -or $n70)
     if ($n31 -eq $true ) { [void]$v.Add('net31') }
     if ($n60 -eq $true ) { [void]$v.Add('net6') }
     if ($n70 -eq $true ) { [void]$v.Add('net7') }
-    $IncludeVersions = [string]::Join(",", $v.ToArray())
+    if ($v.ToArray().Length -eq 3) { $IncludeVersions = 'all' } else { $IncludeVersions = [string]::Join(",", $v.ToArray()) }
 }
 
 $schema = "http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd"
