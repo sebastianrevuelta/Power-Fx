@@ -5,7 +5,8 @@ param(
     [String]$pfxFolder,
     [String]$NugetVersion,
     [String]$Config = 'Release',
-    [Boolean]$UseDrop = $false,
+    ## These parameters are only used by the build system
+    [Boolean]$UseDrop = $false,    
     [Boolean]$n31 = $false,
     [Boolean]$n60 = $false,
     [Boolean]$n70 = $false
