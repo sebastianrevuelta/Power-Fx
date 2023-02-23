@@ -10,6 +10,7 @@ using System.Text;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Diagnostics.Windows;
 using BenchmarkDotNet.Diagnostics.Windows.Configs;
+using BenchmarkDotNet.Engines;
 using BenchmarkDotNet.Jobs;
 using Microsoft.PowerFx.Core;
 using Microsoft.PowerFx.Core.Utils;
@@ -26,7 +27,15 @@ namespace Microsoft.PowerFx.Performance.Tests
     [MedianColumn]
     [Q3Column]
     [MaxColumn]
-    [SimpleJob(runtimeMoniker: RuntimeMoniker.NetCoreApp31)]
+#if NETCOREAPP3_1
+    [SimpleJob(RunStrategy.Throughput, RuntimeMoniker.NetCoreApp31, launchCount: 1, warmupCount: 10, iterationCount: 10, invocationCount: 50)]
+#elif NET6_0
+    [SimpleJob(RunStrategy.Throughput, RuntimeMoniker.Net60, launchCount: 1, warmupCount: 10, iterationCount: 10, invocationCount: 50)]
+#elif NET7_0
+    [SimpleJob(RunStrategy.Throughput, RuntimeMoniker.Net70, launchCount: 1, warmupCount: 10, iterationCount: 10, invocationCount: 50)]
+#else
+#error Invalid .Net version    
+#endif
     public class PvaPerformance
     {
         private const int ExpressionNumber = 100;

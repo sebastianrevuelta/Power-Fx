@@ -7,6 +7,7 @@ using System.Linq;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Diagnostics.Windows;
 using BenchmarkDotNet.Diagnostics.Windows.Configs;
+using BenchmarkDotNet.Engines;
 using BenchmarkDotNet.Jobs;
 using Microsoft.PowerFx.Syntax;
 using Microsoft.PowerFx.Types;
@@ -24,11 +25,11 @@ namespace Microsoft.PowerFx.Performance.Tests
     [Q3Column]
     [MaxColumn]
 #if NETCOREAPP3_1
-    [SimpleJob(runtimeMoniker: RuntimeMoniker.NetCoreApp31)]
+    [SimpleJob(RunStrategy.Throughput, RuntimeMoniker.NetCoreApp31, launchCount: 1, warmupCount: 10, iterationCount: 10, invocationCount: 256)]
 #elif NET6_0
-    [SimpleJob(runtimeMoniker: RuntimeMoniker.Net60)]
+    [SimpleJob(RunStrategy.Throughput, RuntimeMoniker.Net60, launchCount: 1, warmupCount: 10, iterationCount: 10, invocationCount: 256)]
 #elif NET7_0
-    [SimpleJob(runtimeMoniker: RuntimeMoniker.Net70)]
+    [SimpleJob(RunStrategy.Throughput, RuntimeMoniker.Net70, launchCount: 1, warmupCount: 10, iterationCount: 10, invocationCount: 256)]
 #else
 #error Invalid .Net version    
 #endif
