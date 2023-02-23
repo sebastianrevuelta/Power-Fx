@@ -31,18 +31,18 @@ namespace Microsoft.PowerFx.Performance.Tests
 
                      For .Net 6.0
 
-                     set MSBuildSDKsPath=C:\Program Files\dotnet\sdk\6.0.307\sdks
+                     set MSBuildSDKsPath=C:\Program Files\dotnet\sdk\6.0.309\sdks
                      cd <repo root>\src
-                     tests\Microsoft.PowerFx.Performance.Tests\bin\Release\net60\Microsoft.PowerFx.Performance.Tests.exe -f *
+                     tests\Microsoft.PowerFx.Performance.Tests\bin\Release\net60\Microsoft.PowerFx.Performance.Net6.Tests.exe -f *
 
                      For .Net 7.0
 
-                     set MSBuildSDKsPath=C:\Program Files\dotnet\sdk\7.0.101\sdks
+                     set MSBuildSDKsPath=C:\Program Files\dotnet\sdk\7.0.200\sdks
                      cd <repo root>\src
-                     tests\Microsoft.PowerFx.Performance.Tests\bin\Release\net70\Microsoft.PowerFx.Performance.Tests.exe -f *
+                     tests\Microsoft.PowerFx.Performance.Tests\bin\Release\net70\Microsoft.PowerFx.Performance.Net7.Tests.exe -f *
             
                      To identify the list of tests available
-                       "tests\Microsoft.PowerFx.Performance.Tests\bin\Release\netcoreapp3.1\Microsoft.PowerFx.Performance.Tests.exe" --list flat
+                       "tests\Microsoft.PowerFx.Performance.Tests\bin\Release\<framework>\Microsoft.PowerFx.Performance.[net version].Tests.exe" --list flat
              */
 
             _ = BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
