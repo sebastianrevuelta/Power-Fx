@@ -115,6 +115,7 @@ namespace Microsoft.PowerFx
 
             _expression = expression;
             _parserOptions = parserOptions ?? Engine.GetDefaultParserOptionsCopy();
+            this.ParserCultureInfo = _parserOptions.Culture;
 
             return this;
         }
@@ -152,6 +153,14 @@ namespace Microsoft.PowerFx
             }
 
             return this.SetBindingInfo(symbolTable);
+        }
+
+        private FormulaType _expectedReturnType;
+
+        public CheckResult SetExpectedReturnValue(FormulaType type)
+        {
+            _expectedReturnType = type;
+            return this;
         }
 
         // No additional binding is required
@@ -239,10 +248,25 @@ namespace Microsoft.PowerFx
         /// </summary>
         public IEnumerable<ExpressionError> Errors
         {
-            get => _errors;
+            get => GetErrorsInLocale(null);
 
             [Obsolete("use constructor to set errors")]
             set => _errors.AddRange(value);
+        }
+
+        /// <summary>
+        /// Get errors localized with the given culture. 
+        /// </summary>
+        /// <param name="culture"></param>
+        /// <returns></returns>
+        public IEnumerable<ExpressionError> GetErrorsInLocale(CultureInfo culture)
+        {
+            culture ??= this.ParserCultureInfo;
+
+            foreach (var error in this._errors)
+            {
+                yield return error.GetInLocale(culture);
+            }
         }
 
         /// <summary>
@@ -264,7 +288,7 @@ namespace Microsoft.PowerFx
 
         internal bool HasDeferredArgsWarning => _errors.Any(x => x.IsWarning && x.MessageKey.Equals(TexlStrings.WarnDeferredType.Key));
 
-        internal ReadOnlySymbolTable AllSymbols { get; private set; }
+        private ReadOnlySymbolTable _allSymbols;
 
         /// <summary>
         /// Full set of Symbols passed to this binding. 
@@ -281,7 +305,7 @@ namespace Microsoft.PowerFx
                     throw new InvalidOperationException($"Must call {nameof(ApplyBinding)} before accessing combined Sybmols.");
                 }
 
-                return this.AllSymbols;
+                return this._allSymbols;
             }
         }
 
@@ -303,9 +327,10 @@ namespace Microsoft.PowerFx
         }
 
         /// <summary>
-        /// Culture info passed to this binding. May be null. 
+        /// Culture info used for parsing. 
+        /// By default, this is also used for error messages. 
         /// </summary>
-        internal CultureInfo CultureInfo => this.Engine.Config.CultureInfo;
+        internal CultureInfo ParserCultureInfo { get; private set; }
 
         internal void ThrowIfSymbolsChanged()
         {
@@ -375,10 +400,10 @@ namespace Microsoft.PowerFx
                 // Don't modify any fields until after we've verified the symbols haven't change.
 
                 this._binding = binding;
-                this.AllSymbols = combinedSymbols;
+                this._allSymbols = combinedSymbols;
 
                 // Add the errors
-                IEnumerable<ExpressionError> bindingErrors = ExpressionError.New(binding.ErrorContainer.GetErrors(), CultureInfo);
+                IEnumerable<ExpressionError> bindingErrors = ExpressionError.New(binding.ErrorContainer.GetErrors(), ParserCultureInfo);
                 _errors.AddRange(bindingErrors);
 
                 if (this.IsSuccess)
@@ -387,6 +412,26 @@ namespace Microsoft.PowerFx
                     if (binding.ResultType.Kind != DKind.Enum)
                     {
                         this.ReturnType = FormulaType.Build(binding.ResultType);
+                    }
+                }
+
+                if (this.ReturnType != null && this._expectedReturnType != null)
+                {
+                    var sameType = this._expectedReturnType == this.ReturnType;
+                    if (!sameType)
+                    {
+                        _errors.Add(new ExpressionError
+                        {
+                            Kind = ErrorKind.Validation,
+                            Severity = ErrorSeverity.Critical,
+                            Span = new Span(0, this._expression.Length),
+                            MessageKey = TexlStrings.ErrTypeError_WrongType.Key,
+                            _messageArgs = new object[]
+                            {
+                                this._expectedReturnType._type.GetKindString(),
+                                this.ReturnType._type.GetKindString()
+                            }
+                        });
                     }
                 }
             }

@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.PowerFx.Core.Texl.Builtins;
 using Microsoft.PowerFx.Core.Utils;
 
 namespace Microsoft.PowerFx.Core.Functions
@@ -34,38 +33,29 @@ namespace Microsoft.PowerFx.Core.Functions
 
         internal IEnumerable<TexlFunction> WithName(string name) => WithNameInternal(name);
 
-        private List<TexlFunction> WithNameInternal(string name) => _functions.ContainsKey(name) ? _functions[name] : new List<TexlFunction>();
+        private List<TexlFunction> WithNameInternal(string name) => _functions.TryGetValue(name, out List<TexlFunction> result) ? result : new List<TexlFunction>();
 
-        internal IEnumerable<TexlFunction> WithName(string name, DPath ns) => _functions.ContainsKey(name) ? new List<TexlFunction>(_functions[name].Where(f => f.Namespace == ns)) : new List<TexlFunction>();
+        internal IEnumerable<TexlFunction> WithName(string name, DPath ns) => _functions.TryGetValue(name, out List<TexlFunction> result) ? result.Where(f => f.Namespace == ns) : new List<TexlFunction>();
 
         internal IEnumerable<TexlFunction> WithInvariantName(string name) => WithInvariantNameInternal(name);
 
-        private List<TexlFunction> WithInvariantNameInternal(string name) => _functionsInvariant.ContainsKey(name) ? _functionsInvariant[name] : new List<TexlFunction>();
+        private List<TexlFunction> WithInvariantNameInternal(string name) => _functionsInvariant.TryGetValue(name, out List<TexlFunction> result) ? result : new List<TexlFunction>();
 
-        internal IEnumerable<TexlFunction> WithInvariantName(string name, DPath ns) => _functionsInvariant.ContainsKey(name) ? new List<TexlFunction>(_functionsInvariant[name].Where(f => f.Namespace == ns)) : new List<TexlFunction>();
+        internal IEnumerable<TexlFunction> WithInvariantName(string name, DPath ns) => _functionsInvariant.TryGetValue(name, out List<TexlFunction> result) ? result.Where(f => f.Namespace == ns) : new List<TexlFunction>();
 
         internal IEnumerable<TexlFunction> WithNamespace(DPath ns) => WithNamespaceInternal(ns);
 
-        private List<TexlFunction> WithNamespaceInternal(DPath ns) => _namespaces.ContainsKey(ns) ? _namespaces[ns] : new List<TexlFunction>();
+        private List<TexlFunction> WithNamespaceInternal(DPath ns) => _namespaces.TryGetValue(ns, out List<TexlFunction> result) ? result : new List<TexlFunction>();
 
         internal IEnumerable<string> Enums => _enums;
 
         internal TexlFunctionSet()
         {
-            _functions = new Dictionary<string, List<TexlFunction>>();
-            _functionsInvariant = new Dictionary<string, List<TexlFunction>>();
+            _functions = new Dictionary<string, List<TexlFunction>>(StringComparer.Ordinal);
+            _functionsInvariant = new Dictionary<string, List<TexlFunction>>(StringComparer.OrdinalIgnoreCase);
             _namespaces = new Dictionary<DPath, List<TexlFunction>>();
             _enums = new List<string>();
             _count = 0;
-        }
-
-        private TexlFunctionSet(Dictionary<string, List<TexlFunction>> functions, Dictionary<string, List<TexlFunction>> functionsInvariant, Dictionary<DPath, List<TexlFunction>> functionNamespaces, List<string> enums, int count)
-        {
-            _functions = functions ?? throw new ArgumentNullException(nameof(functions));
-            _functionsInvariant = functionsInvariant ?? throw new ArgumentNullException(nameof(functionsInvariant));
-            _namespaces = functionNamespaces ?? throw new ArgumentNullException(nameof(functionNamespaces));
-            _enums = enums ?? throw new ArgumentNullException(nameof(enums));
-            _count = count;
         }
 
         internal TexlFunctionSet(TexlFunction function)
@@ -97,15 +87,6 @@ namespace Microsoft.PowerFx.Core.Functions
             }
         }
 
-        internal TexlFunctionSet(TexlFunctionSet other)
-        {
-            _functions = new Dictionary<string, List<TexlFunction>>(other._functions);
-            _functionsInvariant = new Dictionary<string, List<TexlFunction>>(other._functionsInvariant);
-            _namespaces = new Dictionary<DPath, List<TexlFunction>>(other._namespaces);
-            _enums = new List<string>(other._enums);
-            _count = other._count;
-        }
-
         internal TexlFunctionSet(IEnumerable<TexlFunctionSet> functionSets)
             : this()
         {
@@ -129,7 +110,7 @@ namespace Microsoft.PowerFx.Core.Functions
         {
             get
             {
-                foreach (var kvp in _functions)
+                foreach (var kvp in _functions.ToList())
                 {
                     foreach (var func in kvp.Value)
                     {
@@ -137,9 +118,7 @@ namespace Microsoft.PowerFx.Core.Functions
                     }
                 }
             }
-        }
-
-        internal TexlFunction Append(TexlFunction function) => Add(function);
+        }        
 
         internal TexlFunction Add(TexlFunction function)
         {
@@ -148,15 +127,31 @@ namespace Microsoft.PowerFx.Core.Functions
                 throw new ArgumentNullException(nameof(function));
             }
 
-            var fList = WithNameInternal(function.Name);
+            List<TexlFunction> fList = WithNameInternal(function.Name);
+            List<TexlFunction> fInvariantList = WithInvariantNameInternal(function.LocaleInvariantName);
+            List<TexlFunction> fNsList = WithNamespaceInternal(function.Namespace);
 
-            if (fList.Any())
+            bool fListAny = fList.Any();
+            bool fInvariantListAny = fInvariantList.Any();
+            bool fNsListAny = fNsList.Any();
+
+            if (fListAny && fList.Contains(function))
             {
-                if (fList.Contains(function))
-                {
-                    throw new ArgumentException($"Function {function.Name} is already part of core or extra functions");
-                }
+                throw new ArgumentException($"Function {function.Name} is already part of core or extra functions");
+            }
 
+            if (fInvariantListAny && fInvariantList.Contains(function))
+            {
+                throw new ArgumentException($"Function {function.Name} is already part of core or extra functions (invariant)");
+            }
+
+            if (fNsListAny && fNsList.Contains(function))
+            {
+                throw new ArgumentException($"Function {function.Name} is already part of core or extra functions (namespace)");
+            }
+
+            if (fListAny)
+            {
                 fList.Add(function);
             }
             else
@@ -164,15 +159,8 @@ namespace Microsoft.PowerFx.Core.Functions
                 _functions.Add(function.Name, new List<TexlFunction>() { function });
             }
 
-            var fInvariantList = WithInvariantNameInternal(function.LocaleInvariantName);
-
-            if (fInvariantList.Any())
+            if (fInvariantListAny)
             {
-                if (fInvariantList.Contains(function))
-                {
-                    throw new ArgumentException($"Function {function.Name} is already part of core or extra functions (invariant)");
-                }
-
                 fInvariantList.Add(function);
             }
             else
@@ -180,16 +168,9 @@ namespace Microsoft.PowerFx.Core.Functions
                 _functionsInvariant.Add(function.LocaleInvariantName, new List<TexlFunction>() { function });
             }
 
-            var fnsList = WithNamespaceInternal(function.Namespace);
-
-            if (fnsList.Any())
+            if (fNsListAny)
             {
-                if (fnsList.Contains(function))
-                {
-                    throw new ArgumentException($"Function {function.Name} is already part of core or extra functions (namespace)");
-                }
-
-                fnsList.Add(function);
+                fNsList.Add(function);
             }
             else
             {
@@ -209,11 +190,12 @@ namespace Microsoft.PowerFx.Core.Functions
                 throw new ArgumentNullException(nameof(functionSet));
             }
 
+            // Notice that this code path is a critical performance gain versus the various loops in the 'else' part
             if (_count == 0)
             {
-                _functions = new Dictionary<string, List<TexlFunction>>(functionSet._functions);
-                _functionsInvariant = new Dictionary<string, List<TexlFunction>>(functionSet._functionsInvariant);
-                _namespaces = new Dictionary<DPath, List<TexlFunction>>(functionSet._namespaces);
+                _functions = functionSet._functions.ToDictionary(kvp => kvp.Key, kvp => new List<TexlFunction>(kvp.Value));
+                _functionsInvariant = functionSet._functionsInvariant.ToDictionary(kvp => kvp.Key, kvp => new List<TexlFunction>(kvp.Value));
+                _namespaces = functionSet._namespaces.ToDictionary(kvp => kvp.Key, kvp => new List<TexlFunction>(kvp.Value));
                 _enums = new List<string>(functionSet._enums);
                 _count = functionSet._count;
             }
@@ -221,8 +203,8 @@ namespace Microsoft.PowerFx.Core.Functions
             {
                 foreach (var key in functionSet.FunctionNames)
                 {
-                    var fList = WithNameInternal(key);
                     var newFuncs = functionSet.WithNameInternal(key);
+                    var fList = WithNameInternal(key);
 
                     if (fList.Any())
                     {
@@ -238,8 +220,8 @@ namespace Microsoft.PowerFx.Core.Functions
 
                 foreach (var key in functionSet.InvariantFunctionNames)
                 {
-                    var fInvariantList = WithInvariantNameInternal(key);
                     var newFuncs = functionSet.WithInvariantNameInternal(key);
+                    var fInvariantList = WithInvariantNameInternal(key);
 
                     if (fInvariantList.Any())
                     {
@@ -253,8 +235,8 @@ namespace Microsoft.PowerFx.Core.Functions
 
                 foreach (var key in functionSet.Namespaces)
                 {
-                    var fnsList = WithNamespaceInternal(key);
                     var newFuncs = functionSet.WithNamespaceInternal(key);
+                    var fnsList = WithNamespaceInternal(key);
 
                     if (fnsList.Any())
                     {
@@ -274,6 +256,11 @@ namespace Microsoft.PowerFx.Core.Functions
 
         internal void Add(IEnumerable<TexlFunction> functions)
         {
+            if (functions == null)
+            {
+                throw new ArgumentNullException(nameof(functions));
+            }
+
             foreach (var t in functions)
             {
                 Add(t);
@@ -294,16 +281,13 @@ namespace Microsoft.PowerFx.Core.Functions
 
         internal void RemoveAll(string name)
         {
-            List<TexlFunction> removed = null;
-
-            if (_functions.ContainsKey(name))
+            if (_functions.TryGetValue(name, out List<TexlFunction> removed))
             {
-                removed = WithNameInternal(name);
                 _count -= removed.Count();
                 _functions.Remove(name);
             }
 
-            if (_functionsInvariant.ContainsKey(name))
+            if (_functionsInvariant.TryGetValue(name, out _))
             {
                 _functionsInvariant.Remove(name);
             }
@@ -321,7 +305,6 @@ namespace Microsoft.PowerFx.Core.Functions
                     else
                     {
                         fnsList.Remove(f);
-                        _namespaces[f.Namespace] = fnsList;
                     }
 
                     f.GetRequiredEnumNames().ToList().ForEach(removedEnum => _enums.Remove(removedEnum));
@@ -333,12 +316,46 @@ namespace Microsoft.PowerFx.Core.Functions
 
         internal void RemoveAll(TexlFunction function)
         {
-            RemoveAll(function.Name);
-        }
+            if (_functions.TryGetValue(function.Name, out List<TexlFunction> funcs))
+            {
+                _count--;
+                funcs.Remove(function);
 
-        internal TexlFunctionSet Clone()
-        {
-            return new TexlFunctionSet(this);
+                if (!funcs.Any())
+                {
+                    _functions.Remove(function.Name);
+                }
+            }
+
+            if (_functionsInvariant.TryGetValue(function.Name, out List<TexlFunction> funcs2))
+            {
+                funcs2.Remove(function);
+
+                if (!funcs2.Any())
+                {
+                    _functionsInvariant.Remove(function.Name);
+                }
+            }
+
+            if (_namespaces.TryGetValue(function.Namespace, out List<TexlFunction> funcs3))
+            {
+                funcs3.Remove(function);
+
+                if (!funcs3.Any())
+                {
+                    _namespaces.Remove(function.Namespace);
+                }
+            }
+
+            IEnumerable<string> enums = function.GetRequiredEnumNames();
+
+            if (enums.Any())
+            {
+                foreach (string enumName in enums)
+                {
+                    _enums.Remove(enumName);
+                }
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System;
 using System.Globalization;
 using System.Linq;
 using Microsoft.PowerFx.Core.Utils;
@@ -70,7 +71,7 @@ namespace Microsoft.PowerFx.Core.Types
                 return true;
             }
 
-            var typeIdx = _typeEncodings.IndexOf(token);
+            var typeIdx = _typeEncodings.IndexOf(token, StringComparison.Ordinal);
             if (typeIdx < 0)
             {
                 type = DType.Invalid;
@@ -138,7 +139,7 @@ namespace Microsoft.PowerFx.Core.Types
             while (lexer.TryNextToken(out token) && token != "]")
             {
                 var name = token;
-                if (name.Length >= 2 && name.StartsWith("'") && name.EndsWith("'"))
+                if (name.Length >= 2 && name.StartsWith("'", StringComparison.Ordinal) && name.EndsWith("'", StringComparison.Ordinal))
                 {
                     name = TexlLexer.UnescapeName(name);
                 }
@@ -192,7 +193,7 @@ namespace Microsoft.PowerFx.Core.Types
             while (lexer.TryNextToken(out token) && token != "]")
             {
                 var name = token;
-                if (name.Length >= 2 && name.StartsWith("'") && name.EndsWith("'"))
+                if (name.Length >= 2 && name.StartsWith("'", StringComparison.Ordinal) && name.EndsWith("'", StringComparison.Ordinal))
                 {
                     name = name.TrimStart('\'').TrimEnd('\'');
                 }
@@ -268,7 +269,7 @@ namespace Microsoft.PowerFx.Core.Types
             }
 
             // Number (double) support
-            if (double.TryParse(token, out var numValue))
+            if (double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out var numValue))
             {
                 value = new EquatableObject(numValue);
                 return true;

@@ -65,7 +65,8 @@ namespace Microsoft.PowerFx.Tests
                 $"{ns}.InterpreterConfigException",
                 $"{ns}.Interpreter.{nameof(NotDelegableException)}",
                 $"{ns}.Interpreter.{nameof(CustomFunctionErrorException)}",
-                $"{ns}.Interpreter.UDF.{nameof(DefineFunctionsResult)}",                               
+                $"{ns}.Interpreter.UDF.{nameof(DefineFunctionsResult)}",
+                $"{ns}.{nameof(TypeCoercionProvider)}",                             
 
                 // Services for functions. 
                 $"{ns}.Functions.IRandomService"
@@ -107,6 +108,24 @@ namespace Microsoft.PowerFx.Tests
             var result = engine.Eval("With({y:2}, x+y)", context);
 
             Assert.Equal(17.0, ((NumberValue)result).Value);
+        }
+
+        [Fact]
+        public void EvalWithoutParse()
+        {
+            var engine = new RecalcEngine();
+            engine.UpdateVariable("x", 2);
+
+            var check = new CheckResult(engine)
+                .SetText("x*3")
+                .SetBindingInfo();
+
+            // Call Evaluator directly.
+            // Ensure it also pulls engine's symbols. 
+            var run = check.GetEvaluator();
+
+            var result = run.Eval();
+            Assert.Equal(2.0 * 3, result.ToObject());
         }
 
         /// <summary>
@@ -806,6 +825,65 @@ namespace Microsoft.PowerFx.Tests
             Assert.True(checkResult.IsSuccess);
         }
 
+        [Theory]
+
+        // Text() returns the display name of the input option set value
+        [InlineData("Text(OptionSet.option_1)", "Option1")]
+        [InlineData("Text(OptionSet.Option1)", "Option1")]
+        [InlineData("Text(Option1)", "Option1")]
+        [InlineData("Text(If(1<0, Option1))", "")]
+
+        // OptionSetInfo() returns the logical name of the input option set value
+        [InlineData("OptionSetInfo(OptionSet.option_1)", "option_1")]
+        [InlineData("OptionSetInfo(OptionSet.Option1)", "option_1")]
+        [InlineData("OptionSetInfo(Option1)", "option_1")]
+        [InlineData("OptionSetInfo(If(1<0, Option1))", "")]
+        public async void OptionSetInfoTests(string expression, string expected)
+        {
+            var optionSet = new OptionSet("OptionSet", DisplayNameUtility.MakeUnique(new Dictionary<string, string>()
+            {
+                    { "option_1", "Option1" },
+                    { "option_2", "Option2" }
+            }));
+
+            optionSet.TryGetValue(new DName("option_1"), out var option1);
+
+            var symbol = new SymbolTable();
+            var option1Solt = symbol.AddVariable("Option1", FormulaType.OptionSetValue);
+            var symValues = new SymbolValues(symbol);
+            symValues.Set(option1Solt, option1);
+
+            var config = new PowerFxConfig() { SymbolTable = symbol };
+            config.AddOptionSet(optionSet);
+            var recalcEngine = new RecalcEngine(config);
+            
+            var result = await recalcEngine.EvalAsync(expression, CancellationToken.None, symValues);
+            Assert.Equal(expected, result.ToObject());
+        }
+
+        [Theory]
+        [InlineData("Text(OptionSet)")]
+
+        [InlineData("OptionSetInfo(OptionSet)")]
+        [InlineData("OptionSetInfo(\"test\")")]
+        [InlineData("OptionSetInfo(1)")]
+        [InlineData("OptionSetInfo(true)")]
+        [InlineData("OptionSetInfo(Color.Red)")]
+        public async Task OptionSetInfoNegativeTest(string expression)
+        {
+            var optionSet = new OptionSet("OptionSet", DisplayNameUtility.MakeUnique(new Dictionary<string, string>()
+            {
+                    { "option_1", "Option1" },
+                    { "option_2", "Option2" }
+            }));
+
+            var config = new PowerFxConfig();
+            config.AddOptionSet(optionSet);
+            var recalcEngine = new RecalcEngine(config);
+            var checkResult = recalcEngine.Check(expression, RecordType.Empty());
+            Assert.False(checkResult.IsSuccess);
+        }
+
         [Fact]
         public void OptionSetResultType()
         {
@@ -878,7 +956,7 @@ namespace Microsoft.PowerFx.Tests
         {
             var recalcEngine = new RecalcEngine(new PowerFxConfig(null)
             {
-                MaxCallDepth = 80
+                MaxCallDepth = 81
             });
             recalcEngine.DefineFunctions(
                 "A(x: Number): Number = If(Mod(x, 2) = 0, B(x/2), B(x));" +
