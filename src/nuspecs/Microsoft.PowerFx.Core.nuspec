@@ -22,13 +22,16 @@
     <tags>powerfx</tags>
     <dependencies>
       <group targetFramework=".NETStandard2.0">
-        <dependency id="Microsoft.PowerFx.Transport.Attributes" version="****" exclude="Build,Analyzers" />        
+        <dependency id="Microsoft.PowerFx.Transport.Attributes" version="****" exclude="Build,Analyzers" />
+        <dependency id="System.Collections.Immutable" version="5.0.0" exclude="Build,Analyzers" />
       </group>
       <group targetFramework="net6.0">
-        <dependency id="Microsoft.PowerFx.Transport.Attributes" version="****" exclude="Build,Analyzers" />        
+        <dependency id="Microsoft.PowerFx.Transport.Attributes" version="****" exclude="Build,Analyzers" />
+        <dependency id="System.Collections.Immutable" version="7.0.0" exclude="Build,Analyzers" />
       </group>
       <group targetFramework="net7.0">
-        <dependency id="Microsoft.PowerFx.Transport.Attributes" version="****" exclude="Build,Analyzers" />                
+        <dependency id="Microsoft.PowerFx.Transport.Attributes" version="****" exclude="Build,Analyzers" />
+        <dependency id="System.Collections.Immutable" version="7.0.0" exclude="Build,Analyzers" />
       </group>
     </dependencies>
   </metadata>
