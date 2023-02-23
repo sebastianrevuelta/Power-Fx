@@ -6,6 +6,10 @@
     <IntermediateOutputPath>obj7</IntermediateOutputPath>    
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(Configuration)' != 'Debug' " >
+    <TieredPGO>true</TieredPGO>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="obj3\**" />
     <EmbeddedResource Remove="obj3\**" />
