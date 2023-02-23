@@ -63,7 +63,7 @@ namespace Microsoft.PowerFx.Tests.IntellisenseTests
         private PowerFxConfig EmptyEverything => PowerFxConfig.BuildWithEnumStore(null, new EnumStoreBuilder(), new TexlFunctionSet());
 
         // No extra enums, but standard functions (which will include some enums).
-        private PowerFxConfig MinimalEnums => PowerFxConfig.BuildWithEnumStore(null, new EnumStoreBuilder().WithRequiredEnums(BuiltinFunctionsCore.BuiltinFunctionsLibrary));
+        private PowerFxConfig MinimalEnums => PowerFxConfig.BuildWithEnumStore(null, new EnumStoreBuilder().WithRequiredEnums(BuiltinFunctionsCore._library));
 
         /// <summary>
         /// Compares expected suggestions with suggestions made by PFx Intellisense for a given

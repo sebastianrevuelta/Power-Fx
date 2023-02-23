@@ -25,7 +25,7 @@ namespace Microsoft.PowerFx.Performance.Tests
     [Q3Column]
     [MaxColumn]
 #if NETCOREAPP3_1
-    [SimpleJob(RunStrategy.Throughput, RuntimeMoniker.NetCoreApp31, launchCount: 1, warmupCount: 10, iterationCount: 10, invocationCount: 256)]
+    [SimpleJob(RunStrategy.Throughput, RuntimeMoniker.NetCoreApp31, launchCount: 1, warmupCount: 10, targetCount: 10, invocationCount: 256)]
 #elif NET6_0
     [SimpleJob(RunStrategy.Throughput, RuntimeMoniker.Net60, launchCount: 1, warmupCount: 10, iterationCount: 10, invocationCount: 256)]
 #elif NET7_0
