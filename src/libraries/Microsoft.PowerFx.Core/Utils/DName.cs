@@ -144,6 +144,8 @@ namespace Microsoft.PowerFx.Core.Utils
             return false;
         }        
 
+        // $$$ Needs optimization $$$
+
         /// <summary>
         /// Takes a name and makes it into a valid <see cref="DName" />.
         /// If the name contains all spaces, an underscore is prepended to the name.
@@ -171,6 +173,7 @@ namespace Microsoft.PowerFx.Core.Utils
 
             fModified = false;
 
+            // $$$ Needs optimization
             for (var i = 0; i < strName.Length; i++)
             {
                 var fIsSpace = strName[i] == ChSpace;
