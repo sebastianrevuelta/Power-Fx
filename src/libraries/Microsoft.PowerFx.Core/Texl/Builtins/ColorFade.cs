@@ -15,10 +15,6 @@ namespace Microsoft.PowerFx.Core.Texl.Builtins
     // ColorFade(color:c, fadeDelta:n)
     internal sealed class ColorFadeFunction : BuiltinFunction
     {
-        public override bool IsTrackedInTelemetry => false;
-
-        public override bool SupportsInlining => true;
-
         public override bool IsSelfContained => true;
 
         public ColorFadeFunction()
@@ -34,7 +30,7 @@ namespace Microsoft.PowerFx.Core.Texl.Builtins
 
         public override IEnumerable<string> GetRequiredEnumNames()
         {
-            return new List<string>() { EnumConstants.ColorEnumString };
+            return new List<string>() { BuiltInEnums.ColorEnum.EntityName.Value };
         }
     }
 }

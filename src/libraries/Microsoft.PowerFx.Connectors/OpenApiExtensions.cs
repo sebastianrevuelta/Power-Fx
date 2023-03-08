@@ -222,7 +222,7 @@ namespace Microsoft.PowerFx.Connectors
                 case "array":
                     var innerA = GetUniqueIdentifier(schema.Items);
 
-                    if (innerA.StartsWith("R:") && chain.Contains(innerA))
+                    if (innerA.StartsWith("R:", StringComparison.Ordinal) && chain.Contains(innerA))
                     {
                         // Here, we have a circular reference and default to a string
                         return (FormulaType.String, null);
@@ -265,7 +265,7 @@ namespace Microsoft.PowerFx.Connectors
 
                     // Dictionary - https://swagger.io/docs/specification/data-models/dictionaries/
                     // Key is always a string, Value is in AdditionalProperties
-                    if (schema.AdditionalProperties != null)
+                    if ((schema.AdditionalProperties != null && schema.AdditionalProperties.Properties.Any()) || schema.Discriminator != null)
                     {
                         return (FormulaType.UntypedObject, null);
                     }
@@ -293,7 +293,7 @@ namespace Microsoft.PowerFx.Connectors
                             var propName = kv.Key;
                             var innerO = GetUniqueIdentifier(kv.Value);
 
-                            if (innerO.StartsWith("R:") && chain.Contains(innerO))
+                            if (innerO.StartsWith("R:", StringComparison.Ordinal) && chain.Contains(innerO))
                             {
                                 // Here, we have a circular reference and default to a string
                                 return (FormulaType.String, hObj);
