@@ -10,6 +10,18 @@ Blank()
 >> If(false, Blank(), "hi")
 "hi"
 
+>> If(Blank(), 1, 2)
+2
+
+>> Abs([Blank(),Blank(),4])
+Table({Value:0},{Value:0},{Value:4})
+
+>> Max(Blank(),-2)
+Blank()
+
+>> Switch(Blank(),1,2,Blank(),3)
+3
+
 //-----------------------------------------------
 // Numerically, Blank() evaulates to 0
 

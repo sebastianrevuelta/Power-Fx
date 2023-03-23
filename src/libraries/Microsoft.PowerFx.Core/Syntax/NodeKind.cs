@@ -27,6 +27,7 @@ namespace Microsoft.PowerFx.Syntax
         BoolLit,
         NumLit,
         StrLit,
+        BlankLit,
 
         Error,
         StrInterp

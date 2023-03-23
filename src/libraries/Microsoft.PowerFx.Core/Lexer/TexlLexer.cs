@@ -30,6 +30,7 @@ namespace Microsoft.PowerFx.Syntax
         // Locale-invariant syntax.
         public const string KeywordTrue = "true";
         public const string KeywordFalse = "false";
+        public const string KeywordBlank = "blank";
         public const string KeywordIn = "in";
         public const string KeywordExactin = "exactin";
         public const string KeywordSelf = "Self";
@@ -94,6 +95,7 @@ namespace Microsoft.PowerFx.Syntax
             { KeywordOr, TokKind.KeyOr },
             { KeywordNot, TokKind.KeyNot },
             { KeywordAs, TokKind.As },
+            { KeywordBlank, TokKind.Blank },
         };
 
         // Limits the StringBuilderCache TLS memory usage for LexerImpl.
@@ -360,6 +362,7 @@ namespace Microsoft.PowerFx.Syntax
             {
                 case TokKind.True:
                 case TokKind.False:
+                case TokKind.Blank:
                 case TokKind.In:
                 case TokKind.Exactin:
                 case TokKind.Parent:

@@ -642,6 +642,7 @@ namespace Microsoft.PowerFx.Core.Parser
                         case TokKind.StrLit:
                         case TokKind.True:
                         case TokKind.False:
+                        case TokKind.Blank:
                             PostError(_curs.TokCur, TexlStrings.ErrOperatorExpected);
                             tok = _curs.TokMove();
                             rightTrivia = ParseTrivia();
@@ -832,6 +833,8 @@ namespace Microsoft.PowerFx.Core.Parser
                 case TokKind.True:
                 case TokKind.False:
                     return new BoolLitNode(ref _idNext, _curs.TokMove());
+                case TokKind.Blank:
+                    return new BlankNode(ref _idNext, _curs.TokMove());
                 case TokKind.StrInterpStart:
                     var res = ParseStringInterpolation();
                     var tokCur = _curs.TokCur;

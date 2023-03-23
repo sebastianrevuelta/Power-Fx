@@ -298,5 +298,11 @@ namespace Microsoft.PowerFx.Syntax
         /// <code>=></code>
         /// </summary>
         DoubleBarrelArrow,
+
+        /// <summary>
+        /// Start of body for user defined functions.
+        /// <code>=></code>
+        /// </summary>
+        Blank,
     }
 }
