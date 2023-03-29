@@ -1,4 +1,4 @@
-#SETUP: OptionSetTestSetup
+#SETUP: StronglyTypedBuiltinEnums,OptionSetTestSetup
 
 // Both logical and display names bind
 >> OptionSet.option_1
@@ -46,3 +46,6 @@ true
 
 >> IsBlankOrError(If(1 / 0 < 2, TopOptionSetField))
 true
+
+>> Text(OptionSet.Option1)
+"Option1"

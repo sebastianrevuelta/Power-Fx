@@ -66,13 +66,16 @@ namespace Microsoft.PowerFx
 
         public bool TryGetValue(DName fieldName, out OptionSetValue optionSetValue)
         {
-            if (!Options.Any(option => option.Key == fieldName))
+            // Ensure the value exists, and retrieve the display name
+            if (!_displayNameProvider.TryGetDisplayName(fieldName, out var displayName))
             {
                 optionSetValue = null;
                 return false;
             }
 
-            optionSetValue = new OptionSetValue(fieldName, FormulaType);
+            // For host-registered option sets coercion to string
+            // should always result in the Display Name, not the logical name
+            optionSetValue = new OptionSetValue(fieldName, FormulaType, value: displayName.Value);
             return true;
         }
 
