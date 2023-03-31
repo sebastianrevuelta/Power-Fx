@@ -72,7 +72,7 @@ namespace Microsoft.PowerFx.Functions
                     }
                 }
 
-                if (!dsNameType.Accepts(type, out var schemaDifference, out var schemaDifferenceType, exact: false) &&
+                if (!dsNameType.Accepts(type, out var schemaDifference, out var schemaDifferenceType) &&
                     (!supportsParamCoercion || !type.CoercesTo(dsNameType, out var coercionIsSafe, aggregateCoercion: false) || !coercionIsSafe))
                 {
                     if (dsNameType.Kind == type.Kind)

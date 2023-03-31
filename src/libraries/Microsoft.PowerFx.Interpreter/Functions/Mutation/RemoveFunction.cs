@@ -133,11 +133,10 @@ namespace Microsoft.PowerFx.Functions
                     continue;
                 }
 
-                var collectionAcceptsRecord = collectionType.Accepts(argType.ToTable());
-                var recordAcceptsCollection = argType.ToTable().Accepts(collectionType);
+                bool checkAggregateNames = argType.CheckAggregateNames(collectionType, args[i], errors, SupportsParamCoercion);
 
                 // The item schema should be compatible with the collection schema.
-                if (!collectionAcceptsRecord && !recordAcceptsCollection)
+                if (!checkAggregateNames)
                 {
                     fValid = false;
                     if (!SetErrorForMismatchedColumns(collectionType, argType, args[i], errors))
