@@ -24,7 +24,10 @@ namespace Microsoft.PowerFx.Core.Parser
             EnableExpressionChaining = 1 << 0,
 
             // When specified, this is a named formula to be parsed. Mutually exclusive to EnableExpressionChaining.
-            NamedFormulas = 1 << 1
+            NamedFormulas = 1 << 1,
+
+            // enables "blank" keyword and constant
+            BlankKeyword = 1 << 2
         }
 
         private bool _hasSemicolon = false;
@@ -306,7 +309,7 @@ namespace Microsoft.PowerFx.Core.Parser
             Contracts.AssertValue(script);
             Contracts.AssertValueOrNull(loc);
 
-            var lexerFlags = TexlLexer.Flags.None;
+            var lexerFlags = flags.HasFlag(Flags.BlankKeyword) ? TexlLexer.Flags.BlankKeyword : TexlLexer.Flags.None;
             loc ??= CultureInfo.CurrentCulture;
 
             return TexlLexer.GetLocalizedInstance(loc).LexSource(script, lexerFlags);

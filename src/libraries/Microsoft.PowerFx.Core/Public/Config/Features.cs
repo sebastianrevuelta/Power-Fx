@@ -51,6 +51,12 @@ namespace Microsoft.PowerFx
         /// </summary>
         RestrictedIsEmptyArguments = 0x20,
 
+        /// <summary>
+        /// Enables the "blank" keyword as an alternative to calling "Blank()"
+        /// Added March 203
+        /// </summary>
+        BlankKeyword = 0x40,
+
         /// <summary>        
         /// All features enabled
         /// [USE WITH CAUTION] In using this value, you expose your code to future features.

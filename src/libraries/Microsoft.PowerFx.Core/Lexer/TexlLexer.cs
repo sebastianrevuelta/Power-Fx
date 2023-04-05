@@ -24,7 +24,9 @@ namespace Microsoft.PowerFx.Syntax
         [Flags]
         public enum Flags
         {
-            None,
+            None = 0,
+
+            BlankKeyword = 1 << 0
         }
 
         // Locale-invariant syntax.

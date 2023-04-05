@@ -300,7 +300,7 @@ namespace Microsoft.PowerFx.Syntax
         DoubleBarrelArrow,
 
         /// <summary>
-        /// Start of body for user defined functions.
+        /// "blank" constant.
         /// <code>=></code>
         /// </summary>
         Blank,
